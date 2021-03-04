@@ -1,6 +1,7 @@
 #ifndef SRC_BERGAMOT_RESPONSE_H_
 #define SRC_BERGAMOT_RESPONSE_H_
 
+#include "data/alignment.h"
 #include "data/types.h"
 #include "definitions.h"
 #include "sentence_ranges.h"
@@ -19,10 +20,16 @@ namespace bergamot {
 ///
 /// This class provides an API at a higher level in comparison to History to
 /// access translations and additionally use string_view manipulations to
-/// recover structure in translation from source-text's structure known through
-/// reference string and string_view. As many of these computations are not
-/// required until invoked, they are computed as required and stored in data
-/// members where it makes sense to do so (translation,translationTokenRanges).
+/// recover structure in translation from source-text's structure known
+/// through reference string and string_view. As many of these computations
+/// are not required until invoked, they are computed as required and stored
+/// in data members where it makes sense to do so
+/// (translation,translationTokenRanges).
+
+typedef marian::data::SoftAlignment SoftAlignment;
+typedef marian::data::WordAlignment WordAlignment;
+typedef AnnotatedBlobT<string_view> AnnotatedBlob;
+
 class Response {
 
 public:
@@ -34,12 +41,8 @@ public:
 
   /// Move constructor.
   Response(Response &&other)
-      : source_(std::move(other.source_)),
-        translation_(std::move(other.translation_)),
-        sourceRanges_(std::move(other.sourceRanges_)),
-        targetRanges_(std::move(other.targetRanges_)),
-        histories_(std::move(other.histories_)),
-        vocabs_(std::move(other.vocabs_)){};
+      : source(std::move(other.source)), target(std::move(other.target)),
+        histories_(std::move(other.histories_)){};
 
   /// Prevents CopyConstruction.  sourceRanges_ is constituted
   /// by string_view and copying invalidates the data member.
@@ -47,24 +50,16 @@ public:
   /// Prevents CopyAssignment.
   Response &operator=(const Response &) = delete;
 
-  typedef std::vector<std::pair<const string_view, const string_view>>
-      SentenceMappings;
-
-  /// Moves source sentence into source, translated text into translation.
-  /// Pairs of string_views to corresponding sentences in
-  /// source and translation are loaded into sentenceMappings. These
-  /// string_views reference the new source and translation.
-  ///
-  /// Calling move() invalidates the Response object as ownership is
-  /// transferred. Exists for moving strc
-  void move(std::string &source, std::string &translation,
-            SentenceMappings &sentenceMappings);
+  const size_t size() const { return source.numSentences(); }
 
   const Histories &histories() const { return histories_; }
-  const std::string &source() const { return source_; }
-  const std::string &translation() {
-    constructTranslation();
-    return translation_;
+
+  const SoftAlignment softAlignment(int idx) {
+    NBestList onebest = histories_[idx]->nBest(1);
+    Result result = onebest[0]; // Expecting only one result;
+    auto hyp = std::get<1>(result);
+    auto alignment = hyp->tracebackAlignment();
+    return alignment;
   }
 
   bool empty() { return empty_; }
@@ -74,29 +69,23 @@ public:
     return response;
   }
 
-  // A convenience function provided to return translated text placed within
-  // source's structure. This is useful when the source text is a multi-line
-  // paragraph or string_views extracted from structured text like HTML and it's
-  // desirable to place the individual sentences in the locations of the source
-  // sentences.
-  // const std::string translationInSourceStructure();
-  // const PendingAlignmentType alignment(size_t idx);
+  const WordAlignment hardAlignment(int idx, float threshold = 1.f) {
+    WordAlignment result;
+    return data::ConvertSoftAlignToHardAlign(softAlignment(idx), threshold);
+  }
+
+  AnnotatedBlob source;
+  AnnotatedBlob target;
+
+  const std::string &translation() {
+    LOG(info, "translation() will be deprecated now that target is public.");
+    return target.blob;
+  }
 
 private:
   Response() {} // Default constructor to enable a static empty response.
-  void constructTranslation();
-  void constructSentenceMappings(SentenceMappings &);
-
-  std::string source_;
-  SentenceRanges sourceRanges_;
   Histories histories_;
-
-  std::vector<Ptr<Vocab const>> *vocabs_;
-  bool translationConstructed_{false};
-  std::string translation_;
-  SentenceRanges targetRanges_;
-
-  bool empty_{false};
+  bool empty_{true};
 };
 } // namespace bergamot
 } // namespace marian
