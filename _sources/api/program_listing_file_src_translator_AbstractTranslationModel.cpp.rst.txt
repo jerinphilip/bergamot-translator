@@ -1,0 +1,26 @@
+
+.. _program_listing_file_src_translator_AbstractTranslationModel.cpp:
+
+Program Listing for File AbstractTranslationModel.cpp
+=====================================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_translator_AbstractTranslationModel.cpp>` (``src/translator/AbstractTranslationModel.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   /*
+    * AbstractTranslationModel.cpp
+    *
+    */
+   #include <memory>
+   
+   // All local includes
+   #include "AbstractTranslationModel.h"
+   #include "TranslationModel.h"
+   
+   std::shared_ptr<AbstractTranslationModel>
+   AbstractTranslationModel::createInstance(const std::string &config, const void * model_memory) {
+     return std::make_shared<TranslationModel>(config, model_memory);
+   }

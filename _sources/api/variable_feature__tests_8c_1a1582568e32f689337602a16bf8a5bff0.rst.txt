@@ -1,0 +1,13 @@
+.. _exhale_variable_feature__tests_8c_1a1582568e32f689337602a16bf8a5bff0:
+
+Variable features
+=================
+
+- Defined in :ref:`file_src_translator_CMakeFiles_feature_tests.c`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: features

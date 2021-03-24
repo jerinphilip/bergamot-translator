@@ -1,0 +1,59 @@
+
+.. _file_src_translator_byteArrayExample.cpp:
+
+File byteArrayExample.cpp
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_translator>` (``src/translator``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/translator/byteArrayExample.cpp``)
+----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_translator_byteArrayExample.cpp.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``byteArrayExample.h`` (:ref:`file_src_translator_byteArrayExample.h`)
+
+- ``fstream``
+
+- ``iostream``
+
+- ``stdlib.h``
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_bergamot`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_byteArrayExample_8cpp_1a0e89bfd927bdc96eb57207bab9712ffb`
+
+- :ref:`exhale_function_byteArrayExample_8cpp_1a33072f18b29b671ed655df11b508d240`
+

@@ -1,0 +1,13 @@
+.. _exhale_function_byteArrayExample_8cpp_1a33072f18b29b671ed655df11b508d240:
+
+Function bergamot::getBinaryModelFromConfig
+===========================================
+
+- Defined in :ref:`file_src_translator_byteArrayExample.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: bergamot::getBinaryModelFromConfig(marian::Ptr<marian::Options>)

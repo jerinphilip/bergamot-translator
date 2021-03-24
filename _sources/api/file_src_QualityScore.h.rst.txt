@@ -1,0 +1,61 @@
+
+.. _file_src_QualityScore.h:
+
+File QualityScore.h
+===================
+
+|exhale_lsh| :ref:`Parent directory <dir_src>` (``src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/QualityScore.h``)
+-----------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_QualityScore.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``string``
+
+- ``vector``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_TranslationRequest.h`
+
+- :ref:`file_src_TranslationResult.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classQualityScore`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_QualityScore_8h_1a492cd0d07400e72d8f466530f1e0254c`
+

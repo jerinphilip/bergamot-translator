@@ -1,0 +1,83 @@
+
+.. _program_listing_file_src_translator_service.h:
+
+Program Listing for File service.h
+==================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_translator_service.h>` (``src/translator/service.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef SRC_BERGAMOT_SERVICE_H_
+   #define SRC_BERGAMOT_SERVICE_H_
+   
+   #include "batch_translator.h"
+   #include "batcher.h"
+   #include "data/types.h"
+   #include "response.h"
+   #include "text_processor.h"
+   #include "translator/parser.h"
+   
+   #ifndef WASM
+   #include "pcqueue.h"
+   #endif
+   
+   #include <queue>
+   #include <vector>
+   
+   namespace marian {
+   namespace bergamot {
+   
+   class Service {
+   
+   public:
+     explicit Service(Ptr<Options> options, const void *model_memory = nullptr);
+   
+     explicit Service(const std::string &config,
+                      const void *model_memory = nullptr)
+         : Service(parseOptions(config), model_memory) {}
+   
+     ~Service();
+   
+     Ptr<Vocab const> sourceVocab() const { return vocabs_.front(); }
+   
+     Ptr<Vocab const> targetVocab() const { return vocabs_.back(); }
+   
+     std::future<Response> translate(std::string &&input);
+   
+   private:
+     void build_translators(Ptr<Options> options, size_t numTranslators);
+     void initialize_blocking_translator();
+     void blocking_translate();
+   
+     void initialize_async_translators();
+     void async_translate();
+   
+     size_t numWorkers_;        // ORDER DEPENDENCY (pcqueue_)
+     const void *model_memory_; 
+   
+     std::vector<BatchTranslator> translators_;
+   
+   
+     size_t requestId_;
+   
+     std::vector<Ptr<Vocab const>> vocabs_; // ORDER DEPENDENCY (text_processor_)
+   
+     TextProcessor text_processor_; // ORDER DEPENDENCY (vocabs_)
+   
+     Batcher batcher_;
+   
+     // The following constructs are available providing full capabilities on a non
+     // WASM platform, where one does not have to hide threads.
+   #ifndef WASM
+     PCQueue<Batch> pcqueue_; // ORDER DEPENDENCY (numWorkers_)
+     std::vector<std::thread> workers_;
+   #endif // WASM
+   };
+   
+   } // namespace bergamot
+   } // namespace marian
+   
+   #endif // SRC_BERGAMOT_SERVICE_H_

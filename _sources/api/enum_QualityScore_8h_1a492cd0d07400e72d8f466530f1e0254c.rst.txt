@@ -1,0 +1,13 @@
+.. _exhale_enum_QualityScore_8h_1a492cd0d07400e72d8f466530f1e0254c:
+
+Enum QualityScoreGranularity
+============================
+
+- Defined in :ref:`file_src_QualityScore.h`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: QualityScoreGranularity

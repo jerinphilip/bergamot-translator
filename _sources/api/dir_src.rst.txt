@@ -1,0 +1,24 @@
+.. _dir_src:
+
+
+Directory src
+=============
+
+
+*Directory path:* ``src``
+
+Subdirectories
+--------------
+
+- :ref:`dir_src_translator`
+
+
+Files
+-----
+
+- :ref:`file_src_AbstractTranslationModel.h`
+- :ref:`file_src_QualityScore.h`
+- :ref:`file_src_TranslationRequest.h`
+- :ref:`file_src_TranslationResult.h`
+
+

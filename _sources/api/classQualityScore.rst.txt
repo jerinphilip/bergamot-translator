@@ -1,0 +1,16 @@
+.. _exhale_class_classQualityScore:
+
+Class QualityScore
+==================
+
+- Defined in :ref:`file_src_QualityScore.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: QualityScore
+   :members:
+   :protected-members:
+   :undoc-members:

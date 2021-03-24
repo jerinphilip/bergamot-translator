@@ -1,0 +1,45 @@
+
+.. _file_src_translator_CMakeFiles_feature_tests.cxx:
+
+File feature_tests.cxx
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_translator_CMakeFiles>` (``src/translator/CMakeFiles``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/translator/CMakeFiles/feature_tests.cxx``)
+------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_translator_CMakeFiles_feature_tests.cxx.rst
+
+
+
+
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_feature__tests_8cxx_1a3c04138a5bfe5d72780bb7e82a18e627`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_feature__tests_8cxx_1a1582568e32f689337602a16bf8a5bff0`
+

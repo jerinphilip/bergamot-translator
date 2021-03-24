@@ -1,0 +1,50 @@
+
+.. _file_src_TranslationRequest.h:
+
+File TranslationRequest.h
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_src>` (``src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/TranslationRequest.h``)
+-----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_TranslationRequest.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``QualityScore.h`` (:ref:`file_src_QualityScore.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_AbstractTranslationModel.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTranslationRequest`
+

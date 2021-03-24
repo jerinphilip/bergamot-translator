@@ -1,0 +1,79 @@
+
+.. _file_src_translator_service.h:
+
+File service.h
+==============
+
+|exhale_lsh| :ref:`Parent directory <dir_src_translator>` (``src/translator``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/translator/service.h``)
+-----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_translator_service.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``batch_translator.h`` (:ref:`file_src_translator_batch_translator.h`)
+
+- ``batcher.h`` (:ref:`file_src_translator_batcher.h`)
+
+- ``data/types.h``
+
+- ``pcqueue.h`` (:ref:`file_src_translator_pcqueue.h`)
+
+- ``queue`` (:ref:`file_src_translator_pcqueue.h`)
+
+- ``response.h`` (:ref:`file_src_translator_response.h`)
+
+- ``text_processor.h`` (:ref:`file_src_translator_text_processor.h`)
+
+- ``translator/parser.h`` (:ref:`file_src_translator_parser.h`)
+
+- ``vector``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_translator_TranslationModel.h`
+
+- :ref:`file_src_translator_service.cpp`
+
+- :ref:`file_src_translator_TranslationModel.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_marian`
+
+- :ref:`namespace_marian__bergamot`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classmarian_1_1bergamot_1_1Service`
+

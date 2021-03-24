@@ -1,0 +1,45 @@
+
+.. _file_src_translator_TranslationModel.cpp:
+
+File TranslationModel.cpp
+=========================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_translator>` (``src/translator``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/translator/TranslationModel.cpp``)
+----------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_translator_TranslationModel.cpp.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TranslationModel.h`` (:ref:`file_src_AbstractTranslationModel.h`)
+
+- ``future``
+
+- ``translator/parser.h`` (:ref:`file_src_translator_parser.h`)
+
+- ``translator/service.h`` (:ref:`file_src_translator_service.h`)
+
+- ``vector``
+
+
+
+
+

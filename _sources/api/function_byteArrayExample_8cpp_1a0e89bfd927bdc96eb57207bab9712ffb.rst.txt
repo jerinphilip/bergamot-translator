@@ -1,0 +1,13 @@
+.. _exhale_function_byteArrayExample_8cpp_1a0e89bfd927bdc96eb57207bab9712ffb:
+
+Function bergamot::getBinaryFile
+================================
+
+- Defined in :ref:`file_src_translator_byteArrayExample.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: bergamot::getBinaryFile(std::string)

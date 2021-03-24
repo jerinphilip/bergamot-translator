@@ -1,0 +1,26 @@
+.. _dir_src_translator_CMakeFiles:
+
+
+Directory CMakeFiles
+====================
+
+
+|exhale_lsh| :ref:`Parent directory <dir_src_translator>` (``src/translator``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``src/translator/CMakeFiles``
+
+Subdirectories
+--------------
+
+- :ref:`dir_src_translator_CMakeFiles_3.10.2`
+
+
+Files
+-----
+
+- :ref:`file_src_translator_CMakeFiles_feature_tests.c`
+- :ref:`file_src_translator_CMakeFiles_feature_tests.cxx`
+
+

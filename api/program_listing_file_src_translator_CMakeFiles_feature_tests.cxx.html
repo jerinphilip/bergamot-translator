@@ -1,0 +1,621 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Program Listing for File feature_tests.cxx &mdash; Bergamot Translator v0.0.1 2021-03-24 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+    <link rel="canonical" href="http://jerinphilip.github.io/bergamot-translator/api/program_listing_file_src_translator_CMakeFiles_feature_tests.cxx.html" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Bergamot Translator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bergamot Translator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Program Listing for File feature_tests.cxx</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/program_listing_file_src_translator_CMakeFiles_feature_tests.cxx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-feature-tests-cxx">
+<span id="program-listing-file-src-translator-cmakefiles-feature-tests-cxx"></span><h1>Program Listing for File feature_tests.cxx<a class="headerlink" href="#program-listing-for-file-feature-tests-cxx" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_src_translator_CMakeFiles_feature_tests.cxx.html#file-src-translator-cmakefiles-feature-tests-cxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/translator/CMakeFiles/feature_tests.cxx</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>  <span class="k">const</span> <span class="kt">char</span> <span class="n">features</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 500 &amp;&amp; __cplusplus &gt;= 201402L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_aggregate_default_initializers</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 407 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_alias_templates</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 408 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_alignas</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 408 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_alignof</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 408 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_attributes</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 409 &amp;&amp; __cplusplus &gt; 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_attribute_deprecated</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_auto_type</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 409 &amp;&amp; __cplusplus &gt; 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_binary_literals</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 406 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_constexpr</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 409 &amp;&amp; __cplusplus &gt; 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_contextual_conversions</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_decltype</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 409 &amp;&amp; __cplusplus &gt; 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_decltype_auto</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if ((__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) &gt;= 40801) &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_decltype_incomplete_return_types</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_default_function_template_args</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_defaulted_functions</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 406 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_defaulted_move_initializers</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 407 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_delegating_constructors</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_deleted_functions</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 409 &amp;&amp; __cplusplus &gt; 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_digit_separators</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 406 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_enum_forward_declarations</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 405 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_explicit_conversions</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 407 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_extended_friend_declarations</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_extern_templates</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 407 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_final</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_func_identifier</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_generalized_initializers</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 409 &amp;&amp; __cplusplus &gt; 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_generic_lambdas</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 408 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_inheriting_constructors</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_inline_namespaces</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 405 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_lambdas</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 409 &amp;&amp; __cplusplus &gt; 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_lambda_init_captures</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 405 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_local_type_template_args</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_long_long_type</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 406 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_noexcept</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 407 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_nonstatic_member_init</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 406 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_nullptr</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 407 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_override</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 406 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_range_for</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 405 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_raw_string_literals</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if ((__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) &gt;= 40801) &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_reference_qualified_functions</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 500 &amp;&amp; __cplusplus &gt;= 201402L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_relaxed_constexpr</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 409 &amp;&amp; __cplusplus &gt; 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_return_type_deduction</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_right_angle_brackets</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_rvalue_references</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_sizeof_member</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_static_assert</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_strong_enums</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; __cplusplus</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_template_template_parameters</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 408 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_thread_local</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_trailing_return_types</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_unicode_literals</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_uniform_initialization</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 406 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_unrestricted_unions</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 407 &amp;&amp; __cplusplus &gt;= 201103L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_user_literals</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 500 &amp;&amp; __cplusplus &gt;= 201402L</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_variable_templates</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_variadic_macros</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="s">&quot;CXX_FEATURE:&quot;</span>
+<span class="cp">#if (__GNUC__ * 100 + __GNUC_MINOR__) &gt;= 404 &amp;&amp; (__cplusplus &gt;= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) &amp;&amp; __GXX_EXPERIMENTAL_CXX0X__))</span>
+<span class="s">&quot;1&quot;</span>
+<span class="cp">#else</span>
+<span class="s">&quot;0&quot;</span>
+<span class="cp">#endif</span>
+<span class="s">&quot;cxx_variadic_templates</span><span class="se">\n</span><span class="s">&quot;</span>
+
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">argv</span><span class="p">;</span> <span class="k">return</span> <span class="n">features</span><span class="p">[</span><span class="n">argc</span><span class="p">];</span> <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Bergamot Translator Team.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

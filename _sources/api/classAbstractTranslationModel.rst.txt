@@ -1,0 +1,25 @@
+.. _exhale_class_classAbstractTranslationModel:
+
+Class AbstractTranslationModel
+==============================
+
+- Defined in :ref:`file_src_AbstractTranslationModel.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Derived Type
+************
+
+- ``public TranslationModel`` (:ref:`exhale_class_classTranslationModel`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: AbstractTranslationModel
+   :members:
+   :protected-members:
+   :undoc-members:

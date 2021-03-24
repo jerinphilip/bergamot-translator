@@ -1,0 +1,52 @@
+.. _dir_src_translator:
+
+
+Directory translator
+====================
+
+
+|exhale_lsh| :ref:`Parent directory <dir_src>` (``src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``src/translator``
+
+Subdirectories
+--------------
+
+- :ref:`dir_src_translator_CMakeFiles`
+
+
+Files
+-----
+
+- :ref:`file_src_translator_AbstractTranslationModel.cpp`
+- :ref:`file_src_translator_batch.cpp`
+- :ref:`file_src_translator_batch.h`
+- :ref:`file_src_translator_batch_translator.cpp`
+- :ref:`file_src_translator_batch_translator.h`
+- :ref:`file_src_translator_batcher.cpp`
+- :ref:`file_src_translator_batcher.h`
+- :ref:`file_src_translator_byteArrayExample.cpp`
+- :ref:`file_src_translator_byteArrayExample.h`
+- :ref:`file_src_translator_definitions.h`
+- :ref:`file_src_translator_multifactor_priority.cpp`
+- :ref:`file_src_translator_multifactor_priority.h`
+- :ref:`file_src_translator_parser.h`
+- :ref:`file_src_translator_pcqueue.h`
+- :ref:`file_src_translator_request.cpp`
+- :ref:`file_src_translator_request.h`
+- :ref:`file_src_translator_response.cpp`
+- :ref:`file_src_translator_response.h`
+- :ref:`file_src_translator_sentence_ranges.cpp`
+- :ref:`file_src_translator_sentence_ranges.h`
+- :ref:`file_src_translator_sentence_splitter.cpp`
+- :ref:`file_src_translator_sentence_splitter.h`
+- :ref:`file_src_translator_service.cpp`
+- :ref:`file_src_translator_service.h`
+- :ref:`file_src_translator_text_processor.cpp`
+- :ref:`file_src_translator_text_processor.h`
+- :ref:`file_src_translator_TranslationModel.cpp`
+- :ref:`file_src_translator_TranslationModel.h`
+
+

@@ -1,0 +1,285 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Program Listing for File AbstractTranslationModel.h &mdash; Bergamot Translator v0.0.1 2021-03-24 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+    <link rel="canonical" href="http://jerinphilip.github.io/bergamot-translator/api/program_listing_file_src_AbstractTranslationModel.h.html" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Bergamot Translator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bergamot Translator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Program Listing for File AbstractTranslationModel.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/program_listing_file_src_AbstractTranslationModel.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-abstracttranslationmodel-h">
+<span id="program-listing-file-src-abstracttranslationmodel-h"></span><h1>Program Listing for File AbstractTranslationModel.h<a class="headerlink" href="#program-listing-for-file-abstracttranslationmodel-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_src_AbstractTranslationModel.h.html#file-src-abstracttranslationmodel-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/AbstractTranslationModel.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * AbstractTranslationModel.h</span>
+<span class="cm"> *</span>
+<span class="cm"> * An interface for a translation model for translating a plain (without any</span>
+<span class="cm"> * markups and emojis) UTF-8 encoded text. The model supports translation from 1</span>
+<span class="cm"> * source language to 1 target language. There can be different implementations</span>
+<span class="cm"> * of this interface.</span>
+<span class="cm"> */</span>
+
+<span class="cp">#ifndef SRC_TRANSLATOR_ABSTRACTTRANSLATIONMODEL_H_</span>
+<span class="cp">#define SRC_TRANSLATOR_ABSTRACTTRANSLATIONMODEL_H_</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;future&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;memory&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;TranslationRequest.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;TranslationResult.h&quot;</span><span class="cp"></span>
+
+<span class="cm">/* An interface for a translation model for translating a plain (without any</span>
+<span class="cm"> * markups and emojis) UTF-8 encoded text. The model supports translation from 1</span>
+<span class="cm"> * source language to 1 target language.</span>
+<span class="cm"> */</span>
+<span class="k">class</span> <span class="nc">AbstractTranslationModel</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="cm">/* A Factory method to create and return an instance of an implementation of</span>
+<span class="cm">   * AbstractTranslationModel. The instance is created using translation model</span>
+<span class="cm">   * configuration provided as yaml-formatted string.</span>
+<span class="cm">   */</span>
+  <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">AbstractTranslationModel</span><span class="o">&gt;</span>
+  <span class="n">createInstance</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">config</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span> <span class="n">model_memory</span><span class="o">=</span><span class="k">nullptr</span><span class="p">);</span>
+
+  <span class="n">AbstractTranslationModel</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+
+  <span class="k">virtual</span> <span class="o">~</span><span class="n">AbstractTranslationModel</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+
+  <span class="cm">/* This method performs translation on a list of (UTF-8 encoded) texts and</span>
+<span class="cm">   * returns a list of results in the same order. Each text entry can either be</span>
+<span class="cm">   * a word, a phrase, a sentence or a list of sentences and should contain</span>
+<span class="cm">   * plain text (without any markups or emojis). Additional information related</span>
+<span class="cm">   * to the translated text can be requested via TranslationRequest which is</span>
+<span class="cm">   * applied equally to each text entry.</span>
+<span class="cm">   *</span>
+<span class="cm">   * The translated text corresponding to each text entry and the additional</span>
+<span class="cm">   * information (as specified in the TranslationRequest) is encapsulated and</span>
+<span class="cm">   * returned in TranslationResult.</span>
+<span class="cm">   *</span>
+<span class="cm">   * The API splits each text entry into sentences internally, which are then</span>
+<span class="cm">   * translated independent of each other. The translated sentences are then</span>
+<span class="cm">   * joined together and returned in TranslationResult. Please refer to the</span>
+<span class="cm">   * TranslationRequest class to find out what additional information can be</span>
+<span class="cm">   * requested. The alignment information can only be requested if the model</span>
+<span class="cm">   * supports it (check isAlignmentSupported() API).</span>
+<span class="cm">   *</span>
+<span class="cm">   * The texts argument will become empty after the execution of this API (each</span>
+<span class="cm">   * entry of texts list will be moved to its corresponding TranslationResult</span>
+<span class="cm">   * object).</span>
+<span class="cm">   */</span>
+  <span class="k">virtual</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TranslationResult</span><span class="o">&gt;</span>
+  <span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span><span class="n">texts</span><span class="p">,</span> <span class="n">TranslationRequest</span> <span class="n">request</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="cm">/* Check if the model can provide alignment information b/w original and</span>
+<span class="cm">   * translated text. */</span>
+  <span class="k">virtual</span> <span class="kt">bool</span> <span class="n">isAlignmentSupported</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* SRC_TRANSLATOR_ABSTRACTTRANSLATIONMODEL_H_ */</span><span class="cp"></span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Bergamot Translator Team.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

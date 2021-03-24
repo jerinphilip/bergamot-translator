@@ -1,0 +1,62 @@
+
+.. _file_src_translator_TranslationModel.h:
+
+File TranslationModel.h
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_translator>` (``src/translator``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/translator/TranslationModel.h``)
+--------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_translator_TranslationModel.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``3rd_party/marian-dev/src/common/options.h``
+
+- ``AbstractTranslationModel.h`` (:ref:`file_src_AbstractTranslationModel.h`)
+
+- ``future``
+
+- ``string``
+
+- ``translator/service.h`` (:ref:`file_src_translator_service.h`)
+
+- ``vector``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_translator_AbstractTranslationModel.cpp`
+
+- :ref:`file_src_translator_TranslationModel.cpp`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTranslationModel`
+

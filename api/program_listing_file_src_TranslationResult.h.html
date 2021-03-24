@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Program Listing for File TranslationResult.h &mdash; Bergamot Translator v0.0.1 2021-03-24 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+    <link rel="canonical" href="http://jerinphilip.github.io/bergamot-translator/api/program_listing_file_src_TranslationResult.h.html" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Bergamot Translator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bergamot Translator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Program Listing for File TranslationResult.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/program_listing_file_src_TranslationResult.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-translationresult-h">
+<span id="program-listing-file-src-translationresult-h"></span><h1>Program Listing for File TranslationResult.h<a class="headerlink" href="#program-listing-for-file-translationresult-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_src_TranslationResult.h.html#file-src-translationresult-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/TranslationResult.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * TranslationResult.h</span>
+<span class="cm"> *</span>
+<span class="cm"> * The class that represents the result of AbstractTranslationModel::translate()</span>
+<span class="cm"> * API for each of its text entry and TranslationRequest.</span>
+<span class="cm"> */</span>
+
+<span class="cp">#ifndef SRC_TRANSLATOR_TRANSLATIONRESULT_H_</span>
+<span class="cp">#define SRC_TRANSLATOR_TRANSLATIONRESULT_H_</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;QualityScore.h&quot;</span><span class="cp"></span>
+
+<span class="cm">/* This class represents the result of AbstractTranslationModel::translate() API</span>
+<span class="cm"> * for each of its text entry and TranslationRequest.</span>
+<span class="cm"> */</span>
+<span class="k">class</span> <span class="nc">TranslationResult</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="o">&gt;&gt;</span>
+      <span class="n">SentenceMappings</span><span class="p">;</span>
+<span class="cp">#ifdef WASM_BINDINGS</span>
+  <span class="n">TranslationResult</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">original</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">translation</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">originalText</span><span class="p">(</span><span class="n">original</span><span class="p">),</span> <span class="n">translatedText</span><span class="p">(</span><span class="n">translation</span><span class="p">),</span>
+        <span class="n">sentenceMappings</span><span class="p">()</span> <span class="p">{}</span>
+<span class="cp">#endif</span>
+  <span class="n">TranslationResult</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">original</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">translation</span><span class="p">,</span>
+                    <span class="n">SentenceMappings</span> <span class="o">&amp;</span><span class="n">sentenceMappings</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">originalText</span><span class="p">(</span><span class="n">original</span><span class="p">),</span> <span class="n">translatedText</span><span class="p">(</span><span class="n">translation</span><span class="p">),</span>
+        <span class="n">sentenceMappings</span><span class="p">(</span><span class="n">sentenceMappings</span><span class="p">)</span> <span class="p">{}</span>
+
+  <span class="n">TranslationResult</span><span class="p">(</span><span class="n">TranslationResult</span> <span class="o">&amp;&amp;</span><span class="n">other</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">originalText</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">originalText</span><span class="p">)),</span>
+        <span class="n">translatedText</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">translatedText</span><span class="p">)),</span>
+        <span class="n">sentenceMappings</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">sentenceMappings</span><span class="p">))</span> <span class="p">{}</span>
+
+<span class="cp">#ifdef WASM_BINDINGS</span>
+  <span class="n">TranslationResult</span><span class="p">(</span><span class="k">const</span> <span class="n">TranslationResult</span> <span class="o">&amp;</span><span class="n">other</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">originalText</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">originalText</span><span class="p">),</span>
+        <span class="n">translatedText</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">translatedText</span><span class="p">),</span>
+        <span class="n">sentenceMappings</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">sentenceMappings</span><span class="p">)</span> <span class="p">{}</span>
+<span class="cp">#endif</span>
+
+  <span class="n">TranslationResult</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">original</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">translation</span><span class="p">,</span>
+                    <span class="n">SentenceMappings</span> <span class="o">&amp;&amp;</span><span class="n">sentenceMappings</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">originalText</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">original</span><span class="p">)),</span>
+        <span class="n">translatedText</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">translation</span><span class="p">)),</span>
+        <span class="n">sentenceMappings</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">sentenceMappings</span><span class="p">))</span> <span class="p">{}</span>
+
+<span class="cp">#ifndef WASM_BINDINGS</span>
+  <span class="n">TranslationResult</span> <span class="o">&amp;</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">TranslationResult</span> <span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+<span class="cp">#else</span>
+  <span class="n">TranslationResult</span> <span class="o">&amp;</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">TranslationResult</span> <span class="o">&amp;</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">originalText</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="n">originalText</span><span class="p">;</span>
+    <span class="n">translatedText</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="n">translatedText</span><span class="p">;</span>
+    <span class="n">sentenceMappings</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="n">sentenceMappings</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="cp">#endif</span>
+
+  <span class="cm">/* Return the original text. */</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">getOriginalText</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">originalText</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="cm">/* Return the translated text. */</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">getTranslatedText</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">translatedText</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="cm">/* Return the Quality scores of the translated text. */</span>
+  <span class="k">const</span> <span class="n">QualityScore</span> <span class="o">&amp;</span><span class="n">getQualityScore</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">qualityScore</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="cm">/* Return the Sentence mappings (information regarding how individual</span>
+<span class="cm">   * sentences of originalText map to corresponding translated sentences in</span>
+<span class="cm">   * translatedText).</span>
+<span class="cm">   */</span>
+  <span class="k">const</span> <span class="n">SentenceMappings</span> <span class="o">&amp;</span><span class="n">getSentenceMappings</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">sentenceMappings</span><span class="p">;</span>
+  <span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+  <span class="c1">// Original text (in UTF-8 encoded format) that was supposed to be translated</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">originalText</span><span class="p">;</span>
+
+  <span class="c1">// Translation (in UTF-8 encoded format) of the originalText</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">translatedText</span><span class="p">;</span>
+
+  <span class="c1">// Quality score of the translated text at the granularity specified in</span>
+  <span class="c1">// TranslationRequest. It is an optional result (it will have no information</span>
+  <span class="c1">// if not requested in TranslationRequest)</span>
+  <span class="n">QualityScore</span> <span class="n">qualityScore</span><span class="p">;</span>
+
+  <span class="c1">// Information regarding how individual sentences of originalText map to</span>
+  <span class="c1">// corresponding translated sentences in joined translated text</span>
+  <span class="c1">// (translatedText) An example of sentence mapping:</span>
+  <span class="c1">//     originalText (contains 2 sentences)              = &quot;What is your name?</span>
+  <span class="c1">//     My name is Abc.&quot; translatedText (contains 2 translated sentences) =</span>
+  <span class="c1">//     &quot;Was ist dein Name? Mein Name ist Abc.&quot; sentenceMappings = [</span>
+  <span class="c1">//         {&quot;What is your name?&quot;, &quot;Was ist dein Name?&quot;},  //</span>
+  <span class="c1">//         Pair(originalText[0],translatedText[0])</span>
+  <span class="c1">//         {&quot;My name is Abc&quot;, &quot;Mein Name ist Abc.&quot;}       //</span>
+  <span class="c1">//         Pair(originalText[1],translatedText[1])</span>
+  <span class="c1">//     ]</span>
+  <span class="c1">//</span>
+  <span class="c1">// It is an optional result (it will be empty if not requested in</span>
+  <span class="c1">// TranslationRequest).</span>
+  <span class="n">SentenceMappings</span> <span class="n">sentenceMappings</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* SRC_TRANSLATOR_TRANSLATIONRESULT_H_ */</span><span class="cp"></span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Bergamot Translator Team.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

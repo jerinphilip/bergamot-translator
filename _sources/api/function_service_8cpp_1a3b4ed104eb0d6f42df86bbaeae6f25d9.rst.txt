@@ -1,0 +1,13 @@
+.. _exhale_function_service_8cpp_1a3b4ed104eb0d6f42df86bbaeae6f25d9:
+
+Function loadVocabularies
+=========================
+
+- Defined in :ref:`file_src_translator_service.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: loadVocabularies(marian::Ptr<marian::Options>)

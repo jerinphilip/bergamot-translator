@@ -1,0 +1,62 @@
+
+.. _file_src_AbstractTranslationModel.h:
+
+File AbstractTranslationModel.h
+===============================
+
+|exhale_lsh| :ref:`Parent directory <dir_src>` (``src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/AbstractTranslationModel.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_AbstractTranslationModel.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``TranslationRequest.h`` (:ref:`file_src_TranslationRequest.h`)
+
+- ``TranslationResult.h`` (:ref:`file_src_TranslationResult.h`)
+
+- ``future``
+
+- ``memory``
+
+- ``string``
+
+- ``vector``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_translator_AbstractTranslationModel.cpp`
+
+- :ref:`file_src_translator_TranslationModel.h`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classAbstractTranslationModel`
+

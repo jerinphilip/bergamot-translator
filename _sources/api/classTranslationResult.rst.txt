@@ -1,0 +1,16 @@
+.. _exhale_class_classTranslationResult:
+
+Class TranslationResult
+=======================
+
+- Defined in :ref:`file_src_TranslationResult.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: TranslationResult
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,921 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Library API &mdash; Bergamot Translator v0.0.1 2021-03-24 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+    <link rel="canonical" href="http://jerinphilip.github.io/bergamot-translator/api/library_index.html" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Namespace bergamot" href="namespace_bergamot.html" />
+    <link rel="prev" title="Building marian code for bergamot" href="../marian-integration.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Bergamot Translator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Library API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#full-api">Full API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#namespaces">Namespaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="namespace_bergamot.html">Namespace bergamot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_marian.html">Namespace marian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_marian__bergamot.html">Namespace marian::bergamot</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#classes-and-structs">Classes and Structs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="structmarian_1_1bergamot_1_1MultiFactorPriority.html">Struct MultiFactorPriority</a></li>
+<li class="toctree-l4"><a class="reference internal" href="structmarian_1_1bergamot_1_1UnboundedPage.html">Template Struct UnboundedPage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classAbstractTranslationModel.html">Class AbstractTranslationModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1Batch.html">Class Batch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1Batcher.html">Class Batcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1BatchTranslator.html">Class BatchTranslator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1PCQueue.html">Template Class PCQueue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1Request.html">Class Request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1RequestSentence.html">Class RequestSentence</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1Response.html">Class Response</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1SentenceRanges.html">Class SentenceRanges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1SentenceSplitter.html">Class SentenceSplitter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1Service.html">Class Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1TextProcessor.html">Class TextProcessor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classmarian_1_1bergamot_1_1UnboundedSingleQueue.html">Template Class UnboundedSingleQueue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classQualityScore.html">Class QualityScore</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classTranslationModel.html">Class TranslationModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classTranslationRequest.html">Class TranslationRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classTranslationResult.html">Class TranslationResult</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="enum_QualityScore_8h_1a492cd0d07400e72d8f466530f1e0254c.html">Enum QualityScoreGranularity</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="function_byteArrayExample_8cpp_1a0e89bfd927bdc96eb57207bab9712ffb.html">Function bergamot::getBinaryFile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_byteArrayExample_8cpp_1a33072f18b29b671ed655df11b508d240.html">Function bergamot::getBinaryModelFromConfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_service_8cpp_1a3b4ed104eb0d6f42df86bbaeae6f25d9.html">Function loadVocabularies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_CMakeCCompilerId_8c_1a0ddf1224851353fc92bfbff6f499fa97.html">Function main(int, char *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_CMakeCXXCompilerId_8cpp_1a0ddf1224851353fc92bfbff6f499fa97.html">Function main(int, char *)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_feature__tests_8c_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_feature__tests_8cxx_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_parser_8h_1a9d7a795b4232908367ad7d9348c62455.html">Function marian::bergamot::createConfigParser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_request_8cpp_1a1d3110f726c7c85e0202ac7316b449f9.html">Function marian::bergamot::operator&lt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_parser_8h_1a8c401628cb998e9bb359af3f1cdda152.html">Function marian::bergamot::parseOptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_definitions_8h_1af891fd0c2012708799d694f4705bcda1.html">Template Function marian::bergamot::UNew(Args&amp;&amp;…)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326.html">Template Function marian::bergamot::UNew(UPtr&lt;T&gt;)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_pcqueue_8h_1aa2de1e7c8107873cc8569bac95c8fa02.html">Function marian::bergamot::WaitSemaphore</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#variables">Variables</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="variable_feature__tests_8c_1a1582568e32f689337602a16bf8a5bff0.html">Variable features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="variable_feature__tests_8cxx_1a1582568e32f689337602a16bf8a5bff0.html">Variable features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a59647e99d304ed33b15cb284c27ed391.html">Variable info_arch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a59647e99d304ed33b15cb284c27ed391.html">Variable info_arch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a4b0efeb7a5d59313986b3a0390f050f6.html">Variable info_compiler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a4b0efeb7a5d59313986b3a0390f050f6.html">Variable info_compiler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a1ce162bad2fe6966ac8b33cc19e120b8.html">Variable info_language_dialect_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a1ce162bad2fe6966ac8b33cc19e120b8.html">Variable info_language_dialect_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a2321403dee54ee23f0c2fa849c60f7d4.html">Variable info_platform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a2321403dee54ee23f0c2fa849c60f7d4.html">Variable info_platform</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#defines">Defines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCCompilerId_8c_1aba35d0d200deaeb06aee95ca297acb28.html">Define ARCHITECTURE_ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1aba35d0d200deaeb06aee95ca297acb28.html">Define ARCHITECTURE_ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a07f8e5783674099cd7f5110e22a78cdb.html">Define C_DIALECT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a81dee0709ded976b2e0319239f72d174.html">Define COMPILER_ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a81dee0709ded976b2e0319239f72d174.html">Define COMPILER_ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a34cc889e576a1ae6c84ae9e0a851ba21.html">Define CXX_STD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCCompilerId_8c_1ad1280362da42492bbc11aa78cbf776ad.html">Define DEC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1ad1280362da42492bbc11aa78cbf776ad.html">Define DEC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a46d5d95daa1bef867bd0179594310ed5.html">Define HEX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a46d5d95daa1bef867bd0179594310ed5.html">Define HEX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCCompilerId_8c_1adbc5372f40838899018fadbc89bd588b.html">Define PLATFORM_ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1adbc5372f40838899018fadbc89bd588b.html">Define PLATFORM_ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a43e1cad902b6477bec893cb6430bd6c8.html">Define STRINGIFY</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a43e1cad902b6477bec893cb6430bd6c8.html">Define STRINGIFY</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a2ae9b72bb13abaabfcf2ee0ba7d3fa1d.html">Define STRINGIFY_HELPER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a2ae9b72bb13abaabfcf2ee0ba7d3fa1d.html">Define STRINGIFY_HELPER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_pcqueue_8h_1a41cea4b22d5d60c5b80dcbbabf1f47a6.html">Define UTIL_UNLIKELY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#typedefs">Typedefs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="typedef_request_8h_1afc43a9f148490a4a5be3c8a3348d0a6b.html">Typedef marian::bergamot::RequestSentences</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_definitions_8h_1ad0a7527b1fbf64cfc20eaa76134785ef.html">Typedef marian::bergamot::Segment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_definitions_8h_1a11beb3c0bc803965512b9ccf8c6f23bb.html">Typedef marian::bergamot::Segments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_pcqueue_8h_1aef632f08268676b44935dddd74bf0db5.html">Typedef marian::bergamot::Semaphore</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_definitions_8h_1a1585504382103205288347f667d5bbca.html">Typedef marian::bergamot::SentenceTokenRanges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_definitions_8h_1a0a0cdb717399bd6343aaa052aec6ffab.html">Typedef marian::bergamot::TokenRanges</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bergamot Translator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Library API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/library_index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="library-api">
+<h1>Library API<a class="headerlink" href="#library-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="class-hierarchy">
+<h2>Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this headline">¶</a></h2>
+<ul class="treeView" id="class-treeView">
+  <li>
+    <ul class="collapsibleList">
+      <li>Namespace <a href="namespace_marian.html#namespace-marian">marian</a><ul><li class="lastChild">Namespace <a href="namespace_marian__bergamot.html#namespace-marian-bergamot">marian::bergamot</a><ul><li>Struct <a href="structmarian_1_1bergamot_1_1MultiFactorPriority.html#exhale-struct-structmarian-1-1bergamot-1-1MultiFactorPriority">MultiFactorPriority</a></li><li>Template Struct <a href="structmarian_1_1bergamot_1_1UnboundedPage.html#exhale-struct-structmarian-1-1bergamot-1-1UnboundedPage">UnboundedPage</a></li><li>Class <a href="classmarian_1_1bergamot_1_1Batch.html#exhale-class-classmarian-1-1bergamot-1-1Batch">Batch</a></li><li>Class <a href="classmarian_1_1bergamot_1_1Batcher.html#exhale-class-classmarian-1-1bergamot-1-1Batcher">Batcher</a></li><li>Class <a href="classmarian_1_1bergamot_1_1BatchTranslator.html#exhale-class-classmarian-1-1bergamot-1-1BatchTranslator">BatchTranslator</a></li><li>Template Class <a href="classmarian_1_1bergamot_1_1PCQueue.html#exhale-class-classmarian-1-1bergamot-1-1PCQueue">PCQueue</a></li><li>Class <a href="classmarian_1_1bergamot_1_1Request.html#exhale-class-classmarian-1-1bergamot-1-1Request">Request</a></li><li>Class <a href="classmarian_1_1bergamot_1_1RequestSentence.html#exhale-class-classmarian-1-1bergamot-1-1RequestSentence">RequestSentence</a></li><li>Class <a href="classmarian_1_1bergamot_1_1Response.html#exhale-class-classmarian-1-1bergamot-1-1Response">Response</a></li><li>Class <a href="classmarian_1_1bergamot_1_1SentenceRanges.html#exhale-class-classmarian-1-1bergamot-1-1SentenceRanges">SentenceRanges</a></li><li>Class <a href="classmarian_1_1bergamot_1_1SentenceSplitter.html#exhale-class-classmarian-1-1bergamot-1-1SentenceSplitter">SentenceSplitter</a></li><li>Class <a href="classmarian_1_1bergamot_1_1Service.html#exhale-class-classmarian-1-1bergamot-1-1Service">Service</a></li><li>Class <a href="classmarian_1_1bergamot_1_1TextProcessor.html#exhale-class-classmarian-1-1bergamot-1-1TextProcessor">TextProcessor</a></li><li class="lastChild">Template Class <a href="classmarian_1_1bergamot_1_1UnboundedSingleQueue.html#exhale-class-classmarian-1-1bergamot-1-1UnboundedSingleQueue">UnboundedSingleQueue</a></li></ul></li></ul></li><li>Class <a href="classAbstractTranslationModel.html#exhale-class-classAbstractTranslationModel">AbstractTranslationModel</a></li><li>Class <a href="classQualityScore.html#exhale-class-classQualityScore">QualityScore</a></li><li>Class <a href="classTranslationModel.html#exhale-class-classTranslationModel">TranslationModel</a></li><li>Class <a href="classTranslationRequest.html#exhale-class-classTranslationRequest">TranslationRequest</a></li><li>Class <a href="classTranslationResult.html#exhale-class-classTranslationResult">TranslationResult</a></li><li class="lastChild">Enum <a href="enum_QualityScore_8h_1a492cd0d07400e72d8f466530f1e0254c.html#exhale-enum-QualityScore-8h-1a492cd0d07400e72d8f466530f1e0254c">QualityScoreGranularity</a></li>
+    </ul>
+  </li><!-- only tree view element -->
+</ul><!-- /treeView class-treeView --></div>
+<div class="section" id="file-hierarchy">
+<h2>File Hierarchy<a class="headerlink" href="#file-hierarchy" title="Permalink to this headline">¶</a></h2>
+<ul class="treeView" id="file-treeView">
+  <li>
+    <ul class="collapsibleList">
+      <li class="lastChild">Directory <a href="dir_src.html#dir-src">src</a><ul><li>Directory <a href="dir_src_translator.html#dir-src-translator">translator</a><ul><li>Directory <a href="dir_src_translator_CMakeFiles.html#dir-src-translator-CMakeFiles">CMakeFiles</a><ul><li>Directory <a href="dir_src_translator_CMakeFiles_3.10.2.html#dir-src-translator-CMakeFiles-3.10.2">3.10.2</a><ul><li>Directory <a href="dir_src_translator_CMakeFiles_3.10.2_CompilerIdC.html#dir-src-translator-CMakeFiles-3.10.2-CompilerIdC">CompilerIdC</a><ul><li class="lastChild">File <a href="file_src_translator_CMakeFiles_3.10.2_CompilerIdC_CMakeCCompilerId.c.html#file-src-translator-CMakeFiles-3.10.2-CompilerIdC-CMakeCCompilerId.c">CMakeCCompilerId.c</a></li></ul></li><li class="lastChild">Directory <a href="dir_src_translator_CMakeFiles_3.10.2_CompilerIdCXX.html#dir-src-translator-CMakeFiles-3.10.2-CompilerIdCXX">CompilerIdCXX</a><ul><li class="lastChild">File <a href="file_src_translator_CMakeFiles_3.10.2_CompilerIdCXX_CMakeCXXCompilerId.cpp.html#file-src-translator-CMakeFiles-3.10.2-CompilerIdCXX-CMakeCXXCompilerId.cpp">CMakeCXXCompilerId.cpp</a></li></ul></li></ul></li><li>File <a href="file_src_translator_CMakeFiles_feature_tests.c.html#file-src-translator-CMakeFiles-feature-tests.c">feature_tests.c</a></li><li class="lastChild">File <a href="file_src_translator_CMakeFiles_feature_tests.cxx.html#file-src-translator-CMakeFiles-feature-tests.cxx">feature_tests.cxx</a></li></ul></li><li>File <a href="file_src_translator_AbstractTranslationModel.cpp.html#file-src-translator-AbstractTranslationModel.cpp">AbstractTranslationModel.cpp</a></li><li>File <a href="file_src_translator_batch.cpp.html#file-src-translator-batch.cpp">batch.cpp</a></li><li>File <a href="file_src_translator_batch.h.html#file-src-translator-batch.h">batch.h</a></li><li>File <a href="file_src_translator_batch_translator.cpp.html#file-src-translator-batch-translator.cpp">batch_translator.cpp</a></li><li>File <a href="file_src_translator_batch_translator.h.html#file-src-translator-batch-translator.h">batch_translator.h</a></li><li>File <a href="file_src_translator_batcher.cpp.html#file-src-translator-batcher.cpp">batcher.cpp</a></li><li>File <a href="file_src_translator_batcher.h.html#file-src-translator-batcher.h">batcher.h</a></li><li>File <a href="file_src_translator_byteArrayExample.cpp.html#file-src-translator-byteArrayExample.cpp">byteArrayExample.cpp</a></li><li>File <a href="file_src_translator_byteArrayExample.h.html#file-src-translator-byteArrayExample.h">byteArrayExample.h</a></li><li>File <a href="file_src_translator_definitions.h.html#file-src-translator-definitions.h">definitions.h</a></li><li>File <a href="file_src_translator_multifactor_priority.cpp.html#file-src-translator-multifactor-priority.cpp">multifactor_priority.cpp</a></li><li>File <a href="file_src_translator_multifactor_priority.h.html#file-src-translator-multifactor-priority.h">multifactor_priority.h</a></li><li>File <a href="file_src_translator_parser.h.html#file-src-translator-parser.h">parser.h</a></li><li>File <a href="file_src_translator_pcqueue.h.html#file-src-translator-pcqueue.h">pcqueue.h</a></li><li>File <a href="file_src_translator_request.cpp.html#file-src-translator-request.cpp">request.cpp</a></li><li>File <a href="file_src_translator_request.h.html#file-src-translator-request.h">request.h</a></li><li>File <a href="file_src_translator_response.cpp.html#file-src-translator-response.cpp">response.cpp</a></li><li>File <a href="file_src_translator_response.h.html#file-src-translator-response.h">response.h</a></li><li>File <a href="file_src_translator_sentence_ranges.cpp.html#file-src-translator-sentence-ranges.cpp">sentence_ranges.cpp</a></li><li>File <a href="file_src_translator_sentence_ranges.h.html#file-src-translator-sentence-ranges.h">sentence_ranges.h</a></li><li>File <a href="file_src_translator_sentence_splitter.cpp.html#file-src-translator-sentence-splitter.cpp">sentence_splitter.cpp</a></li><li>File <a href="file_src_translator_sentence_splitter.h.html#file-src-translator-sentence-splitter.h">sentence_splitter.h</a></li><li>File <a href="file_src_translator_service.cpp.html#file-src-translator-service.cpp">service.cpp</a></li><li>File <a href="file_src_translator_service.h.html#file-src-translator-service.h">service.h</a></li><li>File <a href="file_src_translator_text_processor.cpp.html#file-src-translator-text-processor.cpp">text_processor.cpp</a></li><li>File <a href="file_src_translator_text_processor.h.html#file-src-translator-text-processor.h">text_processor.h</a></li><li>File <a href="file_src_translator_TranslationModel.cpp.html#file-src-translator-TranslationModel.cpp">TranslationModel.cpp</a></li><li class="lastChild">File <a href="file_src_translator_TranslationModel.h.html#file-src-translator-TranslationModel.h">TranslationModel.h</a></li></ul></li><li>File <a href="file_src_AbstractTranslationModel.h.html#file-src-AbstractTranslationModel.h">AbstractTranslationModel.h</a></li><li>File <a href="file_src_QualityScore.h.html#file-src-QualityScore.h">QualityScore.h</a></li><li>File <a href="file_src_TranslationRequest.h.html#file-src-TranslationRequest.h">TranslationRequest.h</a></li><li class="lastChild">File <a href="file_src_TranslationResult.h.html#file-src-TranslationResult.h">TranslationResult.h</a></li></ul></li>
+    </ul>
+  </li><!-- only tree view element -->
+</ul><!-- /treeView file-treeView --></div>
+<div class="section" id="full-api">
+<h2>Full API<a class="headerlink" href="#full-api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="namespaces">
+<h3>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="namespace_bergamot.html">Namespace bergamot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="namespace_bergamot.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="namespace_marian.html">Namespace marian</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="namespace_marian.html#namespaces">Namespaces</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="namespace_marian__bergamot.html">Namespace marian::bergamot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="namespace_marian__bergamot.html#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="namespace_marian__bergamot.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="namespace_marian__bergamot.html#typedefs">Typedefs</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="classes-and-structs">
+<h3>Classes and Structs<a class="headerlink" href="#classes-and-structs" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="structmarian_1_1bergamot_1_1MultiFactorPriority.html">Struct MultiFactorPriority</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structmarian_1_1bergamot_1_1MultiFactorPriority.html#struct-documentation">Struct Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="structmarian_1_1bergamot_1_1UnboundedPage.html">Template Struct UnboundedPage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structmarian_1_1bergamot_1_1UnboundedPage.html#struct-documentation">Struct Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classAbstractTranslationModel.html">Class AbstractTranslationModel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classAbstractTranslationModel.html#inheritance-relationships">Inheritance Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="classAbstractTranslationModel.html#derived-type">Derived Type</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="classAbstractTranslationModel.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1Batch.html">Class Batch</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1Batch.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1Batcher.html">Class Batcher</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1Batcher.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1BatchTranslator.html">Class BatchTranslator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1BatchTranslator.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1PCQueue.html">Template Class PCQueue</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1PCQueue.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1Request.html">Class Request</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1Request.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1RequestSentence.html">Class RequestSentence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1RequestSentence.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1Response.html">Class Response</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1Response.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1SentenceRanges.html">Class SentenceRanges</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1SentenceRanges.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1SentenceSplitter.html">Class SentenceSplitter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1SentenceSplitter.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1Service.html">Class Service</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1Service.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1TextProcessor.html">Class TextProcessor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1TextProcessor.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classmarian_1_1bergamot_1_1UnboundedSingleQueue.html">Template Class UnboundedSingleQueue</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classmarian_1_1bergamot_1_1UnboundedSingleQueue.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classQualityScore.html">Class QualityScore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classQualityScore.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classTranslationModel.html">Class TranslationModel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classTranslationModel.html#inheritance-relationships">Inheritance Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="classTranslationModel.html#base-type">Base Type</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="classTranslationModel.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classTranslationRequest.html">Class TranslationRequest</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classTranslationRequest.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classTranslationResult.html">Class TranslationResult</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classTranslationResult.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="enums">
+<h3>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="enum_QualityScore_8h_1a492cd0d07400e72d8f466530f1e0254c.html">Enum QualityScoreGranularity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enum_QualityScore_8h_1a492cd0d07400e72d8f466530f1e0254c.html#enum-documentation">Enum Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_byteArrayExample_8cpp_1a0e89bfd927bdc96eb57207bab9712ffb.html">Function bergamot::getBinaryFile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_byteArrayExample_8cpp_1a0e89bfd927bdc96eb57207bab9712ffb.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_byteArrayExample_8cpp_1a33072f18b29b671ed655df11b508d240.html">Function bergamot::getBinaryModelFromConfig</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_byteArrayExample_8cpp_1a33072f18b29b671ed655df11b508d240.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_service_8cpp_1a3b4ed104eb0d6f42df86bbaeae6f25d9.html">Function loadVocabularies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_service_8cpp_1a3b4ed104eb0d6f42df86bbaeae6f25d9.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_CMakeCCompilerId_8c_1a0ddf1224851353fc92bfbff6f499fa97.html">Function main(int, char *)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_CMakeCCompilerId_8c_1a0ddf1224851353fc92bfbff6f499fa97.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_CMakeCXXCompilerId_8cpp_1a0ddf1224851353fc92bfbff6f499fa97.html">Function main(int, char *)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_CMakeCXXCompilerId_8cpp_1a0ddf1224851353fc92bfbff6f499fa97.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_feature__tests_8c_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_feature__tests_8c_1a3c04138a5bfe5d72780bb7e82a18e627.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_feature__tests_8cxx_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_feature__tests_8cxx_1a3c04138a5bfe5d72780bb7e82a18e627.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_parser_8h_1a9d7a795b4232908367ad7d9348c62455.html">Function marian::bergamot::createConfigParser</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_parser_8h_1a9d7a795b4232908367ad7d9348c62455.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_request_8cpp_1a1d3110f726c7c85e0202ac7316b449f9.html">Function marian::bergamot::operator&lt;</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_request_8cpp_1a1d3110f726c7c85e0202ac7316b449f9.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_parser_8h_1a8c401628cb998e9bb359af3f1cdda152.html">Function marian::bergamot::parseOptions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_parser_8h_1a8c401628cb998e9bb359af3f1cdda152.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_definitions_8h_1af891fd0c2012708799d694f4705bcda1.html">Template Function marian::bergamot::UNew(Args&amp;&amp;…)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_definitions_8h_1af891fd0c2012708799d694f4705bcda1.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326.html">Template Function marian::bergamot::UNew(UPtr&lt;T&gt;)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="function_pcqueue_8h_1aa2de1e7c8107873cc8569bac95c8fa02.html">Function marian::bergamot::WaitSemaphore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_pcqueue_8h_1aa2de1e7c8107873cc8569bac95c8fa02.html#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="variables">
+<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_feature__tests_8c_1a1582568e32f689337602a16bf8a5bff0.html">Variable features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_feature__tests_8c_1a1582568e32f689337602a16bf8a5bff0.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_feature__tests_8cxx_1a1582568e32f689337602a16bf8a5bff0.html">Variable features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_feature__tests_8cxx_1a1582568e32f689337602a16bf8a5bff0.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a59647e99d304ed33b15cb284c27ed391.html">Variable info_arch</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a59647e99d304ed33b15cb284c27ed391.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a59647e99d304ed33b15cb284c27ed391.html">Variable info_arch</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a59647e99d304ed33b15cb284c27ed391.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a4b0efeb7a5d59313986b3a0390f050f6.html">Variable info_compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a4b0efeb7a5d59313986b3a0390f050f6.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a4b0efeb7a5d59313986b3a0390f050f6.html">Variable info_compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a4b0efeb7a5d59313986b3a0390f050f6.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a1ce162bad2fe6966ac8b33cc19e120b8.html">Variable info_language_dialect_default</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a1ce162bad2fe6966ac8b33cc19e120b8.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a1ce162bad2fe6966ac8b33cc19e120b8.html">Variable info_language_dialect_default</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a1ce162bad2fe6966ac8b33cc19e120b8.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a2321403dee54ee23f0c2fa849c60f7d4.html">Variable info_platform</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_CMakeCCompilerId_8c_1a2321403dee54ee23f0c2fa849c60f7d4.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a2321403dee54ee23f0c2fa849c60f7d4.html">Variable info_platform</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable_CMakeCXXCompilerId_8cpp_1a2321403dee54ee23f0c2fa849c60f7d4.html#variable-documentation">Variable Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="defines">
+<h3>Defines<a class="headerlink" href="#defines" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCCompilerId_8c_1aba35d0d200deaeb06aee95ca297acb28.html">Define ARCHITECTURE_ID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCCompilerId_8c_1aba35d0d200deaeb06aee95ca297acb28.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1aba35d0d200deaeb06aee95ca297acb28.html">Define ARCHITECTURE_ID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1aba35d0d200deaeb06aee95ca297acb28.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a07f8e5783674099cd7f5110e22a78cdb.html">Define C_DIALECT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a07f8e5783674099cd7f5110e22a78cdb.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a81dee0709ded976b2e0319239f72d174.html">Define COMPILER_ID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a81dee0709ded976b2e0319239f72d174.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a81dee0709ded976b2e0319239f72d174.html">Define COMPILER_ID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a81dee0709ded976b2e0319239f72d174.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a34cc889e576a1ae6c84ae9e0a851ba21.html">Define CXX_STD</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a34cc889e576a1ae6c84ae9e0a851ba21.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCCompilerId_8c_1ad1280362da42492bbc11aa78cbf776ad.html">Define DEC</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCCompilerId_8c_1ad1280362da42492bbc11aa78cbf776ad.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1ad1280362da42492bbc11aa78cbf776ad.html">Define DEC</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1ad1280362da42492bbc11aa78cbf776ad.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a46d5d95daa1bef867bd0179594310ed5.html">Define HEX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a46d5d95daa1bef867bd0179594310ed5.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a46d5d95daa1bef867bd0179594310ed5.html">Define HEX</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a46d5d95daa1bef867bd0179594310ed5.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCCompilerId_8c_1adbc5372f40838899018fadbc89bd588b.html">Define PLATFORM_ID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCCompilerId_8c_1adbc5372f40838899018fadbc89bd588b.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1adbc5372f40838899018fadbc89bd588b.html">Define PLATFORM_ID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1adbc5372f40838899018fadbc89bd588b.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a43e1cad902b6477bec893cb6430bd6c8.html">Define STRINGIFY</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a43e1cad902b6477bec893cb6430bd6c8.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a43e1cad902b6477bec893cb6430bd6c8.html">Define STRINGIFY</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a43e1cad902b6477bec893cb6430bd6c8.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a2ae9b72bb13abaabfcf2ee0ba7d3fa1d.html">Define STRINGIFY_HELPER</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCCompilerId_8c_1a2ae9b72bb13abaabfcf2ee0ba7d3fa1d.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a2ae9b72bb13abaabfcf2ee0ba7d3fa1d.html">Define STRINGIFY_HELPER</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_CMakeCXXCompilerId_8cpp_1a2ae9b72bb13abaabfcf2ee0ba7d3fa1d.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="define_pcqueue_8h_1a41cea4b22d5d60c5b80dcbbabf1f47a6.html">Define UTIL_UNLIKELY</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_pcqueue_8h_1a41cea4b22d5d60c5b80dcbbabf1f47a6.html#define-documentation">Define Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="typedefs">
+<h3>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_request_8h_1afc43a9f148490a4a5be3c8a3348d0a6b.html">Typedef marian::bergamot::RequestSentences</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_request_8h_1afc43a9f148490a4a5be3c8a3348d0a6b.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_definitions_8h_1ad0a7527b1fbf64cfc20eaa76134785ef.html">Typedef marian::bergamot::Segment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_definitions_8h_1ad0a7527b1fbf64cfc20eaa76134785ef.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_definitions_8h_1a11beb3c0bc803965512b9ccf8c6f23bb.html">Typedef marian::bergamot::Segments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_definitions_8h_1a11beb3c0bc803965512b9ccf8c6f23bb.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_pcqueue_8h_1aef632f08268676b44935dddd74bf0db5.html">Typedef marian::bergamot::Semaphore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_pcqueue_8h_1aef632f08268676b44935dddd74bf0db5.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_definitions_8h_1a1585504382103205288347f667d5bbca.html">Typedef marian::bergamot::SentenceTokenRanges</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_definitions_8h_1a1585504382103205288347f667d5bbca.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_definitions_8h_1a0a0cdb717399bd6343aaa052aec6ffab.html">Typedef marian::bergamot::TokenRanges</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_definitions_8h_1a0a0cdb717399bd6343aaa052aec6ffab.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="namespace_bergamot.html" class="btn btn-neutral float-right" title="Namespace bergamot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../marian-integration.html" class="btn btn-neutral float-left" title="Building marian code for bergamot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Bergamot Translator Team.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

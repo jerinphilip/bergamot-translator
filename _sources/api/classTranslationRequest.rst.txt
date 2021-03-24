@@ -1,0 +1,16 @@
+.. _exhale_class_classTranslationRequest:
+
+Class TranslationRequest
+========================
+
+- Defined in :ref:`file_src_TranslationRequest.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: TranslationRequest
+   :members:
+   :protected-members:
+   :undoc-members:

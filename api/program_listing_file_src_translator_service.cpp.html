@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Program Listing for File service.cpp &mdash; Bergamot Translator v0.0.1 2021-03-24 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+    <link rel="canonical" href="http://jerinphilip.github.io/bergamot-translator/api/program_listing_file_src_translator_service.cpp.html" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Bergamot Translator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bergamot Translator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Program Listing for File service.cpp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/program_listing_file_src_translator_service.cpp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-service-cpp">
+<span id="program-listing-file-src-translator-service-cpp"></span><h1>Program Listing for File service.cpp<a class="headerlink" href="#program-listing-for-file-service-cpp" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_src_translator_service.cpp.html#file-src-translator-service-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/translator/service.cpp</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;service.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;batch.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;definitions.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;utility&gt;</span><span class="cp"></span>
+
+<span class="kr">inline</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span><span class="o">&gt;&gt;</span>
+<span class="n">loadVocabularies</span><span class="p">(</span><span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// @TODO: parallelize vocab loading for faster startup</span>
+  <span class="k">auto</span> <span class="n">vfiles</span> <span class="o">=</span> <span class="n">options</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="s">&quot;vocabs&quot;</span><span class="p">);</span>
+  <span class="c1">// with the current setup, we need at least two vocabs: src and trg</span>
+  <span class="n">ABORT_IF</span><span class="p">(</span><span class="n">vfiles</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;Insufficient number of vocabularies.&quot;</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="n">vocabs</span><span class="p">(</span><span class="n">vfiles</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span> <span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span><span class="o">&gt;&gt;</span> <span class="n">vmap</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">vocabs</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">m</span> <span class="o">=</span>
+        <span class="n">vmap</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="n">vfiles</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span><span class="o">&gt;</span><span class="p">()));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">second</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// new: load the vocab</span>
+      <span class="n">m</span><span class="p">.</span><span class="n">first</span><span class="o">-&gt;</span><span class="n">second</span> <span class="o">=</span> <span class="n">marian</span><span class="o">::</span><span class="n">New</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+      <span class="n">m</span><span class="p">.</span><span class="n">first</span><span class="o">-&gt;</span><span class="n">second</span><span class="o">-&gt;</span><span class="n">load</span><span class="p">(</span><span class="n">vfiles</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="p">}</span>
+    <span class="n">vocabs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span><span class="p">.</span><span class="n">first</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">vocabs</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
+<span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
+
+<span class="n">Service</span><span class="o">::</span><span class="n">Service</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">model_memory</span><span class="p">)</span>
+    <span class="o">:</span> <span class="n">requestId_</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">loadVocabularies</span><span class="p">(</span><span class="n">options</span><span class="p">))),</span>
+      <span class="n">text_processor_</span><span class="p">(</span><span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">),</span> <span class="n">batcher_</span><span class="p">(</span><span class="n">options</span><span class="p">),</span>
+      <span class="n">numWorkers_</span><span class="p">(</span><span class="n">options</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;cpu-threads&quot;</span><span class="p">)),</span> <span class="n">model_memory_</span><span class="p">(</span><span class="n">model_memory</span><span class="p">)</span>
+<span class="cp">#ifndef WASM</span>
+      <span class="c1">// 0 elements in PCQueue is illegal and can lead to failures. Adding a</span>
+      <span class="c1">// guard to have at least one entry allocated. In the single-threaded</span>
+      <span class="c1">// case, while initialized pcqueue_ remains unused.</span>
+      <span class="p">,</span>
+      <span class="n">pcqueue_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">numWorkers_</span><span class="p">))</span>
+<span class="cp">#endif</span>
+<span class="p">{</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">numWorkers_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">build_translators</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="cm">/*numTranslators=*/</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">initialize_blocking_translator</span><span class="p">();</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">build_translators</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">numWorkers_</span><span class="p">);</span>
+    <span class="n">initialize_async_translators</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">build_translators</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">numTranslators</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">translators_</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">numTranslators</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">cpuId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">cpuId</span> <span class="o">&lt;</span> <span class="n">numTranslators</span><span class="p">;</span> <span class="n">cpuId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">marian</span><span class="o">::</span><span class="n">DeviceId</span> <span class="n">deviceId</span><span class="p">(</span><span class="n">cpuId</span><span class="p">,</span> <span class="n">DeviceType</span><span class="o">::</span><span class="n">cpu</span><span class="p">);</span>
+    <span class="n">translators_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">model_memory_</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">initialize_blocking_translator</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">translators_</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">initialize</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">blocking_translate</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Batch</span> <span class="n">batch</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">batcher_</span> <span class="o">&gt;&gt;</span> <span class="n">batch</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="o">&amp;</span><span class="n">translator</span> <span class="o">=</span> <span class="n">translators_</span><span class="p">.</span><span class="n">back</span><span class="p">();</span>
+    <span class="n">translator</span><span class="p">.</span><span class="n">translate</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">#ifndef WASM</span>
+<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">initialize_async_translators</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">workers_</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">numWorkers_</span><span class="p">);</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">cpuId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">cpuId</span> <span class="o">&lt;</span> <span class="n">numWorkers_</span><span class="p">;</span> <span class="n">cpuId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="o">&amp;</span><span class="n">translator</span> <span class="o">=</span> <span class="n">translators_</span><span class="p">[</span><span class="n">cpuId</span><span class="p">];</span>
+    <span class="n">workers_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">([</span><span class="o">&amp;</span><span class="n">translator</span><span class="p">,</span> <span class="k">this</span><span class="p">]</span> <span class="p">{</span>
+      <span class="n">translator</span><span class="p">.</span><span class="n">initialize</span><span class="p">();</span>
+
+      <span class="c1">// Run thread mainloop</span>
+      <span class="n">Batch</span> <span class="n">batch</span><span class="p">;</span>
+      <span class="n">Histories</span> <span class="n">histories</span><span class="p">;</span>
+      <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">pcqueue_</span><span class="p">.</span><span class="n">ConsumeSwap</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">batch</span><span class="p">.</span><span class="n">isPoison</span><span class="p">())</span> <span class="p">{</span>
+          <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="n">translator</span><span class="p">.</span><span class="n">translate</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">async_translate</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Batch</span> <span class="n">batch</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">batcher_</span> <span class="o">&gt;&gt;</span> <span class="n">batch</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">pcqueue_</span><span class="p">.</span><span class="n">ProduceSwap</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">#else  </span><span class="c1">// WASM</span>
+<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">initialize_async_translators</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">ABORT</span><span class="p">(</span><span class="s">&quot;Cannot run in async mode without multithreading.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">async_translate</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">ABORT</span><span class="p">(</span><span class="s">&quot;Cannot run in async mode without multithreading.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cp">#endif </span><span class="c1">// WASM</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Segments</span> <span class="n">segments</span><span class="p">;</span>
+  <span class="n">SentenceRanges</span> <span class="n">sourceRanges</span><span class="p">;</span>
+  <span class="n">text_processor_</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">input</span><span class="p">,</span> <span class="n">segments</span><span class="p">,</span> <span class="n">sourceRanges</span><span class="p">);</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">promise</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">responsePromise</span><span class="p">;</span>
+  <span class="k">auto</span> <span class="n">future</span> <span class="o">=</span> <span class="n">responsePromise</span><span class="p">.</span><span class="n">get_future</span><span class="p">();</span>
+
+  <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span><span class="p">(</span>
+      <span class="n">requestId_</span><span class="o">++</span><span class="p">,</span> <span class="cm">/* lineNumberBegin = */</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">segments</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">sourceRanges</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">responsePromise</span><span class="p">));</span>
+
+  <span class="n">batcher_</span><span class="p">.</span><span class="n">addWholeRequest</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">numWorkers_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">blocking_translate</span><span class="p">();</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">async_translate</span><span class="p">();</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">future</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">Service</span><span class="o">::~</span><span class="n">Service</span><span class="p">()</span> <span class="p">{</span>
+<span class="cp">#ifndef WASM</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">workerId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">workerId</span> <span class="o">&lt;</span> <span class="n">numWorkers_</span><span class="p">;</span> <span class="n">workerId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="n">Batch</span> <span class="n">poison</span> <span class="o">=</span> <span class="n">Batch</span><span class="o">::</span><span class="n">poison</span><span class="p">();</span>
+    <span class="n">pcqueue_</span><span class="p">.</span><span class="n">ProduceSwap</span><span class="p">(</span><span class="n">poison</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">workerId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">workerId</span> <span class="o">&lt;</span> <span class="n">numWorkers_</span><span class="p">;</span> <span class="n">workerId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">workers_</span><span class="p">[</span><span class="n">workerId</span><span class="p">].</span><span class="n">joinable</span><span class="p">())</span> <span class="p">{</span>
+      <span class="n">workers_</span><span class="p">[</span><span class="n">workerId</span><span class="p">].</span><span class="n">join</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="cp">#endif</span>
+<span class="p">}</span>
+
+<span class="p">}</span> <span class="c1">// namespace bergamot</span>
+<span class="p">}</span> <span class="c1">// namespace marian</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Bergamot Translator Team.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
