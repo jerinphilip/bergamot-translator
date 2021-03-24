@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File response.h &mdash; Bergamot Translator v0.0.1 2021-03-24 documentation</title>
+  <title>Program Listing for File response.h &mdash; Bergamot Translator v0.0.0 2021-03-24 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.1
+                v0.0.0
               </div>
             
           
@@ -169,9 +169,10 @@
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef SRC_BERGAMOT_RESPONSE_H_</span>
 <span class="cp">#define SRC_BERGAMOT_RESPONSE_H_</span>
 
-<span class="cp">#include</span> <span class="cpf">&quot;sentence_ranges.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;data/alignment.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;data/types.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;definitions.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;sentence_ranges.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;translator/beam_search.h&quot;</span><span class="cp"></span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;cassert&gt;</span><span class="cp"></span>
@@ -180,86 +181,56 @@
 
 <span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
 <span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
+
+<span class="k">struct</span> <span class="nc">Point</span> <span class="p">{</span>
+  <span class="kt">size_t</span> <span class="n">src</span><span class="p">;</span>
+  <span class="kt">size_t</span> <span class="n">tgt</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">prob</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span> <span class="n">Alignment</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="nc">Quality</span> <span class="p">{</span>
+  <span class="kt">float</span> <span class="n">sequence</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">word</span><span class="p">;</span>
+<span class="p">};</span>
+
 <span class="k">class</span> <span class="nc">Response</span> <span class="p">{</span>
-  <span class="c1">// Response is a marian internal class (not a bergamot-translator class)</span>
-  <span class="c1">// holding source blob of text, vector of TokenRanges corresponding to each</span>
-  <span class="c1">// sentence in the source text blob and histories obtained from translating</span>
-  <span class="c1">// these sentences.</span>
-  <span class="c1">//</span>
-  <span class="c1">// This class provides an API at a higher level in comparison to History to</span>
-  <span class="c1">// access translations and additionally use string_view manipulations to</span>
-  <span class="c1">// recover structure in translation from source-text&#39;s structure known through</span>
-  <span class="c1">// reference string and string_view. As many of these computations are not</span>
-  <span class="c1">// required until invoked, they are computed as required and stored in data</span>
-  <span class="c1">// members where it makes sense to do so (translation,translationTokenRanges).</span>
-  <span class="c1">//</span>
-  <span class="c1">// Examples of such use-cases are:</span>
-  <span class="c1">//    translation()</span>
-  <span class="c1">//    translationInSourceStructure() TODO(@jerinphilip)</span>
-  <span class="c1">//    alignment(idx) TODO(@jerinphilip)</span>
-  <span class="c1">//    sentenceMappings (for bergamot-translator)</span>
 
 <span class="k">public</span><span class="o">:</span>
-  <span class="n">Response</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span> <span class="n">SentenceRanges</span> <span class="o">&amp;&amp;</span><span class="n">sourceRanges</span><span class="p">,</span>
-           <span class="n">Histories</span> <span class="o">&amp;&amp;</span><span class="n">histories</span><span class="p">,</span>
-           <span class="c1">// Required for constructing translation and TokenRanges within</span>
-           <span class="c1">// translation lazily.</span>
+  <span class="n">Response</span><span class="p">(</span><span class="n">AnnotatedBlob</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span> <span class="n">Histories</span> <span class="o">&amp;&amp;</span><span class="n">histories</span><span class="p">,</span>
            <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs</span><span class="p">);</span>
 
   <span class="c1">// Move constructor.</span>
   <span class="n">Response</span><span class="p">(</span><span class="n">Response</span> <span class="o">&amp;&amp;</span><span class="n">other</span><span class="p">)</span>
-      <span class="o">:</span> <span class="n">source_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">source_</span><span class="p">)),</span>
-        <span class="n">translation_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">translation_</span><span class="p">)),</span>
-        <span class="n">sourceRanges_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">sourceRanges_</span><span class="p">)),</span>
-        <span class="n">targetRanges_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">targetRanges_</span><span class="p">)),</span>
-        <span class="n">histories_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">histories_</span><span class="p">)),</span>
-        <span class="n">vocabs_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">vocabs_</span><span class="p">)){};</span>
+      <span class="o">:</span> <span class="n">source</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">source</span><span class="p">)),</span> <span class="n">target</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">target</span><span class="p">)),</span>
+        <span class="n">alignments</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">alignments</span><span class="p">)),</span>
+        <span class="n">qualityScores</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">qualityScores</span><span class="p">)),</span>
+        <span class="n">histories_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">histories_</span><span class="p">)){};</span>
 
-  <span class="c1">// Prevents CopyConstruction and CopyAssignment. sourceRanges_ is constituted</span>
-  <span class="c1">// by string_view and copying invalidates the data member.</span>
+  <span class="c1">// The following copy bans are not stricitly required anymore since Annotation</span>
+  <span class="c1">// is composed of the ByteRange primitive (which was previously string_view</span>
+  <span class="c1">// and required to be bound to string), but makes movement efficient by</span>
+  <span class="c1">// banning these letting compiler complain about copies.</span>
+
   <span class="n">Response</span><span class="p">(</span><span class="k">const</span> <span class="n">Response</span> <span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
   <span class="n">Response</span> <span class="o">&amp;</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Response</span> <span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
 
-  <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">string_view</span><span class="p">,</span> <span class="k">const</span> <span class="n">string_view</span><span class="o">&gt;&gt;</span>
-      <span class="n">SentenceMappings</span><span class="p">;</span>
 
-  <span class="c1">// Moves source sentence into source, translated text into translation.</span>
-  <span class="c1">// Pairs of string_views to corresponding sentences in</span>
-  <span class="c1">// source and translation are loaded into sentenceMappings. These string_views</span>
-  <span class="c1">// reference the new source and translation.</span>
-  <span class="c1">//</span>
-  <span class="c1">// Calling move() invalidates the Response object as ownership is transferred.</span>
-  <span class="c1">// Exists for moving strc</span>
-  <span class="kt">void</span> <span class="nf">move</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">translation</span><span class="p">,</span>
-            <span class="n">SentenceMappings</span> <span class="o">&amp;</span><span class="n">sentenceMappings</span><span class="p">);</span>
+  <span class="k">const</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">source</span><span class="p">.</span><span class="n">numSentences</span><span class="p">();</span> <span class="p">}</span>
+
+  <span class="n">AnnotatedBlob</span> <span class="n">source</span><span class="p">;</span>
+
+  <span class="n">AnnotatedBlob</span> <span class="n">target</span><span class="p">;</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Quality</span><span class="o">&gt;</span> <span class="n">qualityScores</span><span class="p">;</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Alignment</span><span class="o">&gt;</span> <span class="n">alignments</span><span class="p">;</span>
 
   <span class="k">const</span> <span class="n">Histories</span> <span class="o">&amp;</span><span class="n">histories</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">histories_</span><span class="p">;</span> <span class="p">}</span>
-  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">source_</span><span class="p">;</span> <span class="p">}</span>
-  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">translation</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">constructTranslation</span><span class="p">();</span>
-    <span class="k">return</span> <span class="n">translation_</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="c1">// A convenience function provided to return translated text placed within</span>
-  <span class="c1">// source&#39;s structure. This is useful when the source text is a multi-line</span>
-  <span class="c1">// paragraph or string_views extracted from structured text like HTML and it&#39;s</span>
-  <span class="c1">// desirable to place the individual sentences in the locations of the source</span>
-  <span class="c1">// sentences.</span>
-  <span class="c1">// const std::string translationInSourceStructure();</span>
-  <span class="c1">// const PendingAlignmentType alignment(size_t idx);</span>
 
 <span class="k">private</span><span class="o">:</span>
-  <span class="kt">void</span> <span class="n">constructTranslation</span><span class="p">();</span>
-  <span class="kt">void</span> <span class="nf">constructSentenceMappings</span><span class="p">(</span><span class="n">SentenceMappings</span> <span class="o">&amp;</span><span class="p">);</span>
-
-  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">source_</span><span class="p">;</span>
-  <span class="n">SentenceRanges</span> <span class="n">sourceRanges_</span><span class="p">;</span>
   <span class="n">Histories</span> <span class="n">histories_</span><span class="p">;</span>
-
-  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">*</span><span class="n">vocabs_</span><span class="p">;</span>
-  <span class="kt">bool</span> <span class="n">translationConstructed_</span><span class="p">{</span><span class="nb">false</span><span class="p">};</span>
-  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">translation_</span><span class="p">;</span>
-  <span class="n">SentenceRanges</span> <span class="n">targetRanges_</span><span class="p">;</span>
 <span class="p">};</span>
 <span class="p">}</span> <span class="c1">// namespace bergamot</span>
 <span class="p">}</span> <span class="c1">// namespace marian</span>

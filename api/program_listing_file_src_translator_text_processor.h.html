@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File text_processor.h &mdash; Bergamot Translator v0.0.1 2021-03-24 documentation</title>
+  <title>Program Listing for File text_processor.h &mdash; Bergamot Translator v0.0.0 2021-03-24 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.1
+                v0.0.0
               </div>
             
           
@@ -191,8 +191,7 @@
 <span class="k">public</span><span class="o">:</span>
   <span class="k">explicit</span> <span class="n">TextProcessor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs</span><span class="p">,</span> <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span><span class="p">);</span>
 
-  <span class="kt">void</span> <span class="nf">process</span><span class="p">(</span><span class="k">const</span> <span class="n">string_view</span> <span class="o">&amp;</span><span class="n">query</span><span class="p">,</span> <span class="n">Segments</span> <span class="o">&amp;</span><span class="n">segments</span><span class="p">,</span>
-               <span class="n">SentenceRanges</span> <span class="o">&amp;</span><span class="n">sourceRanges</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="nf">process</span><span class="p">(</span><span class="n">AnnotatedBlob</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">,</span> <span class="n">Segments</span> <span class="o">&amp;</span><span class="n">segments</span><span class="p">);</span>
 
 <span class="k">private</span><span class="o">:</span>
   <span class="c1">// Tokenizes an input string, returns Words corresponding. Loads the</span>
@@ -202,7 +201,7 @@
 
   <span class="c1">// Truncate sentence into max_input_size segments.</span>
   <span class="kt">void</span> <span class="nf">truncate</span><span class="p">(</span><span class="n">Segment</span> <span class="o">&amp;</span><span class="n">sentence</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string_view</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">tokenRanges</span><span class="p">,</span>
-                <span class="n">Segments</span> <span class="o">&amp;</span><span class="n">segments</span><span class="p">,</span> <span class="n">SentenceRanges</span> <span class="o">&amp;</span><span class="n">sourceRanges</span><span class="p">);</span>
+                <span class="n">Segments</span> <span class="o">&amp;</span><span class="n">segments</span><span class="p">,</span> <span class="n">AnnotatedBlob</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">);</span>
 
   <span class="c1">// shorthand, used only in truncate()</span>
   <span class="k">const</span> <span class="n">Word</span> <span class="n">sourceEosId</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getEosId</span><span class="p">();</span> <span class="p">}</span>

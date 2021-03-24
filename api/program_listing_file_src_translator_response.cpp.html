@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File response.cpp &mdash; Bergamot Translator v0.0.1 2021-03-24 documentation</title>
+  <title>Program Listing for File response.cpp &mdash; Bergamot Translator v0.0.0 2021-03-24 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.1
+                v0.0.0
               </div>
             
           
@@ -167,51 +167,27 @@
 <span id="program-listing-file-src-translator-response-cpp"></span><h1>Program Listing for File response.cpp<a class="headerlink" href="#program-listing-for-file-response-cpp" title="Permalink to this headline">¶</a></h1>
 <p>↰ <a class="reference internal" href="file_src_translator_response.cpp.html#file-src-translator-response-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/translator/response.cpp</span></code>)</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;response.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;sentence_ranges.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;common/logging.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;data/alignment.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;sentence_ranges.h&quot;</span><span class="cp"></span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;utility&gt;</span><span class="cp"></span>
 
 <span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
 <span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
 
-<span class="n">Response</span><span class="o">::</span><span class="n">Response</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span> <span class="n">SentenceRanges</span> <span class="o">&amp;&amp;</span><span class="n">sourceRanges</span><span class="p">,</span>
-                   <span class="n">Histories</span> <span class="o">&amp;&amp;</span><span class="n">histories</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs</span><span class="p">)</span>
-    <span class="o">:</span> <span class="n">source_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">source</span><span class="p">)),</span> <span class="n">sourceRanges_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">sourceRanges</span><span class="p">)),</span>
-      <span class="n">histories_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">histories</span><span class="p">)),</span> <span class="n">vocabs_</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vocabs</span><span class="p">)</span> <span class="p">{}</span>
-
-<span class="kt">void</span> <span class="n">Response</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">translation</span><span class="p">,</span>
-                    <span class="n">SentenceMappings</span> <span class="o">&amp;</span><span class="n">sentenceMappings</span><span class="p">)</span> <span class="p">{</span>
-
-  <span class="c1">// Construct required stuff first.</span>
-  <span class="n">constructTranslation</span><span class="p">();</span>
-  <span class="n">constructSentenceMappings</span><span class="p">(</span><span class="n">sentenceMappings</span><span class="p">);</span>
-
-  <span class="c1">// Move content out.</span>
-  <span class="n">source</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">source_</span><span class="p">);</span>
-  <span class="n">translation</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">translation_</span><span class="p">);</span>
-
-  <span class="c1">// The above assignment expects source, target be moved.</span>
-  <span class="c1">// which makes the following invalid, hence required to be cleared.</span>
-  <span class="n">sourceRanges_</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
-  <span class="n">targetRanges_</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
-  <span class="n">histories_</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">Response</span><span class="o">::</span><span class="n">constructTranslation</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">translationConstructed_</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-
+<span class="n">Response</span><span class="o">::</span><span class="n">Response</span><span class="p">(</span><span class="n">AnnotatedBlob</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span> <span class="n">Histories</span> <span class="o">&amp;&amp;</span><span class="n">histories</span><span class="p">,</span>
+                   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs</span><span class="p">)</span>
+    <span class="o">:</span> <span class="n">source</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">source</span><span class="p">)),</span> <span class="n">histories_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">histories</span><span class="p">))</span> <span class="p">{</span>
   <span class="c1">// Reserving length at least as much as source_ seems like a reasonable thing</span>
   <span class="c1">// to do to avoid reallocations.</span>
-  <span class="n">translation_</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">source_</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+  <span class="n">target</span><span class="p">.</span><span class="n">blob</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">source</span><span class="p">.</span><span class="n">blob</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
 
   <span class="c1">// In a first step, the decoded units (individual senteneces) are compiled</span>
   <span class="c1">// into a huge string. This is done by computing indices first and appending</span>
   <span class="c1">// to the string as each sentences are decoded.</span>
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="p">,</span> <span class="kt">size_t</span><span class="o">&gt;&gt;</span> <span class="n">translationRanges</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span> <span class="n">sentenceBegins</span><span class="p">;</span>
 
   <span class="kt">size_t</span> <span class="n">offset</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
   <span class="kt">bool</span> <span class="n">first</span><span class="p">{</span><span class="nb">true</span><span class="p">};</span>
@@ -222,44 +198,76 @@
 
     <span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">onebest</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">// Expecting only one result;</span>
     <span class="n">Words</span> <span class="n">words</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
-    <span class="k">auto</span> <span class="n">targetVocab</span> <span class="o">=</span> <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">back</span><span class="p">();</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">decoded</span> <span class="o">=</span> <span class="n">targetVocab</span><span class="o">-&gt;</span><span class="n">decode</span><span class="p">(</span><span class="n">words</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">targetVocab</span> <span class="o">=</span> <span class="n">vocabs</span><span class="p">.</span><span class="n">back</span><span class="p">();</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">decoded</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string_view</span><span class="o">&gt;</span> <span class="n">targetMappings</span><span class="p">;</span>
+    <span class="n">targetVocab</span><span class="o">-&gt;</span><span class="n">decodeWithByteRanges</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">decoded</span><span class="p">,</span> <span class="n">targetMappings</span><span class="p">);</span>
+
     <span class="k">if</span> <span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">first</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">translation_</span> <span class="o">+=</span> <span class="s">&quot; &quot;</span><span class="p">;</span>
+      <span class="n">target</span><span class="p">.</span><span class="n">blob</span> <span class="o">+=</span> <span class="s">&quot; &quot;</span><span class="p">;</span>
       <span class="o">++</span><span class="n">offset</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="n">translation_</span> <span class="o">+=</span> <span class="n">decoded</span><span class="p">;</span>
-    <span class="n">translationRanges</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">decoded</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+    <span class="n">sentenceBegins</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">translationRanges</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+    <span class="n">target</span><span class="p">.</span><span class="n">blob</span> <span class="o">+=</span> <span class="n">decoded</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">decodedStringBeginMarker</span> <span class="o">=</span> <span class="n">targetMappings</span><span class="p">.</span><span class="n">front</span><span class="p">().</span><span class="n">begin</span><span class="p">();</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">sview</span> <span class="p">:</span> <span class="n">targetMappings</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">size_t</span> <span class="n">startIdx</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">sview</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">-</span> <span class="n">decodedStringBeginMarker</span><span class="p">;</span>
+      <span class="n">translationRanges</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">startIdx</span><span class="p">,</span> <span class="n">startIdx</span> <span class="o">+</span> <span class="n">sview</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+    <span class="p">}</span>
+
     <span class="n">offset</span> <span class="o">+=</span> <span class="n">decoded</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+
+    <span class="c1">// Alignments</span>
+    <span class="c1">// TODO(jerinphilip): The following double conversion might not be</span>
+    <span class="c1">// necessary. Hard alignment can directly be exported, but this would mean</span>
+    <span class="c1">// WASM bindings for a structure deep within marian source.</span>
+    <span class="k">auto</span> <span class="n">hyp</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">softAlignment</span> <span class="o">=</span> <span class="n">hyp</span><span class="o">-&gt;</span><span class="n">tracebackAlignment</span><span class="p">();</span>
+    <span class="k">auto</span> <span class="n">hardAlignment</span> <span class="o">=</span> <span class="n">data</span><span class="o">::</span><span class="n">ConvertSoftAlignToHardAlign</span><span class="p">(</span>
+        <span class="n">softAlignment</span><span class="p">,</span> <span class="cm">/*threshold=*/</span><span class="mf">0.2f</span><span class="p">);</span> <span class="c1">// TODO(jerinphilip): Make this a</span>
+                                            <span class="c1">// configurable parameter.</span>
+
+    <span class="n">Alignment</span> <span class="n">unified_alignment</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">p</span> <span class="p">:</span> <span class="n">hardAlignment</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">unified_alignment</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">((</span><span class="n">Point</span><span class="p">){</span><span class="n">p</span><span class="p">.</span><span class="n">srcPos</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">tgtPos</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">prob</span><span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="n">alignments</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">unified_alignment</span><span class="p">));</span>
+
+    <span class="c1">// Quality scores: Sequence level is obtained as normalized path scores.</span>
+    <span class="c1">// Word level using hypothesis traceback. These are most-likely logprobs.</span>
+    <span class="k">auto</span> <span class="n">normalizedPathScore</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">wordQualities</span> <span class="o">=</span> <span class="n">hyp</span><span class="o">-&gt;</span><span class="n">tracebackWordScores</span><span class="p">();</span>
+    <span class="n">wordQualities</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+    <span class="n">qualityScores</span><span class="p">.</span><span class="n">push_back</span><span class="p">((</span><span class="n">Quality</span><span class="p">){</span><span class="n">normalizedPathScore</span><span class="p">,</span> <span class="n">wordQualities</span><span class="p">});</span>
   <span class="p">}</span>
 
-  <span class="c1">// Once the entire string is constructed, there are no further possibility of</span>
-  <span class="c1">// reallocation in the string&#39;s storage, the indices are converted into</span>
-  <span class="c1">// string_views.</span>
+  <span class="c1">// Once we have the indices in translation (which might be resized a few</span>
+  <span class="c1">// times) ready, we can prepare and store the string_view as annotations</span>
+  <span class="c1">// instead. This is accomplished by iterating over available sentences using</span>
+  <span class="c1">// sentenceBegin and using addSentence(...) API from Annotation.</span>
 
-  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">range</span> <span class="p">:</span> <span class="n">translationRanges</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// TODO(@jerinphilip):  Currently considers target tokens as whole text.</span>
-    <span class="c1">// Needs to be further enhanced in marian-dev to extract alignments.</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">sentenceBegins</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string_view</span><span class="o">&gt;</span> <span class="n">targetMappings</span><span class="p">;</span>
+    <span class="kt">size_t</span> <span class="n">begin</span> <span class="o">=</span> <span class="n">sentenceBegins</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+    <span class="kt">size_t</span> <span class="n">safe_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">sentenceBegins</span><span class="p">.</span><span class="n">size</span><span class="p">())</span> <span class="o">?</span> <span class="n">translationRanges</span><span class="p">.</span><span class="n">size</span><span class="p">()</span>
+                                                   <span class="o">:</span> <span class="n">sentenceBegins</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
 
-    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">begin</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">translation_</span><span class="p">[</span><span class="n">range</span><span class="p">.</span><span class="n">first</span><span class="p">];</span>
-    <span class="n">targetMappings</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span> <span class="n">range</span><span class="p">.</span><span class="n">second</span><span class="p">);</span>
-    <span class="n">targetRanges_</span><span class="p">.</span><span class="n">addSentence</span><span class="p">(</span><span class="n">targetMappings</span><span class="p">);</span>
-  <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">begin</span><span class="p">;</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="n">safe_end</span><span class="p">;</span> <span class="n">idx</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">auto</span> <span class="o">&amp;</span><span class="n">p</span> <span class="o">=</span> <span class="n">translationRanges</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span>
+      <span class="kt">size_t</span> <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+      <span class="kt">size_t</span> <span class="n">end_idx</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
 
-  <span class="n">translationConstructed_</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="p">}</span>
+      <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">target</span><span class="p">.</span><span class="n">blob</span><span class="p">[</span><span class="n">begin_idx</span><span class="p">];</span>
+      <span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="n">end_idx</span> <span class="o">-</span> <span class="n">begin_idx</span><span class="p">;</span>
+      <span class="n">targetMappings</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+    <span class="p">}</span>
 
-<span class="kt">void</span> <span class="n">Response</span><span class="o">::</span><span class="n">constructSentenceMappings</span><span class="p">(</span>
-    <span class="n">Response</span><span class="o">::</span><span class="n">SentenceMappings</span> <span class="o">&amp;</span><span class="n">sentenceMappings</span><span class="p">)</span> <span class="p">{</span>
-
-  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sourceRanges_</span><span class="p">.</span><span class="n">numSentences</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">string_view</span> <span class="n">src</span> <span class="o">=</span> <span class="n">sourceRanges_</span><span class="p">.</span><span class="n">sentence</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-    <span class="n">string_view</span> <span class="n">tgt</span> <span class="o">=</span> <span class="n">targetRanges_</span><span class="p">.</span><span class="n">sentence</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-    <span class="n">sentenceMappings</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tgt</span><span class="p">);</span>
+    <span class="n">target</span><span class="p">.</span><span class="n">addSentence</span><span class="p">(</span><span class="n">targetMappings</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 <span class="p">}</span> <span class="c1">// namespace bergamot</span>

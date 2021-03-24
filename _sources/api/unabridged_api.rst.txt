@@ -28,7 +28,27 @@ Classes and Structs
 .. toctree::
    :maxdepth: 5
 
+   structmarian_1_1bergamot_1_1AnnotatedBlob.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   structmarian_1_1bergamot_1_1ByteRange.rst
+
+.. toctree::
+   :maxdepth: 5
+
    structmarian_1_1bergamot_1_1MultiFactorPriority.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   structmarian_1_1bergamot_1_1Point.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   structmarian_1_1bergamot_1_1Quality.rst
 
 .. toctree::
    :maxdepth: 5
@@ -39,6 +59,11 @@ Classes and Structs
    :maxdepth: 5
 
    classAbstractTranslationModel.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   classmarian_1_1bergamot_1_1Annotation.rst
 
 .. toctree::
    :maxdepth: 5
@@ -74,11 +99,6 @@ Classes and Structs
    :maxdepth: 5
 
    classmarian_1_1bergamot_1_1Response.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   classmarian_1_1bergamot_1_1SentenceRanges.rst
 
 .. toctree::
    :maxdepth: 5
@@ -344,6 +364,11 @@ Defines
 Typedefs
 ********
 
+
+.. toctree::
+   :maxdepth: 5
+
+   typedef_response_8h_1a814145c7406e05875734e37f5c0c6dcc.rst
 
 .. toctree::
    :maxdepth: 5

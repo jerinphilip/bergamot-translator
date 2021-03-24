@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File request.h &mdash; Bergamot Translator v0.0.1 2021-03-24 documentation</title>
+  <title>Program Listing for File request.h &mdash; Bergamot Translator v0.0.0 2021-03-24 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.1
+                v0.0.0
               </div>
             
           
@@ -204,9 +204,8 @@
 <span class="k">class</span> <span class="nc">Request</span> <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="n">Request</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">Id</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">lineNumberBegin</span><span class="p">,</span>
-          <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs_</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span>
-          <span class="n">Segments</span> <span class="o">&amp;&amp;</span><span class="n">segments</span><span class="p">,</span> <span class="n">SentenceRanges</span> <span class="o">&amp;&amp;</span><span class="n">sourceTokenRanges</span><span class="p">,</span>
-          <span class="n">std</span><span class="o">::</span><span class="n">promise</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">responsePromise</span><span class="p">);</span>
+          <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs_</span><span class="p">,</span> <span class="n">AnnotatedBlob</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span>
+          <span class="n">Segments</span> <span class="o">&amp;&amp;</span><span class="n">segments</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">promise</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">responsePromise</span><span class="p">);</span>
 
   <span class="c1">// Obtain the count of tokens in the segment correponding to index. Used to</span>
   <span class="c1">// insert sentence from multiple requests into the corresponding size bucket.</span>
@@ -245,9 +244,8 @@
   <span class="c1">// string_views of the text corresponding to these words, pointing to</span>
   <span class="c1">// sequences in source_. histories_ is a buffer which eventually stores the</span>
   <span class="c1">// translations of each segment in the corresponding index.</span>
-  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">source_</span><span class="p">;</span>
+  <span class="n">AnnotatedBlob</span> <span class="n">source_</span><span class="p">;</span>
   <span class="n">Segments</span> <span class="n">segments_</span><span class="p">;</span>
-  <span class="n">SentenceRanges</span> <span class="n">sourceRanges_</span><span class="p">;</span>
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">History</span><span class="o">&gt;&gt;</span> <span class="n">histories_</span><span class="p">;</span>
 
   <span class="c1">// Members above are moved into newly constructed Response on completion</span>

@@ -15,50 +15,77 @@ Program Listing for File sentence_ranges.h
    
    #include "data/types.h"
    #include <cassert>
+   #include <utility>
    #include <vector>
    
    namespace marian {
    namespace bergamot {
    
-   class SentenceRanges {
-     // SentenceRanges stores string_views into a source text, with additional
-     // annotations to mark sentence boundaries.
-     //
-     // Given the availability annotations, this container provides capabilty to
-     // add sentences, and access individual sentences.
+   struct ByteRange {
+     size_t begin_byte_offset;
+     size_t end_byte_offset;
+     const size_t size() const { return end_byte_offset - begin_byte_offset + 1; }
+   };
+   
+   class Annotation {
    public:
-     typedef std::vector<string_view>::iterator WordIterator;
-   
-     void addSentence(std::vector<string_view> &wordRanges);
-     void addSentence(WordIterator begin, WordIterator end);
-   
-     void clear() {
-       flatByteRanges_.clear();
-       sentenceBeginIds_.clear();
-     }
+     Annotation() {}
    
      size_t numSentences() const { return sentenceBeginIds_.size(); }
    
-     // Returns a string_view into the ith sentence.
-     string_view sentence(size_t index) const;
+     size_t numWords(size_t sentenceIdx) const;
+   
+     void addSentence(std::vector<ByteRange> &sentence);
+   
+     ByteRange word(size_t sentenceIdx, size_t wordIdx) const;
+   
+     ByteRange sentence(size_t sentenceIdx) const;
    
    private:
-     // A flat storage for string_views. Can be words or sentences.
-     std::vector<string_view> flatByteRanges_;
+     std::vector<ByteRange> flatByteRanges_;
    
-     // The container grows dynamically with addSentence. size_t marking index is
-     // used to ensure the sentence boundaries stay same while underlying storage
-     // might be changed during reallocation.
      std::vector<size_t> sentenceBeginIds_;
    
-     // Utility function to extract the string starting at firstWord and ending at
-     // lastWord as a single string-view.
-     string_view sentenceBetween(string_view firstWord,
-                                 string_view lastWord) const;
+     std::pair<ByteRange, ByteRange> sentenceTerminals(size_t sentenceIdx) const;
+     std::pair<size_t, size_t> sentenceTerminalIds(size_t sentenceIdx) const;
+   };
+   
+   
+   struct AnnotatedBlob {
+   public:
+     std::string blob;      
+     Annotation annotation; 
+   
+     AnnotatedBlob() {}
+   
+     AnnotatedBlob(std::string &&blob) : blob(std::move(blob)){};
+   
+     AnnotatedBlob(AnnotatedBlob &&annotatedBlob)
+         : blob(std::move(annotatedBlob.blob)),
+           annotation(std::move(annotatedBlob.annotation)) {}
+   
+     const size_t numSentences() const { return annotation.numSentences(); }
+   
+     const size_t numWords(size_t sentenceIdx) const {
+       return annotation.numWords(sentenceIdx);
+     }
+   
+     void addSentence(std::vector<string_view> &wordRanges);
+   
+     void addSentence(std::vector<string_view>::iterator begin,
+                      std::vector<string_view>::iterator end);
+   
+     string_view word(size_t sentenceIdx, size_t wordIdx) const;
+     string_view sentence(size_t sentenceIdx) const;
+   
+     ByteRange wordAsByteRange(size_t sentenceIdx, size_t wordIdx) const;
+     ByteRange sentenceAsByteRange(size_t sentenceIdx) const;
+   
+   private:
+     string_view asStringView(const ByteRange &byteRange) const;
    };
    
    } // namespace bergamot
-   
    } // namespace marian
    
    #endif //  BERGAMOT_SENTENCE_RANGES_H_
