@@ -22,6 +22,8 @@ public:
   bool isPoison() const { return poison_; }
 
   size_t size() const { return sentences_.size(); }
+  const size_t numTokens() { return numTokens_; }
+  const size_t maxLength() { return maxLength_; }
 
   void add(const RequestSentence &sentence);
 
@@ -44,6 +46,7 @@ public:
 private:
   bool poison_{false};
   RequestSentences sentences_;
+  size_t numTokens_{0}, maxLength_{0};
 };
 
 } // namespace bergamot
