@@ -99,6 +99,17 @@ jobs:
           -DUSE_STATIC_LIBS=on \
           -DUSE_WASM_COMPATIBLE_SOURCES=off
 
+    - name: Cache marian-build to avoid recompiles
+      id: cache-marian-build-dummy
+      uses: actions/cache@v2
+      with:
+          path: build/
+          key: ${{ runner.os }}-build
+          restore-keys:
+              cache-marian-build-old
+
+
+
     - name: Compile
       working-directory: build
       run: make -j2
@@ -110,6 +121,14 @@ jobs:
     #   run: make test
     #   # GitHub-hosted VMs do not have GPUs, so can not be run in CUDA builds
     #   if: matrix.gpu == false
+
+    - name: Cache marian-build to avoid recompiles
+      id: cache-marian-build-old
+      uses: actions/cache@v2
+      with:
+          path: build/
+          key: ${{ runner.os }}-build
+      
 
     - name: Print versions
       working-directory: build
