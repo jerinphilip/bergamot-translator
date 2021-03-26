@@ -23,6 +23,16 @@ inline marian::ConfigParser createConfigParser() {
       "--max-length-break", "Bergamot Options",
       "Maximum input tokens to be processed in a single sentence.", 128);
 
+  cp.addOption<bool>("--exhaust-mode", "Bergamot Options",
+                     "Whether to turn exhause mode for batcher on or of. "
+                     "This is used in profiling to generate expected runtime "
+                     "for different (batch-size, sequence-length) variations.",
+                     false);
+
+  cp.addOption<size_t>("--exhaust-mode-samples", "Bergamot Options",
+                       "Number of samples (batches) to generate per "
+                       "(batch-size, sequence-length) entry to profile.",
+                       10);
   return cp;
 }
 

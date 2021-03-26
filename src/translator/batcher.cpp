@@ -6,12 +6,14 @@
 namespace marian {
 namespace bergamot {
 
-Batcher::Batcher(Ptr<Options> options) {
+Batcher::Batcher(Ptr<Options> options) : exhaustConfig_(options) {
   miniBatchWords = options->get<int>("mini-batch-words");
   bucket_.resize(options->get<int>("max-length-break") + 1);
   ABORT_IF(bucket_.size() - 1 > miniBatchWords,
            "Fatal: max-length-break > mini-batch-words  will lead to sentences "
            "longer than what can fit in a batch.");
+
+  // Configure exhaust mode config
 }
 
 void Batcher::addSentenceWithPriority(RequestSentence &sentence) {
@@ -20,7 +22,13 @@ void Batcher::addSentenceWithPriority(RequestSentence &sentence) {
   bucket_[bucket_id].insert(sentence);
 }
 
-bool Batcher::operator>>(Batch &batch) { return cleaveBatch(batch); }
+bool Batcher::operator>>(Batch &batch) {
+  if (exhaustConfig_.active()) {
+    return nextRandomBatch(batch);
+  } else {
+    return cleaveBatch(batch);
+  }
+}
 
 bool Batcher::cleaveBatch(Batch &batch) {
   // For now simply iterates on buckets and converts batches greedily.  This
@@ -48,6 +56,40 @@ bool Batcher::cleaveBatch(Batch &batch) {
 
   bool isValidBatch = batch.size() > 0;
   return isValidBatch;
+}
+
+bool Batcher::nextRandomBatch(Batch &batch) {
+  std::pair<size_t, size_t> batchInfo;
+  while (exhaustConfig_.next(batchInfo)) {
+    // Generate batch
+    size_t B = batchInfo.first;
+    size_t T = batchInfo.second;
+    size_t available = bucket_[T].size();
+    if (available == 0) {
+      /// I can't sample if there is none available.
+      continue;
+    } else {
+      std::queue<size_t> idxs;
+      std::uniform_int_distribution<> dist(0, available - 1);
+      static std::random_device rd;
+      static std::mt19937 gen(rd());
+
+      for (size_t b = 0; b < B; b++) {
+        idxs.push(dist(gen));
+      }
+
+      size_t activeIdx = 0;
+      for (auto &p : bucket_[T]) {
+        if (idxs.front() == activeIdx) {
+          batch.add(p);
+          idxs.pop();
+        }
+        ++activeIdx;
+      }
+      return true;
+    }
+  }
+  return false;
 }
 
 void Batcher::addWholeRequest(Ptr<Request> request) {

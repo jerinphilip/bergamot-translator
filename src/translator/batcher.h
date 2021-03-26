@@ -11,11 +11,55 @@
 #include "pcqueue.h"
 #endif
 
+#include <random>
 #include <set>
+#include <utility>
 #include <vector>
 
 namespace marian {
 namespace bergamot {
+
+class ExhaustModeConfig {
+public:
+  ExhaustModeConfig(Ptr<Options> options)
+      : active_(options->get<size_t>("exhaust-mode")), activeIdx_(0),
+        samples_(options->get<size_t>("exhaust-mode-samples")) {
+    if (active_) {
+      // Offline create entries of (b, t) from mini-batch-words and
+      // max-length-break
+      size_t B = options->get<size_t>("mini-batch-words");
+      size_t T = options->get<size_t>("max-length-break");
+      for (size_t b = 0; b < B; b++) {
+        for (size_t t = 0; t < T; t++) {
+          sampleInfos_.insert(sampleInfos_.end(),
+                              samples_, // samples_ number of (b, t) entries
+                              std::make_pair(b, t));
+        }
+      }
+
+      // Random shuffle to remove patterned access
+      std::random_shuffle(sampleInfos_.begin(), sampleInfos_.end());
+    }
+  }
+
+  bool active() { return active_; }
+  bool next(std::pair<size_t, size_t> &batchEntry) {
+    if (activeIdx_ >= sampleInfos_.size()) {
+      return false;
+    } else {
+      batchEntry = sampleInfos_[activeIdx_];
+      activeIdx_++;
+      return true;
+    }
+  }
+
+private:
+  size_t activeIdx_;
+  size_t samples_;
+  bool active_;
+  std::vector<std::pair<size_t, size_t>> sampleInfos_;
+};
+
 class Batcher {
 public:
   explicit Batcher(Ptr<Options> options);
@@ -32,9 +76,14 @@ private:
   // Loads sentences with sentences compiled from (tentatively) multiple
   // requests optimizing for both padding and priority.
   bool cleaveBatch(Batch &batch);
+  bool nextRandomBatch(Batch &batch);
   size_t miniBatchWords;
   std::vector<std::set<RequestSentence>> bucket_;
   size_t batchNumber_{0};
+
+  /// Exhaust mode to generate exhaustive (b, t) from batches with some
+  /// randomness induced.
+  ExhaustModeConfig exhaustConfig_;
 };
 
 } // namespace bergamot
