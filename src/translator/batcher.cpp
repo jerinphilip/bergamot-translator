@@ -58,34 +58,60 @@ bool Batcher::cleaveBatch(Batch &batch) {
   return isValidBatch;
 }
 
-bool Batcher::nextRandomBatch(Batch &batch) {
+bool Batcher::nextRandomBatch(Batch &batchExt) {
   std::pair<size_t, size_t> batchInfo;
   while (exhaustConfig_.next(batchInfo)) {
     // Generate batch
     size_t B = batchInfo.first;
     size_t T = batchInfo.second;
     size_t available = bucket_[T].size();
-    if (available == 0) {
-      /// I can't sample if there is none available.
-      continue;
-    } else {
-      std::queue<size_t> idxs;
-      std::uniform_int_distribution<> dist(0, available - 1);
+    if (available > 0) {
+      Batch batch;
+      batch.clear();
+      ABORT_IF(batch.size() != 0, "Batch size doesn't seem to be 0");
+
+      std::uniform_int_distribution<size_t> dist(0, available - 1);
       static std::random_device rd;
       static std::mt19937 gen(rd());
 
+      std::vector<size_t> idxs;
       for (size_t b = 0; b < B; b++) {
-        idxs.push(dist(gen));
+        idxs.push_back(dist(gen));
       }
 
-      size_t activeIdx = 0;
-      for (auto &p : bucket_[T]) {
-        if (idxs.front() == activeIdx) {
-          batch.add(p);
-          idxs.pop();
+      // ABORT_IF(idxs.size() * T >= miniBatchWords,
+      //          "Too large a batch detected.");
+
+      std::sort(idxs.begin(), idxs.end());
+
+      size_t sentenceIdx = 0;
+      auto p = bucket_[T].begin();
+
+      for (auto &idx : idxs) {
+        while (sentenceIdx < idx) {
+          ++sentenceIdx;
+          ++p;
+          ABORT_IF(
+              p == bucket_[T].end(),
+              "Somehow we have reached the end of container, this is illegal.");
         }
-        ++activeIdx;
+
+        ABORT_IF(idx >= bucket_[T].size(),
+                 "idx out of bounds. Something's wrong!");
+        ABORT_IF(idx != sentenceIdx, "idx != sentenceIdx. Something's wrong!");
+        ABORT_IF(p->numTokens() > T, "p->numTokens() > T. Something's wrong!");
+        batch.add(*p);
       }
+
+      // LOG(info, "(idxs, T) = ({}, {}), (eB, eT) = ({}, {})", idxs.size(), T,
+      //     batch.size(), batch.maxLength());
+      ABORT_IF(batch.size() != idxs.size(),
+               "Something's off, check above block!");
+      ABORT_IF(batch.maxLength() != T, "Something's off, check above block!");
+
+      batch.log();
+      batchExt = batch;
+
       return true;
     }
   }

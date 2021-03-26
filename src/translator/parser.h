@@ -29,10 +29,16 @@ inline marian::ConfigParser createConfigParser() {
                      "for different (batch-size, sequence-length) variations.",
                      false);
 
-  cp.addOption<size_t>("--exhaust-mode-samples", "Bergamot Options",
-                       "Number of samples (batches) to generate per "
-                       "(batch-size, sequence-length) entry to profile.",
-                       10);
+  cp.addOption<int>("--exhaust-mode-samples", "Bergamot Options",
+                    "Number of samples (batches) to generate per "
+                    "(batch-size, sequence-length) entry to profile.",
+                    10);
+
+  cp.addOption<int>(
+      "--exhaust-mode-slack", "Bergamot Options",
+      "Slack to compute additional ahead of B*T = constant, longer sequences "
+      "take longer, the farther b, t part of the BxT matrix can take forever",
+      10);
   return cp;
 }
 

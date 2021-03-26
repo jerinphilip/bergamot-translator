@@ -22,18 +22,24 @@ namespace bergamot {
 class ExhaustModeConfig {
 public:
   ExhaustModeConfig(Ptr<Options> options)
-      : active_(options->get<size_t>("exhaust-mode")), activeIdx_(0),
-        samples_(options->get<size_t>("exhaust-mode-samples")) {
+      : active_(options->get<bool>("exhaust-mode")), activeIdx_(0),
+        samples_(options->get<int>("exhaust-mode-samples")) {
     if (active_) {
       // Offline create entries of (b, t) from mini-batch-words and
       // max-length-break
-      size_t B = options->get<size_t>("mini-batch-words");
-      size_t T = options->get<size_t>("max-length-break");
-      for (size_t b = 0; b < B; b++) {
-        for (size_t t = 0; t < T; t++) {
+      size_t slack = options->get<int>("exhaust-mode-slack");
+      size_t B = options->get<int>("mini-batch-words");
+      size_t T = options->get<int>("max-length-break");
+      for (size_t b = 1; b < B; b++) {
+        size_t tBound = B / (b + 1);
+        size_t safeTBound = std::min<size_t>(tBound + slack, T);
+        for (size_t t = 1; t < safeTBound; t++) {
           sampleInfos_.insert(sampleInfos_.end(),
                               samples_, // samples_ number of (b, t) entries
                               std::make_pair(b, t));
+          // LOG(info, "b={}, t={}, tBound={}, safeTBound={}", b, t, tBound,
+          //     safeTBound);
+          ABORT_IF(b * t > B, "Too large a batch detected, check code");
         }
       }
 

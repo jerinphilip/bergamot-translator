@@ -40,9 +40,9 @@ void Request::processHistory(size_t index, Ptr<History> history) {
 
   // In case this is last request in, completeRequest is called, which sets the
   // value of the promise.
-  if (--counter_ == 0) {
-    completeRequest();
-  }
+  // if (--counter_ == 0) {
+  //   completeRequest();
+  // }
 }
 
 void Request::completeRequest() {

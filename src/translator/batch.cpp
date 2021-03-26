@@ -12,7 +12,7 @@ void Batch::log() {
 void Batch::add(const RequestSentence &sentence) {
   sentences_.push_back(sentence);
   numTokens_ += sentence.numTokens();
-  maxLength_ = std::max(maxLength_, static_cast<size_t>(sentence.numTokens()));
+  maxLength_ = std::max<size_t>(maxLength_, sentence.numTokens());
 }
 
 void Batch::completeBatch(const Histories &histories) {
