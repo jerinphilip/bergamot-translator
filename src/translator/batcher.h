@@ -21,48 +21,26 @@ namespace bergamot {
 
 class ExhaustModeConfig {
 public:
-  ExhaustModeConfig(Ptr<Options> options)
-      : active_(options->get<bool>("exhaust-mode")), activeIdx_(0),
-        samples_(options->get<int>("exhaust-mode-samples")) {
-    if (active_) {
-      // Offline create entries of (b, t) from mini-batch-words and
-      // max-length-break
-      size_t slack = options->get<int>("exhaust-mode-slack");
-      size_t B = options->get<int>("mini-batch-words");
-      size_t T = options->get<int>("max-length-break");
-      for (size_t b = 1; b < B; b++) {
-        size_t tBound = B / (b + 1);
-        size_t safeTBound = std::min<size_t>(tBound + slack, T);
-        for (size_t t = 1; t < safeTBound; t++) {
-          sampleInfos_.insert(sampleInfos_.end(),
-                              samples_, // samples_ number of (b, t) entries
-                              std::make_pair(b, t));
-          // LOG(info, "b={}, t={}, tBound={}, safeTBound={}", b, t, tBound,
-          //     safeTBound);
-          ABORT_IF(b * t > B, "Too large a batch detected, check code");
-        }
-      }
+  ExhaustModeConfig(Ptr<Options> options);
 
-      // Random shuffle to remove patterned access
-      std::random_shuffle(sampleInfos_.begin(), sampleInfos_.end());
-    }
-  }
-
+  /// Lets outside know if exhaust-mode is active or not.
   bool active() { return active_; }
-  bool next(std::pair<size_t, size_t> &batchEntry) {
-    if (activeIdx_ >= sampleInfos_.size()) {
-      return false;
-    } else {
-      batchEntry = sampleInfos_[activeIdx_];
-      activeIdx_++;
-      return true;
-    }
-  }
+
+  /// Writes (b,t) onto batchEntry for next batch in a streaming mode. Returns
+  /// false if no more batches.
+  bool next(std::pair<size_t, size_t> &batchEntry);
 
 private:
+  /// Marks current activeIdx_ on sampleInfors_, to enable
+  /// next()
   size_t activeIdx_;
-  size_t samples_;
+  size_t samples_; ///< Number of samples_ per (b, t) entry.
+
+  /// Whether active or not.This structure dumbs down to
+  /// no-data, no-op if not active.
   bool active_;
+
+  /// contains (b, t) generated in order and random_shuffle-d after.
   std::vector<std::pair<size_t, size_t>> sampleInfos_;
 };
 
@@ -76,13 +54,21 @@ public:
   void addSentenceWithPriority(RequestSentence &sentence);
   void addWholeRequest(Ptr<Request> request);
 
-  bool operator>>(Batch &batch); // alias for cleaveBatch
+  /// External API to stream batches from Batcher. Returns false when no more
+  /// batches left to be created. Internally redirects to nextRandomBatch or
+  /// cleaveBatch depending on exhaust mode being active or not.
+  bool operator>>(Batch &batch);
 
 private:
   // Loads sentences with sentences compiled from (tentatively) multiple
   // requests optimizing for both padding and priority.
   bool cleaveBatch(Batch &batch);
+
+  /// Special purpose usage to sample random batches controlling batch-size and
+  /// sequence-length to profile time taken for each (batch-size,
+  /// sequence-length) configuration.
   bool nextRandomBatch(Batch &batch);
+
   size_t miniBatchWords;
   std::vector<std::set<RequestSentence>> bucket_;
   size_t batchNumber_{0};
