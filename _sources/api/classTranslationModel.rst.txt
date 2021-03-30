@@ -3,16 +3,7 @@
 Class TranslationModel
 ======================
 
-- Defined in :ref:`file_src_translator_TranslationModel.h`
-
-
-Inheritance Relationships
--------------------------
-
-Base Type
-*********
-
-- ``public AbstractTranslationModel`` (:ref:`exhale_class_classAbstractTranslationModel`)
+- Defined in :ref:`file_src_TranslationModel.h`
 
 
 Class Documentation

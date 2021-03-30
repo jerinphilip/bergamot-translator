@@ -58,11 +58,6 @@ Classes and Structs
 .. toctree::
    :maxdepth: 5
 
-   classAbstractTranslationModel.rst
-
-.. toctree::
-   :maxdepth: 5
-
    classmarian_1_1bergamot_1_1Annotation.rst
 
 .. toctree::

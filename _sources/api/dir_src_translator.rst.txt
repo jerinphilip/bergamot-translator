@@ -20,7 +20,6 @@ Subdirectories
 Files
 -----
 
-- :ref:`file_src_translator_AbstractTranslationModel.cpp`
 - :ref:`file_src_translator_batch.cpp`
 - :ref:`file_src_translator_batch.h`
 - :ref:`file_src_translator_batch_translator.cpp`
@@ -47,6 +46,5 @@ Files
 - :ref:`file_src_translator_text_processor.cpp`
 - :ref:`file_src_translator_text_processor.h`
 - :ref:`file_src_translator_TranslationModel.cpp`
-- :ref:`file_src_translator_TranslationModel.h`
 
 

@@ -45,16 +45,6 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file_src_translator_AbstractTranslationModel.cpp.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_AbstractTranslationModel.h.rst
-
-.. toctree::
-   :maxdepth: 5
-
    file_src_translator_batch.cpp.rst
 
 .. toctree::
@@ -210,7 +200,7 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file_src_translator_TranslationModel.h.rst
+   file_src_TranslationModel.h.rst
 
 .. toctree::
    :maxdepth: 5

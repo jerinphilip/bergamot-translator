@@ -22,9 +22,9 @@ Program Listing for File sentence_ranges.h
    namespace bergamot {
    
    struct ByteRange {
-     size_t begin_byte_offset;
-     size_t end_byte_offset;
-     const size_t size() const { return end_byte_offset - begin_byte_offset + 1; }
+     size_t begin;
+     size_t end;
+     const size_t size() const { return end - begin; }
    };
    
    class Annotation {
@@ -47,6 +47,7 @@ Program Listing for File sentence_ranges.h
      std::vector<size_t> sentenceBeginIds_;
    
      std::pair<ByteRange, ByteRange> sentenceTerminals(size_t sentenceIdx) const;
+   
      std::pair<size_t, size_t> sentenceTerminalIds(size_t sentenceIdx) const;
    };
    
@@ -76,9 +77,11 @@ Program Listing for File sentence_ranges.h
                       std::vector<string_view>::iterator end);
    
      string_view word(size_t sentenceIdx, size_t wordIdx) const;
+   
      string_view sentence(size_t sentenceIdx) const;
    
      ByteRange wordAsByteRange(size_t sentenceIdx, size_t wordIdx) const;
+   
      ByteRange sentenceAsByteRange(size_t sentenceIdx) const;
    
    private:
