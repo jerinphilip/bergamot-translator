@@ -16,22 +16,15 @@
 
 void marian_decoder_minimal(const marian::bergamot::Response &response,
                             marian::Ptr<marian::Options> options) {
-  // We are no longer marian-decoder compatible. Server ideas are on hold.
-  response.source.annotation.log();
-  response.target.annotation.log();
-  size_t sentenceCount = response.size();
-  LOG(info, "Size: {}", sentenceCount);
-  for (size_t sentenceIdx = 0; sentenceIdx < sentenceCount; sentenceIdx++) {
-    marian::string_view sentence = response.target.sentence(sentenceIdx);
-    LOG(info, "sview(size={})", sentence.size());
-    std::string sentenceStr(sentence.begin(), sentence.size());
-    std::cout << sentenceIdx << " "
-              << sentenceStr
-              // << response.target.sentence(sentenceIdx)
-              // << response.source.sentence(sentenceIdx) //
-              << "\n";
+  bool first{true};
+  for (size_t sentenceIdx = 0; sentenceIdx < response.size(); sentenceIdx++) {
+    if (first) {
+      first = false;
+    } else {
+      std::cout << "\n";
+    }
+    std::cout << response.target.sentence(sentenceIdx);
   }
-  std::cout << std::endl;
 }
 
 int main(int argc, char *argv[]) {

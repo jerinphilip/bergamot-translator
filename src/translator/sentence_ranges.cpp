@@ -6,26 +6,15 @@ namespace marian {
 namespace bergamot {
 
 void Annotation::addSentence(std::vector<ByteRange> &sentence) {
-  // Sanity checks, leave always on for dev.
-  if (flatByteRanges_.size() > 0) {
-    ByteRange previous = flatByteRanges_.back();
-    for (auto &wordByteRange : sentence) {
-      ABORT_IF(previous.end > wordByteRange.begin,
-               "Sequences must be inserted in order.");
-      previous = wordByteRange;
-    }
-  }
 
-  if (sentence.size()) {
-    /// Insert only if there is something.
-    size_t size = flatByteRanges_.size();
-    if (sentenceBeginIds_.size() > 0) {
-      ABORT_IF(sentenceBeginIds_.back() > size, "Sizes seem to be illegal!");
-    }
-    sentenceBeginIds_.push_back(size);
-    flatByteRanges_.insert(std::end(flatByteRanges_), std::begin(sentence),
-                           std::end(sentence));
+  /// Insert only if there is something.
+  size_t size = flatByteRanges_.size();
+  if (sentenceBeginIds_.size() > 0) {
+    ABORT_IF(sentenceBeginIds_.back() > size, "Sizes seem to be illegal!");
   }
+  sentenceBeginIds_.push_back(size);
+  flatByteRanges_.insert(std::end(flatByteRanges_), std::begin(sentence),
+                         std::end(sentence));
 }
 
 size_t Annotation::numWords(size_t sentenceIdx) const {
@@ -43,10 +32,10 @@ Annotation::sentenceTerminalIds(size_t sentenceIdx) const {
           ? sentenceBeginIds_[sentenceIdx + 1] - 1
           : flatByteRanges_.size() - 1;
 
-  // Out of bound checks.
-  LOG(info, "State: (eosId: {}, bosId {}, #sentence {}/{}, flatsize {})", eosId,
-      bosId, sentenceIdx, numSentences(), flatByteRanges_.size());
-  ABORT_IF(eosId < bosId, "Even worse sentence nonsense, eosId < bosId");
+  // Only fix the 0 words case.
+  if (eosId - bosId + 1 == 0) {
+    eosId = bosId;
+  }
   return std::make_pair(bosId, eosId);
 }
 
@@ -59,8 +48,6 @@ Annotation::sentenceTerminals(size_t sentenceIdx) const {
 
 ByteRange Annotation::sentence(size_t sentenceIdx) const {
   auto terminals = sentenceTerminals(sentenceIdx);
-  ABORT_IF(terminals.first.begin > terminals.second.end,
-           "Some sentence nonsense");
   return (ByteRange){terminals.first.begin, terminals.second.end};
 }
 
