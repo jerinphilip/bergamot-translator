@@ -21,10 +21,6 @@ Response::Response(AnnotatedText &&source_, Histories &&histories,
   // In a first step, the decoded units (individual senteneces) are compiled
   // into a huge string. This is done by computing indices first and appending
   // to the string as each sentences are decoded.
-  std::vector<std::pair<size_t, size_t>> translationRanges;
-  std::vector<size_t> sentenceBegins;
-
-  size_t offset{0};
   bool first{true};
 
   for (auto &history : histories) {
@@ -39,22 +35,15 @@ Response::Response(AnnotatedText &&source_, Histories &&histories,
     std::vector<string_view> targetMappings;
     targetVocab->decodeWithByteRanges(words, decoded, targetMappings);
 
+    std::string delim = "";
     if (first) {
       first = false;
     } else {
-      target.text += " ";
-      ++offset;
+      delim = " ";
     }
 
-    sentenceBegins.push_back(translationRanges.size());
-    target.text += decoded;
-    auto decodedStringBeginMarker = targetMappings.front().begin();
-    for (auto &sview : targetMappings) {
-      size_t startIdx = offset + sview.begin() - decodedStringBeginMarker;
-      translationRanges.emplace_back(startIdx, startIdx + sview.size());
-    }
-
-    offset += decoded.size();
+    target.appendSentence(delim, decoded, targetMappings);
+    target.log();
 
     // Alignments
     // TODO(jerinphilip): The following double conversion might not be
@@ -80,34 +69,6 @@ Response::Response(AnnotatedText &&source_, Histories &&histories,
     wordQualities.pop_back();
     qualityScores.push_back((Quality){normalizedPathScore, wordQualities});
   }
-
-  // Once we have the indices in translation (which might be resized a few
-  // times) ready, we can prepare and store the string_view as annotations
-  // instead. This is accomplished by iterating over available sentences using
-  // sentenceBegin and using addSentence(...) API from Annotation.
-
-  for (size_t i = 1; i <= sentenceBegins.size(); i++) {
-    std::vector<string_view> targetMappings;
-    size_t begin = sentenceBegins[i - 1];
-    size_t safe_end = (i == sentenceBegins.size()) ? translationRanges.size()
-                                                   : sentenceBegins[i];
-
-    for (size_t idx = begin; idx < safe_end; idx++) {
-      auto &p = translationRanges[idx];
-      size_t begin_idx = p.first;
-      size_t end_idx = p.second;
-
-      const char *data = &(target.text[begin_idx]);
-      ABORT_IF(end_idx < begin_idx, "Illegal String found");
-      // ABORT_IF(end_idx == begin_idx, "Empty String found");
-      size_t size = end_idx - begin_idx;
-      ABORT_IF(size > 100000000, "Big string found");
-      targetMappings.emplace_back(data, size);
-    }
-
-    target.addSentence(targetMappings);
-  }
-  target.log();
 }
 } // namespace bergamot
 } // namespace marian

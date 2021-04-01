@@ -6,10 +6,26 @@ namespace marian {
 namespace bergamot {
 
 void Annotation::addSentence(std::vector<ByteRange> &sentence) {
-  size_t size = flatByteRanges_.size();
-  flatByteRanges_.insert(std::end(flatByteRanges_), std::begin(sentence),
-                         std::end(sentence));
-  sentenceBeginIds_.push_back(size);
+  // Sanity checks, leave always on for dev.
+  if (flatByteRanges_.size() > 0) {
+    ByteRange previous = flatByteRanges_.back();
+    for (auto &wordByteRange : sentence) {
+      ABORT_IF(previous.end > wordByteRange.begin,
+               "Sequences must be inserted in order.");
+      previous = wordByteRange;
+    }
+  }
+
+  if (sentence.size()) {
+    /// Insert only if there is something.
+    size_t size = flatByteRanges_.size();
+    if (sentenceBeginIds_.size() > 0) {
+      ABORT_IF(sentenceBeginIds_.back() > size, "Sizes seem to be illegal!");
+    }
+    sentenceBeginIds_.push_back(size);
+    flatByteRanges_.insert(std::end(flatByteRanges_), std::begin(sentence),
+                           std::end(sentence));
+  }
 }
 
 size_t Annotation::numWords(size_t sentenceIdx) const {
@@ -21,13 +37,15 @@ std::pair<size_t, size_t>
 Annotation::sentenceTerminalIds(size_t sentenceIdx) const {
   size_t bosId, eosId;
   bosId = sentenceBeginIds_[sentenceIdx];
-  eosId = (sentenceIdx + 1) < numSentences()
-              ? sentenceBeginIds_[sentenceIdx + 1] - 1
-              : flatByteRanges_.size() - 1;
+  eosId =
+      (sentenceIdx + 1) < sentenceBeginIds_.size()
+          // ? std::max<size_t>(sentenceBeginIds_[sentenceIdx + 1] - 1, bosId)
+          ? sentenceBeginIds_[sentenceIdx + 1] - 1
+          : flatByteRanges_.size() - 1;
 
   // Out of bound checks.
-  assert(bosId < flatByteRanges_.size());
-  assert(eosId < flatByteRanges_.size());
+  LOG(info, "State: (eosId: {}, bosId {}, #sentence {}/{}, flatsize {})", eosId,
+      bosId, sentenceIdx, numSentences(), flatByteRanges_.size());
   ABORT_IF(eosId < bosId, "Even worse sentence nonsense, eosId < bosId");
   return std::make_pair(bosId, eosId);
 }
