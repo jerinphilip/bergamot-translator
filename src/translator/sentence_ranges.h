@@ -44,6 +44,11 @@ public:
   /// Returns a ByteRange representing sentence corresponding to sentenceIdx.
   ByteRange sentence(size_t sentenceIdx) const;
 
+  void log() const {
+    LOG(info, "Annotation(words: {}, sentences {})", flatByteRanges_.size(),
+        sentenceBeginIds_.size());
+  }
+
 private:
   /// A flat storage for ByteRanges. Composed of word ByteRanges, extra
   /// information in sentenceBeginIds_ to denote sentence boundary markers as
@@ -125,6 +130,7 @@ public:
 
   /// Returns a ByteRange representing sentence corresponding to sentenceIdx.
   ByteRange sentenceAsByteRange(size_t sentenceIdx) const;
+  void log() const { annotation.log(); }
 
 private:
   string_view asStringView(const ByteRange &byteRange) const;

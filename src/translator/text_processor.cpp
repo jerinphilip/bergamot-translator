@@ -45,6 +45,7 @@ void TextProcessor::process(AnnotatedText &source, Segments &segments) {
       truncate(segment, wordRanges, segments, source);
     }
   }
+  source.log();
 }
 
 void TextProcessor::truncate(Segment &segment,

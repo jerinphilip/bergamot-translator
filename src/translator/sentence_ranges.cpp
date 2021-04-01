@@ -21,13 +21,14 @@ std::pair<size_t, size_t>
 Annotation::sentenceTerminalIds(size_t sentenceIdx) const {
   size_t bosId, eosId;
   bosId = sentenceBeginIds_[sentenceIdx];
-  eosId = sentenceIdx + 1 < numSentences()
+  eosId = (sentenceIdx + 1) < numSentences()
               ? sentenceBeginIds_[sentenceIdx + 1] - 1
               : flatByteRanges_.size() - 1;
 
   // Out of bound checks.
   assert(bosId < flatByteRanges_.size());
   assert(eosId < flatByteRanges_.size());
+  ABORT_IF(eosId < bosId, "Even worse sentence nonsense, eosId < bosId");
   return std::make_pair(bosId, eosId);
 }
 
@@ -40,6 +41,8 @@ Annotation::sentenceTerminals(size_t sentenceIdx) const {
 
 ByteRange Annotation::sentence(size_t sentenceIdx) const {
   auto terminals = sentenceTerminals(sentenceIdx);
+  ABORT_IF(terminals.first.begin > terminals.second.end,
+           "Some sentence nonsense");
   return (ByteRange){terminals.first.begin, terminals.second.end};
 }
 
@@ -68,7 +71,8 @@ void AnnotatedText::addSentence(std::vector<string_view>::iterator begin,
                                 std::vector<string_view>::iterator end) {
   std::vector<ByteRange> sentence;
   for (auto p = begin; p != end; p++) {
-    size_t begin_offset = p->data() - &text[0];
+    char *textBegin = &(text[0]);
+    size_t begin_offset = p->data() - textBegin;
     sentence.push_back((ByteRange){begin_offset, begin_offset + p->size()});
   }
   annotation.addSentence(sentence);
@@ -86,6 +90,9 @@ ByteRange AnnotatedText::sentenceAsByteRange(size_t sentenceIdx) const {
 string_view AnnotatedText::asStringView(const ByteRange &byteRange) const {
   const char *data = &text[byteRange.begin];
   size_t size = byteRange.size();
+  ABORT_IF(byteRange.begin >= text.size(), "Begin larger than string found");
+  ABORT_IF(size == 0, "Empty String found");
+  ABORT_IF(size > 100000000, "Big string found");
   return string_view(data, size);
 }
 

@@ -8,11 +8,14 @@
 namespace marian {
 namespace bergamot {
 
-Response::Response(AnnotatedText &&source, Histories &&histories,
+Response::Response(AnnotatedText &&source_, Histories &&histories,
                    std::vector<Ptr<Vocab const>> &vocabs)
-    : source(std::move(source)) {
+    : source(std::move(source_)) {
   // Reserving length at least as much as source_ seems like a reasonable thing
   // to do to avoid reallocations.
+  LOG(info, "Source: {}, Histories: {}", source.numSentences(),
+      histories.size());
+  ABORT_IF(source.numSentences() != histories.size(), "Mismatch in sentences!");
   target.text.reserve(source.text.size());
 
   // In a first step, the decoded units (individual senteneces) are compiled
@@ -94,13 +97,17 @@ Response::Response(AnnotatedText &&source, Histories &&histories,
       size_t begin_idx = p.first;
       size_t end_idx = p.second;
 
-      const char *data = &target.text[begin_idx];
+      const char *data = &(target.text[begin_idx]);
+      ABORT_IF(end_idx < begin_idx, "Illegal String found");
+      // ABORT_IF(end_idx == begin_idx, "Empty String found");
       size_t size = end_idx - begin_idx;
+      ABORT_IF(size > 100000000, "Big string found");
       targetMappings.emplace_back(data, size);
     }
 
     target.addSentence(targetMappings);
   }
+  target.log();
 }
 } // namespace bergamot
 } // namespace marian
