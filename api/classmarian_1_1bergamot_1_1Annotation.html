@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Class Annotation &mdash; Bergamot Translator v0.0.0 2021-03-30 documentation</title>
+  <title>Class Annotation &mdash; Bergamot Translator v0.0.0 2021-04-02 documentation</title>
   
 
   
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Class Batch" href="classmarian_1_1bergamot_1_1Batch.html" />
-    <link rel="prev" title="Template Struct UnboundedPage" href="structmarian_1_1bergamot_1_1UnboundedPage.html" /> 
+    <link rel="prev" title="Template Class AlignedVector" href="classmarian_1_1bergamot_1_1AlignedVector.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -177,8 +177,8 @@
 <dl class="class">
 <dt id="_CPPv4N6marian8bergamot10AnnotationE">
 <span id="_CPPv3N6marian8bergamot10AnnotationE"></span><span id="_CPPv2N6marian8bergamot10AnnotationE"></span><span id="marian::bergamot::Annotation"></span><span class="target" id="classmarian_1_1bergamot_1_1Annotation"></span><em class="property">class </em><code class="sig-name descname">Annotation</code><a class="headerlink" href="#_CPPv4N6marian8bergamot10AnnotationE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>An <a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> is a collection of ByteRanges used to denote ancillary information of sentences and words on a blob of string. </p>
-<p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> is meant for consumption on platforms where string_view creates problems (eg: exports through WASM). See <a class="reference internal" href="structmarian_1_1bergamot_1_1AnnotatedBlob.html#structmarian_1_1bergamot_1_1AnnotatedBlob"><span class="std std-ref">AnnotatedBlob</span></a> for cases where this is a non-issue. </p>
+<dd><p>An <a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> is a collection of ByteRanges used to denote ancillary information of sentences and words on a text of string. </p>
+<p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> is meant for consumption on platforms where string_view creates problems (eg: exports through WASM). See <a class="reference internal" href="structmarian_1_1bergamot_1_1AnnotatedText.html#structmarian_1_1bergamot_1_1AnnotatedText"><span class="std std-ref">AnnotatedText</span></a> for cases where this is a non-issue. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
@@ -191,7 +191,7 @@
 <dl class="function">
 <dt id="_CPPv4NK6marian8bergamot10Annotation12numSentencesEv">
 <span id="_CPPv3NK6marian8bergamot10Annotation12numSentencesEv"></span><span id="_CPPv2NK6marian8bergamot10Annotation12numSentencesEv"></span><span id="marian::bergamot::Annotation::numSentencesC"></span><span class="target" id="classmarian_1_1bergamot_1_1Annotation_1ac360d996cffec0685db23dd7bf27135e"></span>size_t <code class="sig-name descname">numSentences</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK6marian8bergamot10Annotation12numSentencesEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Returns the number of sentences annotated in a blob. </p>
+<dd><p>Returns the number of sentences annotated in a text. </p>
 </dd></dl>
 
 <dl class="function">
@@ -232,7 +232,7 @@
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="classmarian_1_1bergamot_1_1Batch.html" class="btn btn-neutral float-right" title="Class Batch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="structmarian_1_1bergamot_1_1UnboundedPage.html" class="btn btn-neutral float-left" title="Template Struct UnboundedPage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="classmarian_1_1bergamot_1_1AlignedVector.html" class="btn btn-neutral float-left" title="Template Class AlignedVector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

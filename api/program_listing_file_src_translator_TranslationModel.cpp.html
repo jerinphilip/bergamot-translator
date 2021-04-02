@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File TranslationModel.cpp &mdash; Bergamot Translator v0.0.0 2021-03-30 documentation</title>
+  <title>Program Listing for File TranslationModel.cpp &mdash; Bergamot Translator v0.0.0 2021-04-02 documentation</title>
   
 
   
@@ -210,8 +210,8 @@
 
     <span class="c1">// In place construction.</span>
     <span class="n">translationResults</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">marianResponse</span><span class="p">.</span><span class="n">source</span><span class="p">.</span><span class="n">blob</span><span class="p">),</span> <span class="c1">// &amp;&amp;marianResponse.source_</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">marianResponse</span><span class="p">.</span><span class="n">target</span><span class="p">.</span><span class="n">blob</span><span class="p">),</span> <span class="c1">// &amp;&amp;marianResponse.translation_</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">marianResponse</span><span class="p">.</span><span class="n">source</span><span class="p">.</span><span class="n">text</span><span class="p">),</span> <span class="c1">// &amp;&amp;marianResponse.source_</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">marianResponse</span><span class="p">.</span><span class="n">target</span><span class="p">.</span><span class="n">text</span><span class="p">),</span> <span class="c1">// &amp;&amp;marianResponse.translation_</span>
         <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">sentenceMappings</span><span class="p">)</span>            <span class="c1">// &amp;&amp;sentenceMappings</span>
     <span class="p">);</span>
   <span class="p">}</span>

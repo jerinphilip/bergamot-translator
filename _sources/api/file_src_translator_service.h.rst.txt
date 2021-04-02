@@ -41,6 +41,8 @@ Includes
 
 - ``response.h`` (:ref:`file_src_translator_response.h`)
 
+- ``response_builder.h`` (:ref:`file_src_translator_response_builder.h`)
+
 - ``text_processor.h`` (:ref:`file_src_translator_text_processor.h`)
 
 - ``translator/parser.h`` (:ref:`file_src_translator_parser.h`)
@@ -76,4 +78,13 @@ Classes
 
 
 - :ref:`exhale_class_classmarian_1_1bergamot_1_1Service`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_service_8h_1a96b2f9595b9626c7bc5ed8b213904a0c`
+
+- :ref:`exhale_function_service_8h_1a51d72771f3e929113f0280cc545984b4`
 

@@ -39,20 +39,18 @@ Program Listing for File response.h
      std::vector<float> word;
    };
    
-   class Response {
+   struct Response {
    
    public:
-     Response(AnnotatedBlob &&source, Histories &&histories,
-              std::vector<Ptr<Vocab const>> &vocabs);
+     Response(){};
    
      // Move constructor.
      Response(Response &&other)
          : source(std::move(other.source)), target(std::move(other.target)),
            alignments(std::move(other.alignments)),
-           qualityScores(std::move(other.qualityScores)),
-           histories_(std::move(other.histories_)){};
+           qualityScores(std::move(other.qualityScores)){};
    
-     // The following copy bans are not stricitly required anymore since Annotation
+     // The following copy bans are not strictly required anymore since Annotation
      // is composed of the ByteRange primitive (which was previously string_view
      // and required to be bound to string), but makes movement efficient by
      // banning these letting compiler complain about copies.
@@ -63,18 +61,13 @@ Program Listing for File response.h
    
      const size_t size() const { return source.numSentences(); }
    
-     AnnotatedBlob source;
+     AnnotatedText source;
    
-     AnnotatedBlob target;
+     AnnotatedText target;
    
      std::vector<Quality> qualityScores;
    
      std::vector<Alignment> alignments;
-   
-     const Histories &histories() const { return histories_; }
-   
-   private:
-     Histories histories_;
    };
    } // namespace bergamot
    } // namespace marian

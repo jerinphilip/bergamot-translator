@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File batch_translator.h &mdash; Bergamot Translator v0.0.0 2021-03-30 documentation</title>
+  <title>Program Listing for File batch_translator.h &mdash; Bergamot Translator v0.0.0 2021-04-02 documentation</title>
   
 
   
@@ -180,7 +180,7 @@
 <span class="cp">#include</span> <span class="cpf">&quot;translator/history.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;translator/scorers.h&quot;</span><span class="cp"></span>
 
-<span class="cp">#ifndef WASM</span>
+<span class="cp">#ifndef WASM_COMPATIBLE_SOURCE</span>
 <span class="cp">#include</span> <span class="cpf">&quot;pcqueue.h&quot;</span><span class="cp"></span>
 <span class="cp">#endif</span>
 
@@ -195,7 +195,7 @@
 
 <span class="k">public</span><span class="o">:</span>
   <span class="k">explicit</span> <span class="n">BatchTranslator</span><span class="p">(</span><span class="n">DeviceId</span> <span class="k">const</span> <span class="n">device</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs</span><span class="p">,</span>
-                  <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span> <span class="n">model_memory</span><span class="p">);</span>
+                  <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="k">const</span> <span class="n">AlignedMemory</span><span class="o">*</span> <span class="n">modelMemory</span><span class="p">,</span> <span class="k">const</span> <span class="n">AlignedMemory</span><span class="o">*</span> <span class="n">shortlistMemory</span><span class="p">);</span>
 
   <span class="c1">// convenience function for logging. TODO(jerin)</span>
   <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">_identifier</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s">&quot;worker&quot;</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">device_</span><span class="p">.</span><span class="n">no</span><span class="p">);</span> <span class="p">}</span>
@@ -209,7 +209,8 @@
   <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">ExpressionGraph</span><span class="o">&gt;</span> <span class="n">graph_</span><span class="p">;</span>
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Scorer</span><span class="o">&gt;&gt;</span> <span class="n">scorers_</span><span class="p">;</span>
   <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">data</span><span class="o">::</span><span class="n">ShortlistGenerator</span> <span class="k">const</span><span class="o">&gt;</span> <span class="n">slgen_</span><span class="p">;</span>
-  <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span> <span class="n">model_memory_</span><span class="p">;</span>
+  <span class="k">const</span> <span class="n">AlignedMemory</span><span class="o">*</span> <span class="n">modelMemory_</span><span class="p">{</span><span class="k">nullptr</span><span class="p">};</span>
+  <span class="k">const</span> <span class="n">AlignedMemory</span><span class="o">*</span> <span class="n">shortlistMemory_</span><span class="p">{</span><span class="k">nullptr</span><span class="p">};</span>
 <span class="p">};</span>
 
 <span class="p">}</span> <span class="c1">// namespace bergamot</span>

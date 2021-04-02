@@ -29,6 +29,8 @@ Includes
 --------
 
 
+- ``aligned.h`` (:ref:`file_src_translator_aligned.h`)
+
 - ``data/types.h``
 
 - ``data/vocab_base.h``
@@ -50,6 +52,8 @@ Included By
 - :ref:`file_src_translator_batcher.h`
 
 - :ref:`file_src_translator_text_processor.h`
+
+- :ref:`file_src_translator_byte_array_util.h`
 
 - :ref:`file_src_translator_multifactor_priority.h`
 
@@ -83,6 +87,8 @@ Functions
 Typedefs
 --------
 
+
+- :ref:`exhale_typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4`
 
 - :ref:`exhale_typedef_definitions_8h_1ad0a7527b1fbf64cfc20eaa76134785ef`
 

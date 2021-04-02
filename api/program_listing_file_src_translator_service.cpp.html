@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File service.cpp &mdash; Bergamot Translator v0.0.0 2021-03-30 documentation</title>
+  <title>Program Listing for File service.cpp &mdash; Bergamot Translator v0.0.0 2021-04-02 documentation</title>
   
 
   
@@ -196,11 +196,14 @@
 <span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
 <span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
 
-<span class="n">Service</span><span class="o">::</span><span class="n">Service</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">model_memory</span><span class="p">)</span>
+<span class="n">Service</span><span class="o">::</span><span class="n">Service</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="n">AlignedMemory</span> <span class="n">modelMemory</span><span class="p">,</span>
+                 <span class="n">AlignedMemory</span> <span class="n">shortlistMemory</span><span class="p">)</span>
     <span class="o">:</span> <span class="n">requestId_</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">loadVocabularies</span><span class="p">(</span><span class="n">options</span><span class="p">))),</span>
       <span class="n">text_processor_</span><span class="p">(</span><span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">),</span> <span class="n">batcher_</span><span class="p">(</span><span class="n">options</span><span class="p">),</span>
-      <span class="n">numWorkers_</span><span class="p">(</span><span class="n">options</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;cpu-threads&quot;</span><span class="p">)),</span> <span class="n">model_memory_</span><span class="p">(</span><span class="n">model_memory</span><span class="p">)</span>
-<span class="cp">#ifndef WASM</span>
+      <span class="n">numWorkers_</span><span class="p">(</span><span class="n">options</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;cpu-threads&quot;</span><span class="p">)),</span>
+      <span class="n">modelMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">modelMemory</span><span class="p">)),</span>
+      <span class="n">shortlistMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">shortlistMemory</span><span class="p">))</span>
+<span class="cp">#ifndef WASM_COMPATIBLE_SOURCE</span>
       <span class="c1">// 0 elements in PCQueue is illegal and can lead to failures. Adding a</span>
       <span class="c1">// guard to have at least one entry allocated. In the single-threaded</span>
       <span class="c1">// case, while initialized pcqueue_ remains unused.</span>
@@ -222,7 +225,8 @@
   <span class="n">translators_</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">numTranslators</span><span class="p">);</span>
   <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">cpuId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">cpuId</span> <span class="o">&lt;</span> <span class="n">numTranslators</span><span class="p">;</span> <span class="n">cpuId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">marian</span><span class="o">::</span><span class="n">DeviceId</span> <span class="n">deviceId</span><span class="p">(</span><span class="n">cpuId</span><span class="p">,</span> <span class="n">DeviceType</span><span class="o">::</span><span class="n">cpu</span><span class="p">);</span>
-    <span class="n">translators_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">model_memory_</span><span class="p">);</span>
+    <span class="n">translators_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">modelMemory_</span><span class="p">,</span>
+                              <span class="o">&amp;</span><span class="n">shortlistMemory_</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
@@ -238,7 +242,7 @@
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="cp">#ifndef WASM</span>
+<span class="cp">#ifndef WASM_COMPATIBLE_SOURCE</span>
 <span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">initialize_async_translators</span><span class="p">()</span> <span class="p">{</span>
   <span class="n">workers_</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">numWorkers_</span><span class="p">);</span>
 
@@ -268,7 +272,7 @@
     <span class="n">pcqueue_</span><span class="p">.</span><span class="n">ProduceSwap</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">#else  </span><span class="c1">// WASM</span>
+<span class="cp">#else  </span><span class="c1">// WASM_COMPATIBLE_SOURCE</span>
 <span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">initialize_async_translators</span><span class="p">()</span> <span class="p">{</span>
   <span class="n">ABORT</span><span class="p">(</span><span class="s">&quot;Cannot run in async mode without multithreading.&quot;</span><span class="p">);</span>
 <span class="p">}</span>
@@ -276,19 +280,21 @@
 <span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">async_translate</span><span class="p">()</span> <span class="p">{</span>
   <span class="n">ABORT</span><span class="p">(</span><span class="s">&quot;Cannot run in async mode without multithreading.&quot;</span><span class="p">);</span>
 <span class="p">}</span>
-<span class="cp">#endif </span><span class="c1">// WASM</span>
+<span class="cp">#endif </span><span class="c1">// WASM_COMPATIBLE_SOURCE</span>
 
 <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">Segments</span> <span class="n">segments</span><span class="p">;</span>
-  <span class="n">AnnotatedBlob</span> <span class="nf">source</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">));</span>
+  <span class="n">AnnotatedText</span> <span class="nf">source</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">));</span>
   <span class="n">text_processor_</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">segments</span><span class="p">);</span>
 
   <span class="n">std</span><span class="o">::</span><span class="n">promise</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">responsePromise</span><span class="p">;</span>
   <span class="k">auto</span> <span class="n">future</span> <span class="o">=</span> <span class="n">responsePromise</span><span class="p">.</span><span class="n">get_future</span><span class="p">();</span>
 
-  <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span><span class="p">(</span>
-      <span class="n">requestId_</span><span class="o">++</span><span class="p">,</span> <span class="cm">/* lineNumberBegin = */</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">source</span><span class="p">),</span>
-      <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">segments</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">responsePromise</span><span class="p">));</span>
+  <span class="n">RequestParams</span> <span class="n">requestParams</span><span class="p">;</span> <span class="c1">// TODO(jerinphilip): Take this in as argument</span>
+  <span class="n">ResponseBuilder</span> <span class="nf">responseBuilder</span><span class="p">(</span><span class="n">requestParams</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">source</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">,</span>
+                                  <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">responsePromise</span><span class="p">));</span>
+  <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">requestId_</span><span class="o">++</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">segments</span><span class="p">),</span>
+                                      <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">responseBuilder</span><span class="p">));</span>
 
   <span class="n">batcher_</span><span class="p">.</span><span class="n">addWholeRequest</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">numWorkers_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
@@ -300,7 +306,7 @@
 <span class="p">}</span>
 
 <span class="n">Service</span><span class="o">::~</span><span class="n">Service</span><span class="p">()</span> <span class="p">{</span>
-<span class="cp">#ifndef WASM</span>
+<span class="cp">#ifndef WASM_COMPATIBLE_SOURCE</span>
   <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">workerId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">workerId</span> <span class="o">&lt;</span> <span class="n">numWorkers_</span><span class="p">;</span> <span class="n">workerId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 
     <span class="n">Batch</span> <span class="n">poison</span> <span class="o">=</span> <span class="n">Batch</span><span class="o">::</span><span class="n">poison</span><span class="p">();</span>

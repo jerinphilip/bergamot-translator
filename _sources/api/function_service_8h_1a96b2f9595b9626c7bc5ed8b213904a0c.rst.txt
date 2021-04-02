@@ -1,0 +1,13 @@
+.. _exhale_function_service_8h_1a96b2f9595b9626c7bc5ed8b213904a0c:
+
+Function marian::bergamot::hackModel
+====================================
+
+- Defined in :ref:`file_src_translator_service.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::bergamot::hackModel(const void *)

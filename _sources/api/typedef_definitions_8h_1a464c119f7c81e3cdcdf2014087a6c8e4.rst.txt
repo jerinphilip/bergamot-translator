@@ -1,0 +1,13 @@
+.. _exhale_typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4:
+
+Typedef marian::bergamot::AlignedMemory
+=======================================
+
+- Defined in :ref:`file_src_translator_definitions.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: marian::bergamot::AlignedMemory

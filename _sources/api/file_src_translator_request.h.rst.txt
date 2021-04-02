@@ -41,6 +41,8 @@ Includes
 
 - ``response.h`` (:ref:`file_src_translator_response.h`)
 
+- ``response_builder.h`` (:ref:`file_src_translator_response_builder.h`)
+
 - ``sentence_ranges.h`` (:ref:`file_src_translator_sentence_ranges.h`)
 
 - ``translator/beam_search.h``

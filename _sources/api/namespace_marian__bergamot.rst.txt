@@ -17,7 +17,7 @@ Classes
 -------
 
 
-- :ref:`exhale_struct_structmarian_1_1bergamot_1_1AnnotatedBlob`
+- :ref:`exhale_struct_structmarian_1_1bergamot_1_1AnnotatedText`
 
 - :ref:`exhale_struct_structmarian_1_1bergamot_1_1ByteRange`
 
@@ -27,7 +27,11 @@ Classes
 
 - :ref:`exhale_struct_structmarian_1_1bergamot_1_1Quality`
 
+- :ref:`exhale_struct_structmarian_1_1bergamot_1_1Response`
+
 - :ref:`exhale_struct_structmarian_1_1bergamot_1_1UnboundedPage`
+
+- :ref:`exhale_class_classmarian_1_1bergamot_1_1AlignedVector`
 
 - :ref:`exhale_class_classmarian_1_1bergamot_1_1Annotation`
 
@@ -43,7 +47,7 @@ Classes
 
 - :ref:`exhale_class_classmarian_1_1bergamot_1_1RequestSentence`
 
-- :ref:`exhale_class_classmarian_1_1bergamot_1_1Response`
+- :ref:`exhale_class_classmarian_1_1bergamot_1_1ResponseBuilder`
 
 - :ref:`exhale_class_classmarian_1_1bergamot_1_1SentenceSplitter`
 
@@ -60,6 +64,16 @@ Functions
 
 - :ref:`exhale_function_parser_8h_1a9d7a795b4232908367ad7d9348c62455`
 
+- :ref:`exhale_function_byte__array__util_8cpp_1ac17b7705d71079521a1e6db2059ada4f`
+
+- :ref:`exhale_function_byte__array__util_8cpp_1a03d0ea07c0548c3c9d9fa3b45e8eccc6`
+
+- :ref:`exhale_function_service_8h_1a96b2f9595b9626c7bc5ed8b213904a0c`
+
+- :ref:`exhale_function_service_8h_1a51d72771f3e929113f0280cc545984b4`
+
+- :ref:`exhale_function_byte__array__util_8cpp_1a765d72b8a59a480e11ebf649af13e9a9`
+
 - :ref:`exhale_function_request_8cpp_1a1d3110f726c7c85e0202ac7316b449f9`
 
 - :ref:`exhale_function_parser_8h_1a8c401628cb998e9bb359af3f1cdda152`
@@ -74,6 +88,8 @@ Functions
 Typedefs
 --------
 
+
+- :ref:`exhale_typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4`
 
 - :ref:`exhale_typedef_response_8h_1a814145c7406e05875734e37f5c0c6dcc`
 

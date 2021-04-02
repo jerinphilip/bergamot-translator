@@ -31,7 +31,7 @@ Program Listing for File sentence_ranges.h
    public:
      Annotation() {}
    
-     size_t numSentences() const { return sentenceBeginIds_.size(); }
+     size_t numSentences() const { return sentenceEndIds_.size(); }
    
      size_t numWords(size_t sentenceIdx) const;
    
@@ -44,32 +44,32 @@ Program Listing for File sentence_ranges.h
    private:
      std::vector<ByteRange> flatByteRanges_;
    
-     std::vector<size_t> sentenceBeginIds_;
-   
-     std::pair<ByteRange, ByteRange> sentenceTerminals(size_t sentenceIdx) const;
-   
-     std::pair<size_t, size_t> sentenceTerminalIds(size_t sentenceIdx) const;
+     std::vector<size_t> sentenceEndIds_;
    };
    
    
-   struct AnnotatedBlob {
+   struct AnnotatedText {
    public:
-     std::string blob;      
+     std::string text;      
      Annotation annotation; 
    
-     AnnotatedBlob() {}
+     AnnotatedText() {}
    
-     AnnotatedBlob(std::string &&blob) : blob(std::move(blob)){};
+     AnnotatedText(std::string &&text) : text(std::move(text)){};
    
-     AnnotatedBlob(AnnotatedBlob &&annotatedBlob)
-         : blob(std::move(annotatedBlob.blob)),
-           annotation(std::move(annotatedBlob.annotation)) {}
+     // @jerinphilip: We will try the default move constructor for now.
+     // AnnotatedText(AnnotatedText &&annotatedBlob)
+     //     : text(std::move(annotatedBlob.text)),
+     //       annotation(std::move(annotatedBlob.annotation)) {}
    
      const size_t numSentences() const { return annotation.numSentences(); }
    
      const size_t numWords(size_t sentenceIdx) const {
        return annotation.numWords(sentenceIdx);
      }
+   
+     void appendSentence(std::string prefix, std::string &reference,
+                         std::vector<string_view> &wordRanges);
    
      void addSentence(std::vector<string_view> &wordRanges);
    

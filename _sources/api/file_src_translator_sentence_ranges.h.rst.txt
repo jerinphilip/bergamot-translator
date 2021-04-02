@@ -73,7 +73,7 @@ Classes
 -------
 
 
-- :ref:`exhale_struct_structmarian_1_1bergamot_1_1AnnotatedBlob`
+- :ref:`exhale_struct_structmarian_1_1bergamot_1_1AnnotatedText`
 
 - :ref:`exhale_struct_structmarian_1_1bergamot_1_1ByteRange`
 

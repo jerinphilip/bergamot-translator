@@ -1,0 +1,13 @@
+.. _exhale_function_service_8h_1a51d72771f3e929113f0280cc545984b4:
+
+Function marian::bergamot::hackShortLis
+=======================================
+
+- Defined in :ref:`file_src_translator_service.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::bergamot::hackShortLis(const void *)

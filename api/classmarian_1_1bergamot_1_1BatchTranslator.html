@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Class BatchTranslator &mdash; Bergamot Translator v0.0.0 2021-03-30 documentation</title>
+  <title>Class BatchTranslator &mdash; Bergamot Translator v0.0.0 2021-04-02 documentation</title>
   
 
   
@@ -180,15 +180,16 @@
 <dd><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
-<dt id="_CPPv4N6marian8bergamot15BatchTranslator15BatchTranslatorEK8DeviceIdRNSt6vectorI3PtrIK5VocabEEE3PtrI7OptionsEPKv">
-<span id="_CPPv3N6marian8bergamot15BatchTranslator15BatchTranslatorEK8DeviceIdRNSt6vectorI3PtrIK5VocabEEE3PtrI7OptionsEPKv"></span><span id="_CPPv2N6marian8bergamot15BatchTranslator15BatchTranslatorEK8DeviceIdRNSt6vectorI3PtrIK5VocabEEE3PtrI7OptionsEPKv"></span><span id="marian::bergamot::BatchTranslator::BatchTranslator__DeviceIdC.std::vector:Ptr:VocabC::R.Ptr:Options:.voidCP"></span><span class="target" id="classmarian_1_1bergamot_1_1BatchTranslator_1a01d7eae53c063d6ecfafdea3b727e9c7"></span><code class="sig-name descname">BatchTranslator</code><span class="sig-paren">(</span>DeviceId <em class="property">const</em> <em>device</em>, std::vector&lt;Ptr&lt;Vocab <em class="property">const</em>&gt;&gt; &amp;<em>vocabs</em>, Ptr&lt;Options&gt; <em>options</em>, <em class="property">const</em> void *<em>model_memory</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot15BatchTranslator15BatchTranslatorEK8DeviceIdRNSt6vectorI3PtrIK5VocabEEE3PtrI7OptionsEPKv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N6marian8bergamot15BatchTranslator15BatchTranslatorEK8DeviceIdRNSt6vectorI3PtrIK5VocabEEE3PtrI7OptionsEPK13AlignedMemoryPK13AlignedMemory">
+<span id="_CPPv3N6marian8bergamot15BatchTranslator15BatchTranslatorEK8DeviceIdRNSt6vectorI3PtrIK5VocabEEE3PtrI7OptionsEPK13AlignedMemoryPK13AlignedMemory"></span><span id="_CPPv2N6marian8bergamot15BatchTranslator15BatchTranslatorEK8DeviceIdRNSt6vectorI3PtrIK5VocabEEE3PtrI7OptionsEPK13AlignedMemoryPK13AlignedMemory"></span><span id="marian::bergamot::BatchTranslator::BatchTranslator__DeviceIdC.std::vector:Ptr:VocabC::R.Ptr:Options:.AlignedMemoryCP.AlignedMemoryCP"></span><span class="target" id="classmarian_1_1bergamot_1_1BatchTranslator_1a314e34b9e368c203f0dae8a1eabdefda"></span><code class="sig-name descname">BatchTranslator</code><span class="sig-paren">(</span>DeviceId <em class="property">const</em> <em>device</em>, std::vector&lt;Ptr&lt;Vocab <em class="property">const</em>&gt;&gt; &amp;<em>vocabs</em>, Ptr&lt;Options&gt; <em>options</em>, <em class="property">const</em> <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a> *<em>modelMemory</em>, <em class="property">const</em> <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a> *<em>shortlistMemory</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot15BatchTranslator15BatchTranslatorEK8DeviceIdRNSt6vectorI3PtrIK5VocabEEE3PtrI7OptionsEPK13AlignedMemoryPK13AlignedMemory" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initialise the marian translator. </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: DeviceId that performs translation. Could be CPU or GPU </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">vocabs</span></code>: Vector that contains ptrs to two vocabs </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">options</span></code>: Marian options object </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">model_memory</span></code>: byte array (aligned to 64!!!) that contains the bytes of a model.bin. Provide a nullptr if not used. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">modelMemory</span></code>: byte array (aligned to 256!!!) that contains the bytes of a model.bin. Provide a nullptr if not used. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shortlistMemory</span></code>: byte array of shortlist (aligned to 64) </p></li>
 </ul>
 </dd>
 </dl>

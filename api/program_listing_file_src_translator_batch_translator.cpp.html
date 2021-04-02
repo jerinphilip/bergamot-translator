@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File batch_translator.cpp &mdash; Bergamot Translator v0.0.0 2021-03-30 documentation</title>
+  <title>Program Listing for File batch_translator.cpp &mdash; Bergamot Translator v0.0.0 2021-04-02 documentation</title>
   
 
   
@@ -179,17 +179,29 @@
 <span class="n">BatchTranslator</span><span class="o">::</span><span class="n">BatchTranslator</span><span class="p">(</span><span class="n">DeviceId</span> <span class="k">const</span> <span class="n">device</span><span class="p">,</span>
                                  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs</span><span class="p">,</span>
                                  <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span>
-                                 <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span> <span class="n">model_memory</span><span class="p">)</span>
-    <span class="o">:</span> <span class="n">device_</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">options_</span><span class="p">(</span><span class="n">options</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vocabs</span><span class="p">),</span> <span class="n">model_memory_</span><span class="p">(</span><span class="n">model_memory</span><span class="p">)</span> <span class="p">{}</span>
+                                 <span class="k">const</span> <span class="n">AlignedMemory</span><span class="o">*</span> <span class="n">modelMemory</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">AlignedMemory</span><span class="o">*</span> <span class="n">shortlistMemory</span><span class="p">)</span>
+    <span class="o">:</span> <span class="n">device_</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">options_</span><span class="p">(</span><span class="n">options</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vocabs</span><span class="p">),</span>
+    <span class="n">modelMemory_</span><span class="p">(</span><span class="n">modelMemory</span><span class="p">),</span> <span class="n">shortlistMemory_</span><span class="p">(</span><span class="n">shortlistMemory</span><span class="p">)</span> <span class="p">{}</span>
 
 <span class="kt">void</span> <span class="n">BatchTranslator</span><span class="o">::</span><span class="n">initialize</span><span class="p">()</span> <span class="p">{</span>
   <span class="c1">// Initializes the graph.</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">options_</span><span class="o">-&gt;</span><span class="n">hasAndNotEmpty</span><span class="p">(</span><span class="s">&quot;shortlist&quot;</span><span class="p">))</span> <span class="p">{</span>
     <span class="kt">int</span> <span class="n">srcIdx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">trgIdx</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
     <span class="kt">bool</span> <span class="n">shared_vcb</span> <span class="o">=</span> <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">()</span> <span class="o">==</span> <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">back</span><span class="p">();</span>
-    <span class="n">slgen_</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">data</span><span class="o">::</span><span class="n">LexicalShortlistGenerator</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options_</span><span class="p">,</span> <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">(),</span>
-                                                  <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">back</span><span class="p">(),</span> <span class="n">srcIdx</span><span class="p">,</span>
-                                                  <span class="n">trgIdx</span><span class="p">,</span> <span class="n">shared_vcb</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">shortlistMemory_</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">shortlistMemory_</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">()</span> <span class="o">!=</span> <span class="k">nullptr</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">bool</span> <span class="n">check</span> <span class="o">=</span> <span class="n">options_</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;check-bytearray&quot;</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+      <span class="n">slgen_</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">data</span><span class="o">::</span><span class="n">BinaryShortlistGenerator</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shortlistMemory_</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shortlistMemory_</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span>
+                                                     <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">(),</span> <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">back</span><span class="p">(),</span>
+                                                     <span class="n">srcIdx</span><span class="p">,</span> <span class="n">trgIdx</span><span class="p">,</span> <span class="n">shared_vcb</span><span class="p">,</span> <span class="n">check</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="c1">// Changed to BinaryShortlistGenerator to enable loading binary shortlist file</span>
+      <span class="c1">// This class also supports text shortlist file</span>
+      <span class="n">slgen_</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">data</span><span class="o">::</span><span class="n">BinaryShortlistGenerator</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options_</span><span class="p">,</span> <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">(),</span>
+                                                    <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">back</span><span class="p">(),</span> <span class="n">srcIdx</span><span class="p">,</span>
+                                                    <span class="n">trgIdx</span><span class="p">,</span> <span class="n">shared_vcb</span><span class="p">);</span>
+    <span class="p">}</span>
   <span class="p">}</span>
 
   <span class="n">graph_</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">ExpressionGraph</span><span class="o">&gt;</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span> <span class="c1">// always optimize</span>
@@ -198,12 +210,10 @@
   <span class="n">graph_</span><span class="o">-&gt;</span><span class="n">setDevice</span><span class="p">(</span><span class="n">device_</span><span class="p">);</span>
   <span class="n">graph_</span><span class="o">-&gt;</span><span class="n">getBackend</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">configureDevice</span><span class="p">(</span><span class="n">options_</span><span class="p">);</span>
   <span class="n">graph_</span><span class="o">-&gt;</span><span class="n">reserveWorkspaceMB</span><span class="p">(</span><span class="n">options_</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;workspace&quot;</span><span class="p">));</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">model_memory_</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// If we have provided a byte array that contains the model memory, we can initialise the model from there, as opposed to from reading in the config file</span>
-    <span class="k">if</span> <span class="p">((</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">model_memory_</span> <span class="o">%</span> <span class="mi">256</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;The provided memory is not aligned to 256 bytes and will crash when vector instructions are used on it.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-      <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*&gt;</span> <span class="n">container</span> <span class="o">=</span> <span class="p">{</span><span class="n">model_memory_</span><span class="p">};</span> <span class="c1">// Marian supports multiple models initialised in this manner hence std::vector. However we will only ever use 1 during decoding.</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">modelMemory_</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">modelMemory_</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">()</span> <span class="o">!=</span> <span class="k">nullptr</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// If we have provided a byte array that contains the model memory, we can initialise the model from there, as opposed to from reading in the config file</span>
+    <span class="n">ABORT_IF</span><span class="p">((</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">modelMemory_</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">()</span> <span class="o">%</span> <span class="mi">256</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="s">&quot;The provided memory is not aligned to 256 bytes and will crash when vector instructions are used on it.&quot;</span><span class="p">);</span>
+    <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*&gt;</span> <span class="n">container</span> <span class="o">=</span> <span class="p">{</span><span class="n">modelMemory_</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">()};</span> <span class="c1">// Marian supports multiple models initialised in this manner hence std::vector. However we will only ever use 1 during decoding.</span>
     <span class="n">scorers_</span> <span class="o">=</span> <span class="n">createScorers</span><span class="p">(</span><span class="n">options_</span><span class="p">,</span> <span class="n">container</span><span class="p">);</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="n">scorers_</span> <span class="o">=</span> <span class="n">createScorers</span><span class="p">(</span><span class="n">options_</span><span class="p">);</span>
@@ -221,11 +231,14 @@
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">data</span><span class="o">::</span><span class="n">SentenceTuple</span><span class="o">&gt;</span> <span class="n">batchVector</span><span class="p">;</span>
 
   <span class="k">auto</span> <span class="o">&amp;</span><span class="n">sentences</span> <span class="o">=</span> <span class="n">batch</span><span class="p">.</span><span class="n">sentences</span><span class="p">();</span>
+  <span class="kt">size_t</span> <span class="n">batchSequenceNumber</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
   <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">sentence</span> <span class="p">:</span> <span class="n">sentences</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">data</span><span class="o">::</span><span class="n">SentenceTuple</span> <span class="n">sentence_tuple</span><span class="p">(</span><span class="n">sentence</span><span class="p">.</span><span class="n">lineNumber</span><span class="p">());</span>
+    <span class="n">data</span><span class="o">::</span><span class="n">SentenceTuple</span> <span class="n">sentence_tuple</span><span class="p">(</span><span class="n">batchSequenceNumber</span><span class="p">);</span>
     <span class="n">Segment</span> <span class="n">segment</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">.</span><span class="n">getUnderlyingSegment</span><span class="p">();</span>
     <span class="n">sentence_tuple</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">segment</span><span class="p">);</span>
     <span class="n">batchVector</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">sentence_tuple</span><span class="p">);</span>
+
+    <span class="o">++</span><span class="n">batchSequenceNumber</span><span class="p">;</span>
   <span class="p">}</span>
 
   <span class="kt">size_t</span> <span class="n">batchSize</span> <span class="o">=</span> <span class="n">batchVector</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>

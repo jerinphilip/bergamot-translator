@@ -9,11 +9,6 @@ Namespaces
 .. toctree::
    :maxdepth: 5
 
-   namespace_bergamot.rst
-
-.. toctree::
-   :maxdepth: 5
-
    namespace_marian.rst
 
 .. toctree::
@@ -28,7 +23,7 @@ Classes and Structs
 .. toctree::
    :maxdepth: 5
 
-   structmarian_1_1bergamot_1_1AnnotatedBlob.rst
+   structmarian_1_1bergamot_1_1AnnotatedText.rst
 
 .. toctree::
    :maxdepth: 5
@@ -53,7 +48,17 @@ Classes and Structs
 .. toctree::
    :maxdepth: 5
 
+   structmarian_1_1bergamot_1_1Response.rst
+
+.. toctree::
+   :maxdepth: 5
+
    structmarian_1_1bergamot_1_1UnboundedPage.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   classmarian_1_1bergamot_1_1AlignedVector.rst
 
 .. toctree::
    :maxdepth: 5
@@ -93,7 +98,7 @@ Classes and Structs
 .. toctree::
    :maxdepth: 5
 
-   classmarian_1_1bergamot_1_1Response.rst
+   classmarian_1_1bergamot_1_1ResponseBuilder.rst
 
 .. toctree::
    :maxdepth: 5
@@ -151,16 +156,6 @@ Functions
 .. toctree::
    :maxdepth: 5
 
-   function_byteArrayExample_8cpp_1a0e89bfd927bdc96eb57207bab9712ffb.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   function_byteArrayExample_8cpp_1a33072f18b29b671ed655df11b508d240.rst
-
-.. toctree::
-   :maxdepth: 5
-
    function_service_8cpp_1a3b4ed104eb0d6f42df86bbaeae6f25d9.rst
 
 .. toctree::
@@ -187,6 +182,31 @@ Functions
    :maxdepth: 5
 
    function_parser_8h_1a9d7a795b4232908367ad7d9348c62455.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_byte__array__util_8cpp_1ac17b7705d71079521a1e6db2059ada4f.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_byte__array__util_8cpp_1a03d0ea07c0548c3c9d9fa3b45e8eccc6.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_service_8h_1a96b2f9595b9626c7bc5ed8b213904a0c.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_service_8h_1a51d72771f3e929113f0280cc545984b4.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_byte__array__util_8cpp_1a765d72b8a59a480e11ebf649af13e9a9.rst
 
 .. toctree::
    :maxdepth: 5
@@ -363,6 +383,11 @@ Typedefs
 .. toctree::
    :maxdepth: 5
 
+   typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.rst
+
+.. toctree::
+   :maxdepth: 5
+
    typedef_response_8h_1a814145c7406e05875734e37f5c0c6dcc.rst
 
 .. toctree::
@@ -394,3 +419,8 @@ Typedefs
    :maxdepth: 5
 
    typedef_definitions_8h_1a0a0cdb717399bd6343aaa052aec6ffab.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   typedef_response__builder_8h_1a0a5801a34a8764d096152fb63efcee33.rst

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File parser.h &mdash; Bergamot Translator v0.0.0 2021-03-30 documentation</title>
+  <title>Program Listing for File parser.h &mdash; Bergamot Translator v0.0.0 2021-04-02 documentation</title>
   
 
   
@@ -191,7 +191,11 @@
       <span class="s">&quot;--max-length-break&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
       <span class="s">&quot;Maximum input tokens to be processed in a single sentence.&quot;</span><span class="p">,</span> <span class="mi">128</span><span class="p">);</span>
 
-  <span class="k">return</span> <span class="n">cp</span><span class="p">;</span>
+  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span>
+      <span class="s">&quot;--check-bytearray&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
+      <span class="s">&quot;Flag holds whether to check the content of the bytearray (true by default)&quot;</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">cp</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="kr">inline</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span>
