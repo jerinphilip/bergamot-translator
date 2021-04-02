@@ -79,9 +79,9 @@ Functions
 ---------
 
 
-- :ref:`exhale_function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326`
-
 - :ref:`exhale_function_definitions_8h_1af891fd0c2012708799d694f4705bcda1`
+
+- :ref:`exhale_function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326`
 
 
 Typedefs

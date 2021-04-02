@@ -1,0 +1,13 @@
+.. _exhale_typedef_response__builder_8h_1a174e32a088212a96c9baab403359bd74:
+
+Typedef ResponseOptions
+=======================
+
+- Defined in :ref:`file_src_translator_response_builder.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: ResponseOptions

@@ -175,8 +175,8 @@
 <span class="c1">// For now we will work with this, to avoid complaints another structure is hard</span>
 <span class="c1">// to operate with.</span>
 
-<span class="k">typedef</span> <span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">RequestParams</span><span class="p">;</span>
-<span class="c1">// typedef TranslationRequest RequestParams;</span>
+<span class="k">typedef</span> <span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">ResponseOptions</span><span class="p">;</span>
+<span class="c1">// typedef TranslationRequest ResponseOptions;</span>
 
 <span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
 <span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
@@ -184,17 +184,16 @@
 
 <span class="k">class</span> <span class="nc">ResponseBuilder</span> <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
-  <span class="c1">//  @param [in] promise: promise to set with the constructed Response</span>
-  <span class="n">ResponseBuilder</span><span class="p">(</span><span class="n">RequestParams</span> <span class="n">params</span><span class="p">,</span> <span class="n">AnnotatedText</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span>
+  <span class="n">ResponseBuilder</span><span class="p">(</span><span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">,</span> <span class="n">AnnotatedText</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span>
                   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs</span><span class="p">,</span>
                   <span class="n">std</span><span class="o">::</span><span class="n">promise</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span><span class="n">promise</span><span class="p">)</span>
-      <span class="o">:</span> <span class="n">params_</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">source_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">source</span><span class="p">)),</span> <span class="n">vocabs_</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vocabs</span><span class="p">),</span>
-        <span class="n">promise_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">promise</span><span class="p">))</span> <span class="p">{}</span>
+      <span class="o">:</span> <span class="n">responseOptions_</span><span class="p">(</span><span class="n">responseOptions</span><span class="p">),</span> <span class="n">source_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">source</span><span class="p">)),</span>
+        <span class="n">vocabs_</span><span class="p">(</span><span class="o">&amp;</span><span class="n">vocabs</span><span class="p">),</span> <span class="n">promise_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">promise</span><span class="p">))</span> <span class="p">{}</span>
 
   <span class="kt">void</span> <span class="k">operator</span><span class="p">()(</span><span class="n">Histories</span> <span class="o">&amp;&amp;</span><span class="n">histories</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// TODO(jerinphilip) load RequestParams into options and turn build</span>
+    <span class="c1">// TODO(jerinphilip) load ResponseOptions into options and turn build</span>
     <span class="c1">// functions on or off.</span>
-    <span class="c1">// params_ is unused, but we can try something here.</span>
+    <span class="c1">// responseOptions_ is unused, but we can try something here.</span>
     <span class="n">ABORT_IF</span><span class="p">(</span><span class="n">source_</span><span class="p">.</span><span class="n">numSentences</span><span class="p">()</span> <span class="o">!=</span> <span class="n">histories</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span>
              <span class="s">&quot;Mismatch in source and translated sentences&quot;</span><span class="p">);</span>
     <span class="n">Response</span> <span class="n">response</span><span class="p">;</span>
@@ -206,9 +205,15 @@
     <span class="n">buildTranslatedText</span><span class="p">(</span><span class="n">histories</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
 
     <span class="c1">// Should always be after buildTranslatedText</span>
-    <span class="n">buildQualityScores</span><span class="p">(</span><span class="n">histories</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+    <span class="kt">bool</span> <span class="n">quality</span> <span class="o">=</span> <span class="n">responseOptions_</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;quality&quot;</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">quality</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">buildQualityScores</span><span class="p">(</span><span class="n">histories</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+    <span class="p">}</span>
 
-    <span class="n">buildAlignments</span><span class="p">(</span><span class="n">histories</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+    <span class="kt">bool</span> <span class="n">alignment</span> <span class="o">=</span> <span class="n">responseOptions_</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;alignment&quot;</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">alignment</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">buildAlignments</span><span class="p">(</span><span class="n">histories</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+    <span class="p">}</span>
 
     <span class="c1">// Once complete, set promise.</span>
     <span class="n">promise_</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">response</span><span class="p">));</span>
@@ -223,7 +228,7 @@
 
   <span class="c1">// Data members are context/curried args for the functor.</span>
 
-  <span class="n">RequestParams</span> <span class="n">params_</span><span class="p">;</span>
+  <span class="n">ResponseOptions</span> <span class="n">responseOptions_</span><span class="p">;</span>
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">*</span><span class="n">vocabs_</span><span class="p">;</span> <span class="c1">// vocabs are required for decoding</span>
                                           <span class="c1">// and any source validation checks.</span>
   <span class="n">std</span><span class="o">::</span><span class="n">promise</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">promise_</span><span class="p">;</span> <span class="c1">//  To be set when callback triggered and</span>

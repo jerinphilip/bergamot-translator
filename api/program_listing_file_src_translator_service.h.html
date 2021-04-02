@@ -228,7 +228,10 @@
 
   <span class="o">~</span><span class="n">Service</span><span class="p">();</span>
 
-  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">);</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">translateWithOptions</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span>
+          <span class="n">ResponseOptions</span> <span class="n">options</span><span class="p">);</span>
 
 <span class="k">private</span><span class="o">:</span>
   <span class="kt">void</span> <span class="n">build_translators</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">numTranslators</span><span class="p">);</span>

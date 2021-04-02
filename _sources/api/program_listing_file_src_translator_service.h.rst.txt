@@ -72,7 +72,10 @@ Program Listing for File service.h
    
      ~Service();
    
-     std::future<Response> translate(std::string &&input);
+     std::future<Response> translate(std::string &&source);
+   
+     std::future<Response> translateWithOptions(std::string &&source,
+             ResponseOptions options);
    
    private:
      void build_translators(Ptr<Options> options, size_t numTranslators);
