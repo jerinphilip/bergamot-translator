@@ -88,6 +88,10 @@ public:
   /// sparse matrix representation with indices corresponding
   /// to (sub-)words accessible through Annotation.
   std::vector<Alignment> alignments;
+
+  const std::string &getOriginalText() const { return source.text; }
+
+  const std::string &getTranslatedText() const { return target.text; }
 };
 } // namespace bergamot
 } // namespace marian

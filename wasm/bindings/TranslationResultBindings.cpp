@@ -17,6 +17,6 @@ using namespace emscripten;
 EMSCRIPTEN_BINDINGS(translation_result) {
   class_<TranslationResult>("TranslationResult")
       .constructor<>()
-      .function("getOriginalText", &TranslationResult::source::text)
-      .function("getTranslatedText", &TranslationResult::target::text);
+      .function("getOriginalText", &TranslationResult::getOriginalText)
+      .function("getTranslatedText", &TranslationResult::getTranslatedText);
 }
