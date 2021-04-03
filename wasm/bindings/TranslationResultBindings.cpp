@@ -9,7 +9,7 @@
 // #include "TranslationResult.h"
 #include "response.h"
 
-typedef Response TranslationResult;
+typedef marian::bergamot::Response TranslationResult;
 
 using namespace emscripten;
 

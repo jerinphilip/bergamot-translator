@@ -11,8 +11,8 @@
 
 using namespace emscripten;
 
-typedef Service TranslationModel;
-typedef Response TranslationResult;
+typedef marian::bergamot::Service TranslationModel;
+typedef marian::bergamot::Response TranslationResult;
 
 // Binding code
 EMSCRIPTEN_BINDINGS(translation_model) {
