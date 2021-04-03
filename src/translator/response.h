@@ -60,8 +60,10 @@ public:
   // and required to be bound to string), but makes movement efficient by
   // banning these letting compiler complain about copies.
 
+#ifndef WASM_BINDINGS
   Response(const Response &) = delete;
   Response &operator=(const Response &) = delete;
+#endif
 
   /// \endcond
 
