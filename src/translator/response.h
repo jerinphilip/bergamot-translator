@@ -63,6 +63,9 @@ public:
 #ifndef WASM_BINDINGS
   Response(const Response &) = delete;
   Response &operator=(const Response &) = delete;
+#else
+  Response(const Response &) = default;
+  Response &operator=(const Response &) = default;
 #endif
 
   /// \endcond
