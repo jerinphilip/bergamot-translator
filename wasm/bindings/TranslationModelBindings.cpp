@@ -6,17 +6,19 @@
 
 #include <emscripten/bind.h>
 
-#include "TranslationModel.h"
+#include "response.h"
+#include "service.h"
 
 using namespace emscripten;
+
+typedef Service TranslationModel;
+typedef Response TranslationResult;
 
 // Binding code
 EMSCRIPTEN_BINDINGS(translation_model) {
   class_<TranslationModel>("TranslationModel")
-    .constructor<std::string>()
-    .function("translate", &TranslationModel::translate)
-	  .function("isAlignmentSupported", &TranslationModel::isAlignmentSupported)
-    ;
+      .constructor<std::string>()
+      .function("translate", &TranslationModel::translateMultiple);
 
   register_vector<std::string>("VectorString");
   register_vector<TranslationResult>("VectorTranslationResult");
