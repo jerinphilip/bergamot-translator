@@ -39,6 +39,8 @@ Included By
 
 - :ref:`file_src_TranslationModel.h`
 
+- :ref:`file_src_translator_service.h`
+
 
 
 

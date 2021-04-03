@@ -20,6 +20,7 @@ Program Listing for File service.h
    #include "response_builder.h"
    #include "text_processor.h"
    #include "translator/parser.h"
+   #include "TranslationRequest.h"
    
    #ifndef WASM_COMPATIBLE_SOURCE
    #include "pcqueue.h"
@@ -74,10 +75,19 @@ Program Listing for File service.h
    
      std::future<Response> translate(std::string &&source);
    
-     std::future<Response> translateWithOptions(std::string &&source,
-             ResponseOptions options);
+     std::future<Response> translate(std::string &&source, ResponseOptions options);
+   
+   
+     
+     
+     std::vector<Response> translateMultiple(std::vector<std::string> &&source,
+             TranslationRequest translationRequest);
    
    private:
+     std::future<Response> queueRequest(std::string &&input, ResponseOptions responseOptions);
+   
+     void dispatchTranslate();
+     
      void build_translators(Ptr<Options> options, size_t numTranslators);
      void initialize_blocking_translator();
      void blocking_translate();

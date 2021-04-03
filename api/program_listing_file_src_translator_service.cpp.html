@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File service.cpp &mdash; Bergamot Translator v0.0.0 2021-04-02 documentation</title>
+  <title>Program Listing for File service.cpp &mdash; Bergamot Translator v0.0.0 2021-04-03 documentation</title>
   
 
   
@@ -287,12 +287,36 @@
       <span class="n">New</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span><span class="p">();</span> <span class="c1">// TODO(jerinphilip): Take this in as argument</span>
 
   <span class="c1">// Hardcode responseOptions for now</span>
-  <span class="k">return</span> <span class="nf">translateWithOptions</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nf">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span>
-<span class="n">Service</span><span class="o">::</span><span class="n">translateWithOptions</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">,</span>
-                              <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span>
+<span class="n">Service</span><span class="o">::</span><span class="n">translateMultiple</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span><span class="n">inputs</span><span class="p">,</span>
+                           <span class="n">TranslationRequest</span> <span class="n">translationRequest</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">ResponseOptions</span> <span class="n">responseOptions</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span><span class="p">();</span>
+
+  <span class="c1">// TODO(jerinphilip) Set options based on TranslationRequest, if and when it</span>
+  <span class="c1">// becomes non-dummy.</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;&gt;</span> <span class="n">responseFutures</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">input</span> <span class="p">:</span> <span class="n">inputs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">inputResponse</span> <span class="o">=</span>
+        <span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
+    <span class="n">responseFutures</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">inputResponse</span><span class="p">));</span>
+  <span class="p">}</span>
+
+  <span class="n">dispatchTranslate</span><span class="p">();</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">responses</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">future</span> <span class="p">:</span> <span class="n">responseFutures</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">future</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
+    <span class="n">responses</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">future</span><span class="p">.</span><span class="n">get</span><span class="p">()));</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">responses</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">,</span>
+                                            <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">Segments</span> <span class="n">segments</span><span class="p">;</span>
   <span class="n">AnnotatedText</span> <span class="nf">source</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">));</span>
   <span class="n">text_processor_</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">segments</span><span class="p">);</span>
@@ -306,12 +330,23 @@
                                       <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">responseBuilder</span><span class="p">));</span>
 
   <span class="n">batcher_</span><span class="p">.</span><span class="n">addWholeRequest</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">future</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">,</span>
+                                         <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span>
+      <span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
+  <span class="n">dispatchTranslate</span><span class="p">();</span>
+  <span class="k">return</span> <span class="n">future</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">dispatchTranslate</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">numWorkers_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">blocking_translate</span><span class="p">();</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="n">async_translate</span><span class="p">();</span>
   <span class="p">}</span>
-  <span class="k">return</span> <span class="n">future</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="n">Service</span><span class="o">::~</span><span class="n">Service</span><span class="p">()</span> <span class="p">{</span>

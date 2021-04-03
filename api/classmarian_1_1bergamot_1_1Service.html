@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Class Service &mdash; Bergamot Translator v0.0.0 2021-04-02 documentation</title>
+  <title>Class Service &mdash; Bergamot Translator v0.0.0 2021-04-03 documentation</title>
   
 
   
@@ -260,14 +260,28 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N6marian8bergamot7Service20translateWithOptionsERRNSt6stringE15ResponseOptions">
-<span id="_CPPv3N6marian8bergamot7Service20translateWithOptionsERRNSt6stringE15ResponseOptions"></span><span id="_CPPv2N6marian8bergamot7Service20translateWithOptionsERRNSt6stringE15ResponseOptions"></span><span id="marian::bergamot::Service::translateWithOptions__ssRR.ResponseOptions"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1ac2e3d439e6369600111772df38057dc1"></span>std::future&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translateWithOptions</code><span class="sig-paren">(</span>std::string &amp;&amp;<em>source</em>, <a class="reference internal" href="typedef_response__builder_8h_1a174e32a088212a96c9baab403359bd74.html#_CPPv415ResponseOptions" title="ResponseOptions">ResponseOptions</a> <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service20translateWithOptionsERRNSt6stringE15ResponseOptions" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions">
+<span id="_CPPv3N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="_CPPv2N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="marian::bergamot::Service::translate__ssRR.ResponseOptions"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a11584a0db6e2aac9ad2350bef327eb99"></span>std::future&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translate</code><span class="sig-paren">(</span>std::string &amp;&amp;<em>source</em>, <a class="reference internal" href="typedef_response__builder_8h_1a174e32a088212a96c9baab403359bd74.html#_CPPv415ResponseOptions" title="ResponseOptions">ResponseOptions</a> <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Translate an input, providing Options to construct <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>. </p>
 <p>This is useful when one has to set/unset alignments or quality in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a> to save compute spent in constructing these objects.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">source</span></code>: rvalue reference of the string to be translated </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">responseOptions</span></code>: Options indicating whether or not to include some member in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>, also specify any additional configurable parameters. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest">
+<span id="_CPPv3N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest"></span><span id="_CPPv2N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest"></span><span id="marian::bergamot::Service::translateMultiple__std::vector:ss:RR.TranslationRequest"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1ae2f4606f179b0c5eda117e7b57f2e65e"></span>std::vector&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translateMultiple</code><span class="sig-paren">(</span>std::vector&lt;std::string&gt; &amp;&amp;<em>source</em>, <a class="reference internal" href="classTranslationRequest.html#_CPPv418TranslationRequest" title="TranslationRequest">TranslationRequest</a> <em>translationRequest</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Translate an input, providing <a class="reference internal" href="classTranslationRequest.html#classTranslationRequest"><span class="std std-ref">TranslationRequest</span></a> across all texts to construct <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>. </p>
+<p>Provides the browser with the ability to break texts into multiple <a class="reference internal" href="classmarian_1_1bergamot_1_1Request.html#classmarian_1_1bergamot_1_1Request"><span class="std std-ref">Request</span></a> keeping gains from efficiently batching internally. Also useful when one has to set/unset alignments or quality in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a> to save compute spent in constructing these objects. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">source</span></code>: rvalue reference of the string to be translated / </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">translationRequest</span></code>: <a class="reference internal" href="classTranslationRequest.html#classTranslationRequest"><span class="std std-ref">TranslationRequest</span></a> (Unified API) indicating whether or not to include some member in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>, also specify any / additional configurable parameters. </p></li>
 </ul>
 </dd>
 </dl>

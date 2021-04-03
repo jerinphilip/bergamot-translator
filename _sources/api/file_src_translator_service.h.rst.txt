@@ -29,6 +29,8 @@ Includes
 --------
 
 
+- ``TranslationRequest.h`` (:ref:`file_src_TranslationRequest.h`)
+
 - ``batch_translator.h`` (:ref:`file_src_translator_batch_translator.h`)
 
 - ``batcher.h`` (:ref:`file_src_translator_batcher.h`)
