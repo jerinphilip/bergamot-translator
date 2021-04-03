@@ -78,9 +78,9 @@ Functions
 
 - :ref:`exhale_function_parser_8h_1a8c401628cb998e9bb359af3f1cdda152`
 
-- :ref:`exhale_function_definitions_8h_1af891fd0c2012708799d694f4705bcda1`
-
 - :ref:`exhale_function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326`
+
+- :ref:`exhale_function_definitions_8h_1af891fd0c2012708799d694f4705bcda1`
 
 - :ref:`exhale_function_pcqueue_8h_1aa2de1e7c8107873cc8569bac95c8fa02`
 
