@@ -64,6 +64,9 @@ public:
   Response(const Response &) = delete;
   Response &operator=(const Response &) = delete;
 #else
+  // Explicit indication to assign default copy-constructor is required because
+  // I specified a move constructor.
+  // There is no segfault here because we are no longer using string-views.
   Response(const Response &) = default;
   Response &operator=(const Response &) = default;
 #endif

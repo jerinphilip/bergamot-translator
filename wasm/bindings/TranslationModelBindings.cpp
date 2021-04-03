@@ -19,6 +19,8 @@ EMSCRIPTEN_BINDINGS(translation_model) {
   class_<TranslationModel>("TranslationModel")
       .constructor<std::string>()
       .function("translate", &TranslationModel::translateMultiple);
+  // ^ We redirect translateMultiple to translate instead. Sane API is
+  // translate. If and when async comes, we can be done with this inconsistency.
 
   register_vector<std::string>("VectorString");
   register_vector<TranslationResult>("VectorTranslationResult");
