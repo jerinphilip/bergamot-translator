@@ -18,7 +18,9 @@ typedef marian::bergamot::Response TranslationResult;
 EMSCRIPTEN_BINDINGS(translation_model) {
   class_<TranslationModel>("TranslationModel")
       .constructor<std::string>()
-      .function("translate", &TranslationModel::translateMultiple);
+      .function("translate", &TranslationModel::translateMultiple)
+      .function("isAlignmentSupported",
+                &TranslationModel::isAlignmentSupported);
   // ^ We redirect translateMultiple to translate instead. Sane API is
   // translate. If and when async comes, we can be done with this inconsistency.
 

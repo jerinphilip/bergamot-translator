@@ -144,6 +144,10 @@ public:
   std::vector<Response> translateMultiple(std::vector<std::string> &&source,
           TranslationRequest translationRequest);
 
+  /// Returns if model is alignment capable or not. Exists for not breaking things at the extension.
+  // This function, what it does and the name sticks out like a thorn in the entire structure of this class.
+  bool isAlignmentSupported() const { return true; }
+
 private:
   /// Queue an input for translation.
   std::future<Response> queueRequest(std::string &&input, ResponseOptions responseOptions);
