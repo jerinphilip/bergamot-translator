@@ -146,7 +146,7 @@ public:
 
   /// Returns if model is alignment capable or not. Exists for not breaking things at the extension.
   // This function, what it does and the name sticks out like a thorn in the entire structure of this class.
-  bool isAlignmentSupported() const { return true; }
+  bool isAlignmentSupported() const { return options_->hasAndNotEmpty("alignment"); }
 
 private:
   /// Queue an input for translation.
@@ -173,6 +173,10 @@ private:
 
   /// Number of workers to launch.
   size_t numWorkers_;              // ORDER DEPENDENCY (pcqueue_)
+
+  /// Options object holding the options Service was instantiated with.
+  Ptr<Options> options_;
+  
   /// Model memory to load model passed as bytes.
   AlignedMemory modelMemory_;      // ORDER DEPENDENCY (translators_)
   /// Shortlist memory passed as bytes.
