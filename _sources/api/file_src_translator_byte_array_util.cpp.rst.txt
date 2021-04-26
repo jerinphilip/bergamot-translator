@@ -59,3 +59,16 @@ Functions
 
 - :ref:`exhale_function_byte__array__util_8cpp_1a765d72b8a59a480e11ebf649af13e9a9`
 
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_byte__array__util_8cpp_1a4842c3ae45a5ed6649fa7977904b076b`
+
+- :ref:`exhale_variable_byte__array__util_8cpp_1adf2b9f832a958cd7db80d0ba11ff8e2e`
+
+- :ref:`exhale_variable_byte__array__util_8cpp_1a7b287ccec8d40672f6dcb9eda4a3e7ed`
+
+- :ref:`exhale_variable_byte__array__util_8cpp_1a10954dd978803ff23ff998bf943bac2d`
+

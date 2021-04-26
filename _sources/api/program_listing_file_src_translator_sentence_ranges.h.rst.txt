@@ -29,9 +29,12 @@ Program Listing for File sentence_ranges.h
    
    class Annotation {
    public:
-     Annotation() {}
+     Annotation() {
+       // The -1-th sentence ends at 0.
+       sentenceEndIds_.push_back(0);
+     }
    
-     size_t numSentences() const { return sentenceEndIds_.size(); }
+     size_t numSentences() const { return sentenceEndIds_.size() - 1; }
    
      size_t numWords(size_t sentenceIdx) const;
    

@@ -39,6 +39,8 @@ Includes
 
 - ``string``
 
+- ``translator/definitions.h`` (:ref:`file_src_translator_definitions.h`)
+
 - ``translator/service.h`` (:ref:`file_src_translator_service.h`)
 
 - ``vector``

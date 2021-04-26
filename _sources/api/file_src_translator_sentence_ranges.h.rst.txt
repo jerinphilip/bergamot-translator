@@ -51,8 +51,6 @@ Included By
 
 - :ref:`file_src_translator_request.cpp`
 
-- :ref:`file_src_translator_response.cpp`
-
 - :ref:`file_src_translator_sentence_ranges.cpp`
 
 - :ref:`file_src_translator_text_processor.cpp`

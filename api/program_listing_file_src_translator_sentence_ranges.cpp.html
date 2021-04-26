@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File sentence_ranges.cpp &mdash; Bergamot Translator v0.0.0 2021-04-03 documentation</title>
+  <title>Program Listing for File sentence_ranges.cpp &mdash; Bergamot Translator v0.0.0 2021-04-26 documentation</title>
   
 
   
@@ -182,29 +182,23 @@
 
 <span class="kt">size_t</span> <span class="n">Annotation</span><span class="o">::</span><span class="n">numWords</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">sentenceIdx</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
   <span class="kt">size_t</span> <span class="n">bosId</span><span class="p">,</span> <span class="n">eosId</span><span class="p">;</span>
-  <span class="n">bosId</span> <span class="o">=</span> <span class="p">(</span><span class="n">sentenceIdx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-              <span class="o">?</span> <span class="mi">0</span>                                 <span class="c1">// Avoid -1 access</span>
-              <span class="o">:</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span> <span class="c1">// Half interval, so;</span>
-
-  <span class="n">eosId</span> <span class="o">=</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span><span class="p">];</span>
+  <span class="n">bosId</span> <span class="o">=</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span><span class="p">];</span> <span class="c1">// Half interval, so;</span>
+  <span class="n">eosId</span> <span class="o">=</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
   <span class="c1">// Difference between eosId and bosId is the number of words.</span>
   <span class="k">return</span> <span class="n">eosId</span> <span class="o">-</span> <span class="n">bosId</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="n">ByteRange</span> <span class="n">Annotation</span><span class="o">::</span><span class="n">sentence</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">sentenceIdx</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
   <span class="kt">size_t</span> <span class="n">bosId</span><span class="p">,</span> <span class="n">eosId</span><span class="p">;</span>
-  <span class="n">bosId</span> <span class="o">=</span> <span class="p">(</span><span class="n">sentenceIdx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-              <span class="o">?</span> <span class="mi">0</span>                                 <span class="c1">// Avoid -1 access</span>
-              <span class="o">:</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span> <span class="c1">// Half interval, so;</span>
-
-  <span class="n">eosId</span> <span class="o">=</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span><span class="p">];</span>
+  <span class="n">bosId</span> <span class="o">=</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span><span class="p">];</span> <span class="c1">// Half interval, so;</span>
+  <span class="n">eosId</span> <span class="o">=</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
   <span class="n">ByteRange</span> <span class="n">sentenceByteRange</span><span class="p">;</span>
 
   <span class="k">if</span> <span class="p">(</span><span class="n">bosId</span> <span class="o">==</span> <span class="n">eosId</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// We have an empty sentence. However, we want to be able to point where in</span>
     <span class="c1">// target this happened through the ranges. We are looking for the end of</span>
-    <span class="c1">// the flatByteRange and non-empty sentence before and construct empty</span>
-    <span class="c1">// string-view equivalent ByteRange.</span>
+    <span class="c1">// the flatByteRange and non-empty sentence before this happened and</span>
+    <span class="c1">// construct empty string-view equivalent ByteRange.</span>
     <span class="n">ByteRange</span> <span class="n">eos</span> <span class="o">=</span> <span class="n">flatByteRanges_</span><span class="p">[</span><span class="n">eosId</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
     <span class="n">sentenceByteRange</span> <span class="o">=</span> <span class="p">(</span><span class="n">ByteRange</span><span class="p">){</span><span class="n">eos</span><span class="p">.</span><span class="n">end</span><span class="p">,</span> <span class="n">eos</span><span class="p">.</span><span class="n">end</span><span class="p">};</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
@@ -216,7 +210,7 @@
 <span class="p">}</span>
 
 <span class="n">ByteRange</span> <span class="n">Annotation</span><span class="o">::</span><span class="n">word</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">sentenceIdx</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">wordIdx</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
-  <span class="kt">size_t</span> <span class="n">bosOffset</span> <span class="o">=</span> <span class="p">(</span><span class="n">sentenceIdx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+  <span class="kt">size_t</span> <span class="n">bosOffset</span> <span class="o">=</span> <span class="n">sentenceEndIds_</span><span class="p">[</span><span class="n">sentenceIdx</span><span class="p">];</span>
   <span class="k">return</span> <span class="n">flatByteRanges_</span><span class="p">[</span><span class="n">bosOffset</span> <span class="o">+</span> <span class="n">wordIdx</span><span class="p">];</span>
 <span class="p">}</span>
 

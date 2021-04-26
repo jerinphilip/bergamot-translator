@@ -30,16 +30,14 @@ Files
 - :ref:`file_src_translator_byte_array_util.cpp`
 - :ref:`file_src_translator_byte_array_util.h`
 - :ref:`file_src_translator_definitions.h`
-- :ref:`file_src_translator_multifactor_priority.cpp`
-- :ref:`file_src_translator_multifactor_priority.h`
 - :ref:`file_src_translator_parser.h`
 - :ref:`file_src_translator_pcqueue.h`
 - :ref:`file_src_translator_request.cpp`
 - :ref:`file_src_translator_request.h`
-- :ref:`file_src_translator_response.cpp`
 - :ref:`file_src_translator_response.h`
 - :ref:`file_src_translator_response_builder.cpp`
 - :ref:`file_src_translator_response_builder.h`
+- :ref:`file_src_translator_response_options.h`
 - :ref:`file_src_translator_sentence_ranges.cpp`
 - :ref:`file_src_translator_sentence_ranges.h`
 - :ref:`file_src_translator_sentence_splitter.cpp`

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File TranslationModel.h &mdash; Bergamot Translator v0.0.0 2021-04-03 documentation</title>
+  <title>Program Listing for File TranslationModel.h &mdash; Bergamot Translator v0.0.0 2021-04-26 documentation</title>
   
 
   
@@ -185,6 +185,7 @@
 <span class="c1">// All local project includes</span>
 <span class="cp">#include</span> <span class="cpf">&quot;TranslationRequest.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;TranslationResult.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;translator/definitions.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;translator/service.h&quot;</span><span class="cp"></span>
 
 <span class="cm">/* A Translation model that translates a plain (without any markups and emojis)</span>
@@ -197,7 +198,8 @@
 <span class="cm">   * string</span>
 <span class="cm">   */</span>
   <span class="n">TranslationModel</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">config</span><span class="p">,</span>
-                   <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">model_memory</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">);</span>
+                   <span class="n">marian</span><span class="o">::</span><span class="n">bergamot</span><span class="o">::</span><span class="n">AlignedMemory</span> <span class="n">modelMemory</span> <span class="o">=</span> <span class="n">marian</span><span class="o">::</span><span class="n">bergamot</span><span class="o">::</span><span class="n">AlignedMemory</span><span class="p">(),</span>
+                   <span class="n">marian</span><span class="o">::</span><span class="n">bergamot</span><span class="o">::</span><span class="n">AlignedMemory</span> <span class="n">shortlistMemory</span> <span class="o">=</span> <span class="n">marian</span><span class="o">::</span><span class="n">bergamot</span><span class="o">::</span><span class="n">AlignedMemory</span><span class="p">());</span>
 
   <span class="o">~</span><span class="n">TranslationModel</span><span class="p">();</span>
 

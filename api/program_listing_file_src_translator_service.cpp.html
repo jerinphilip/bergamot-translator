@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File service.cpp &mdash; Bergamot Translator v0.0.0 2021-04-03 documentation</title>
+  <title>Program Listing for File service.cpp &mdash; Bergamot Translator v0.0.0 2021-04-26 documentation</title>
   
 
   
@@ -196,13 +196,11 @@
 <span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
 <span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
 
-<span class="n">Service</span><span class="o">::</span><span class="n">Service</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="n">AlignedMemory</span> <span class="n">modelMemory</span><span class="p">,</span>
-                 <span class="n">AlignedMemory</span> <span class="n">shortlistMemory</span><span class="p">)</span>
+<span class="n">Service</span><span class="o">::</span><span class="n">Service</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="n">AlignedMemory</span> <span class="n">modelMemory</span><span class="p">,</span> <span class="n">AlignedMemory</span> <span class="n">shortlistMemory</span><span class="p">)</span>
     <span class="o">:</span> <span class="n">requestId_</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">loadVocabularies</span><span class="p">(</span><span class="n">options</span><span class="p">))),</span>
       <span class="n">text_processor_</span><span class="p">(</span><span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">),</span> <span class="n">batcher_</span><span class="p">(</span><span class="n">options</span><span class="p">),</span>
       <span class="n">numWorkers_</span><span class="p">(</span><span class="n">options</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;cpu-threads&quot;</span><span class="p">)),</span>
-      <span class="n">modelMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">modelMemory</span><span class="p">)),</span>
-      <span class="n">shortlistMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">shortlistMemory</span><span class="p">))</span>
+      <span class="n">modelMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">modelMemory</span><span class="p">)),</span> <span class="n">shortlistMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">shortlistMemory</span><span class="p">))</span>
 <span class="cp">#ifndef WASM_COMPATIBLE_SOURCE</span>
       <span class="c1">// 0 elements in PCQueue is illegal and can lead to failures. Adding a</span>
       <span class="c1">// guard to have at least one entry allocated. In the single-threaded</span>
@@ -225,8 +223,7 @@
   <span class="n">translators_</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">numTranslators</span><span class="p">);</span>
   <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">cpuId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">cpuId</span> <span class="o">&lt;</span> <span class="n">numTranslators</span><span class="p">;</span> <span class="n">cpuId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">marian</span><span class="o">::</span><span class="n">DeviceId</span> <span class="n">deviceId</span><span class="p">(</span><span class="n">cpuId</span><span class="p">,</span> <span class="n">DeviceType</span><span class="o">::</span><span class="n">cpu</span><span class="p">);</span>
-    <span class="n">translators_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">modelMemory_</span><span class="p">,</span>
-                              <span class="o">&amp;</span><span class="n">shortlistMemory_</span><span class="p">);</span>
+    <span class="n">translators_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">modelMemory_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">shortlistMemory_</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
@@ -283,17 +280,14 @@
 <span class="cp">#endif </span><span class="c1">// WASM_COMPATIBLE_SOURCE</span>
 
 <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">ResponseOptions</span> <span class="n">responseOptions</span> <span class="o">=</span>
-      <span class="n">New</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span><span class="p">();</span> <span class="c1">// TODO(jerinphilip): Take this in as argument</span>
-
-  <span class="c1">// Hardcode responseOptions for now</span>
+  <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">;</span>  <span class="c1">// Hardcode responseOptions for now</span>
   <span class="k">return</span> <span class="nf">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span>
 <span class="n">Service</span><span class="o">::</span><span class="n">translateMultiple</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span><span class="n">inputs</span><span class="p">,</span>
                            <span class="n">TranslationRequest</span> <span class="n">translationRequest</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">ResponseOptions</span> <span class="n">responseOptions</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span><span class="p">();</span>
+  <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">;</span>
 
   <span class="c1">// TODO(jerinphilip) Set options based on TranslationRequest, if and when it</span>
   <span class="c1">// becomes non-dummy.</span>

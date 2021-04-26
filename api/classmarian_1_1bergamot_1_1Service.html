@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Class Service &mdash; Bergamot Translator v0.0.0 2021-04-03 documentation</title>
+  <title>Class Service &mdash; Bergamot Translator v0.0.0 2021-04-26 documentation</title>
   
 
   
@@ -177,7 +177,7 @@
 <dl class="class">
 <dt id="_CPPv4N6marian8bergamot7ServiceE">
 <span id="_CPPv3N6marian8bergamot7ServiceE"></span><span id="_CPPv2N6marian8bergamot7ServiceE"></span><span id="marian::bergamot::Service"></span><span class="target" id="classmarian_1_1bergamot_1_1Service"></span><em class="property">class </em><code class="sig-name descname">Service</code><a class="headerlink" href="#_CPPv4N6marian8bergamot7ServiceE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> offers an asynchronous translation service. </p>
+<dd><p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> offers methods create an asynchronous translation service. </p>
 <p>This is intended to be similar to the ones provided for training or decoding in ML pipelines with the following additional capabilities:</p>
 <p><ol class="arabic simple">
 <li><p>Provision of a request -&gt; response based translation flow unlike the usual a line based translation or decoding provided in most ML frameworks.</p></li>
@@ -226,13 +226,13 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N6marian8bergamot7Service7ServiceERKNSt6stringEPKvPKv">
-<span id="_CPPv3N6marian8bergamot7Service7ServiceERKNSt6stringEPKvPKv"></span><span id="_CPPv2N6marian8bergamot7Service7ServiceERKNSt6stringEPKvPKv"></span><span id="marian::bergamot::Service::Service__ssCR.voidCP.voidCP"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1aed8680345f52524896142c7f2c586acf"></span><code class="sig-name descname">Service</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>config</em>, <em class="property">const</em> void *<em>modelMemory</em> = nullptr, <em class="property">const</em> void *<em>shortlistMemory</em> = nullptr<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service7ServiceERKNSt6stringEPKvPKv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N6marian8bergamot7Service7ServiceERKNSt6stringE13AlignedMemory13AlignedMemory">
+<span id="_CPPv3N6marian8bergamot7Service7ServiceERKNSt6stringE13AlignedMemory13AlignedMemory"></span><span id="_CPPv2N6marian8bergamot7Service7ServiceERKNSt6stringE13AlignedMemory13AlignedMemory"></span><span id="marian::bergamot::Service::Service__ssCR.AlignedMemory.AlignedMemory"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a0c321d115f8777818bb0ac71ee86e4b4"></span><code class="sig-name descname">Service</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>config</em>, <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a> <em>modelMemory</em> = <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a>(), <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a> <em>shortlistMemory</em> = <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a>()<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service7ServiceERKNSt6stringE13AlignedMemory13AlignedMemory" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Construct <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> from a string configuration. </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">config</span></code>: string parsable as YAML expected to adhere with marian config </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">model_memory</span></code>: byte array (aligned to 256!!!) that contains the bytes of a model.bin. Optional, defaults to nullptr when not used </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">model_memory</span></code>: byte array (aligned to 256!!!) that contains the bytes of a model.bin. Optional. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">shortlistMemory</span></code>: byte array of shortlist (aligned to 64) </p></li>
 </ul>
 </dd>
@@ -261,7 +261,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions">
-<span id="_CPPv3N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="_CPPv2N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="marian::bergamot::Service::translate__ssRR.ResponseOptions"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a11584a0db6e2aac9ad2350bef327eb99"></span>std::future&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translate</code><span class="sig-paren">(</span>std::string &amp;&amp;<em>source</em>, <a class="reference internal" href="typedef_response__builder_8h_1a174e32a088212a96c9baab403359bd74.html#_CPPv415ResponseOptions" title="ResponseOptions">ResponseOptions</a> <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="_CPPv2N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="marian::bergamot::Service::translate__ssRR.ResponseOptions"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a11584a0db6e2aac9ad2350bef327eb99"></span>std::future&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translate</code><span class="sig-paren">(</span>std::string &amp;&amp;<em>source</em>, <a class="reference internal" href="structmarian_1_1bergamot_1_1ResponseOptions.html#_CPPv4N6marian8bergamot15ResponseOptionsE" title="marian::bergamot::ResponseOptions">ResponseOptions</a> <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Translate an input, providing Options to construct <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>. </p>
 <p>This is useful when one has to set/unset alignments or quality in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a> to save compute spent in constructing these objects.</p>
 <p><dl class="simple">

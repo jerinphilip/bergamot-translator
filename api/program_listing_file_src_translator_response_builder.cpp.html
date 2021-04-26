@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File response_builder.cpp &mdash; Bergamot Translator v0.0.0 2021-04-03 documentation</title>
+  <title>Program Listing for File response_builder.cpp &mdash; Bergamot Translator v0.0.0 2021-04-26 documentation</title>
   
 
   
@@ -206,7 +206,7 @@
     <span class="c1">// mean WASM bindings for a structure deep within marian source.</span>
     <span class="k">auto</span> <span class="n">hyp</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
     <span class="k">auto</span> <span class="n">softAlignment</span> <span class="o">=</span> <span class="n">hyp</span><span class="o">-&gt;</span><span class="n">tracebackAlignment</span><span class="p">();</span>
-    <span class="k">auto</span> <span class="n">threshold</span> <span class="o">=</span> <span class="n">responseOptions_</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;alignment-threshold&quot;</span><span class="p">,</span> <span class="mf">0.2f</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">threshold</span> <span class="o">=</span> <span class="n">responseOptions_</span><span class="p">.</span><span class="n">alignmentThreshold</span><span class="p">;</span>
     <span class="k">auto</span> <span class="n">hardAlignment</span> <span class="o">=</span>
         <span class="n">data</span><span class="o">::</span><span class="n">ConvertSoftAlignToHardAlign</span><span class="p">(</span><span class="n">softAlignment</span><span class="p">,</span> <span class="n">threshold</span><span class="p">);</span>
     <span class="n">Alignment</span> <span class="n">unified_alignment</span><span class="p">;</span>

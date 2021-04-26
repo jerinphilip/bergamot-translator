@@ -43,6 +43,8 @@ Included By
 -----------
 
 
+- :ref:`file_src_TranslationModel.h`
+
 - :ref:`file_src_translator_request.h`
 
 - :ref:`file_src_translator_response.h`
@@ -54,8 +56,6 @@ Included By
 - :ref:`file_src_translator_text_processor.h`
 
 - :ref:`file_src_translator_byte_array_util.h`
-
-- :ref:`file_src_translator_multifactor_priority.h`
 
 - :ref:`file_src_translator_request.cpp`
 
@@ -79,9 +79,9 @@ Functions
 ---------
 
 
-- :ref:`exhale_function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326`
-
 - :ref:`exhale_function_definitions_8h_1af891fd0c2012708799d694f4705bcda1`
+
+- :ref:`exhale_function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326`
 
 
 Typedefs

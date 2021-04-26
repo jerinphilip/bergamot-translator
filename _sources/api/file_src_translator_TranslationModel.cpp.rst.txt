@@ -35,6 +35,8 @@ Includes
 
 - ``translator/parser.h`` (:ref:`file_src_translator_parser.h`)
 
+- ``translator/response.h`` (:ref:`file_src_translator_response.h`)
+
 - ``translator/service.h`` (:ref:`file_src_translator_service.h`)
 
 - ``vector``

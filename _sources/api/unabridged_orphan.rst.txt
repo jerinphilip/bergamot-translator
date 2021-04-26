@@ -115,16 +115,6 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file_src_translator_multifactor_priority.cpp.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_translator_multifactor_priority.h.rst
-
-.. toctree::
-   :maxdepth: 5
-
    file_src_translator_parser.h.rst
 
 .. toctree::
@@ -150,11 +140,6 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file_src_translator_response.cpp.rst
-
-.. toctree::
-   :maxdepth: 5
-
    file_src_translator_response.h.rst
 
 .. toctree::
@@ -166,6 +151,11 @@ Files
    :maxdepth: 5
 
    file_src_translator_response_builder.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_src_translator_response_options.h.rst
 
 .. toctree::
    :maxdepth: 5

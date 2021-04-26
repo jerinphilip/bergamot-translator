@@ -40,13 +40,11 @@ Program Listing for File service.cpp
    namespace marian {
    namespace bergamot {
    
-   Service::Service(Ptr<Options> options, AlignedMemory modelMemory,
-                    AlignedMemory shortlistMemory)
+   Service::Service(Ptr<Options> options, AlignedMemory modelMemory, AlignedMemory shortlistMemory)
        : requestId_(0), vocabs_(std::move(loadVocabularies(options))),
          text_processor_(vocabs_, options), batcher_(options),
          numWorkers_(options->get<int>("cpu-threads")),
-         modelMemory_(std::move(modelMemory)),
-         shortlistMemory_(std::move(shortlistMemory))
+         modelMemory_(std::move(modelMemory)), shortlistMemory_(std::move(shortlistMemory))
    #ifndef WASM_COMPATIBLE_SOURCE
          // 0 elements in PCQueue is illegal and can lead to failures. Adding a
          // guard to have at least one entry allocated. In the single-threaded
@@ -69,8 +67,7 @@ Program Listing for File service.cpp
      translators_.reserve(numTranslators);
      for (size_t cpuId = 0; cpuId < numTranslators; cpuId++) {
        marian::DeviceId deviceId(cpuId, DeviceType::cpu);
-       translators_.emplace_back(deviceId, vocabs_, options, &modelMemory_,
-                                 &shortlistMemory_);
+       translators_.emplace_back(deviceId, vocabs_, options, &modelMemory_, &shortlistMemory_);
      }
    }
    
@@ -127,17 +124,14 @@ Program Listing for File service.cpp
    #endif // WASM_COMPATIBLE_SOURCE
    
    std::future<Response> Service::translate(std::string &&input) {
-     ResponseOptions responseOptions =
-         New<Options>(); // TODO(jerinphilip): Take this in as argument
-   
-     // Hardcode responseOptions for now
+     ResponseOptions responseOptions;  // Hardcode responseOptions for now
      return translate(std::move(input), responseOptions);
    }
    
    std::vector<Response>
    Service::translateMultiple(std::vector<std::string> &&inputs,
                               TranslationRequest translationRequest) {
-     ResponseOptions responseOptions = New<Options>();
+     ResponseOptions responseOptions;
    
      // TODO(jerinphilip) Set options based on TranslationRequest, if and when it
      // becomes non-dummy.
