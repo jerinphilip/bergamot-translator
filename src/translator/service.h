@@ -9,6 +9,7 @@
 #include "response_builder.h"
 #include "text_processor.h"
 #include "translator/parser.h"
+#include "TranslationRequest.h"
 
 #ifndef WASM_COMPATIBLE_SOURCE
 #include "pcqueue.h"
@@ -148,7 +149,11 @@ private:
   void async_translate();
 
   /// Number of workers to launch.
-  size_t numWorkers_; // ORDER DEPENDENCY (pcqueue_)
+  size_t numWorkers_;              // ORDER DEPENDENCY (pcqueue_)
+
+  /// Options object holding the options Service was instantiated with.
+  Ptr<Options> options_;
+  
   /// Model memory to load model passed as bytes.
   AlignedMemory modelMemory_; // ORDER DEPENDENCY (translators_)
   /// Shortlist memory passed as bytes.
