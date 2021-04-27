@@ -14,41 +14,35 @@ void Annotation::addSentence(std::vector<ByteRange> &sentence) {
 
 size_t Annotation::numWords(size_t sentenceIdx) const {
   size_t bosId, eosId;
-  bosId = (sentenceIdx == 0)
-              ? 0                                 // Avoid -1 access
-              : sentenceEndIds_[sentenceIdx - 1]; // Half interval, so;
-
-  eosId = sentenceEndIds_[sentenceIdx];
+  bosId = sentenceEndIds_[sentenceIdx]; // Half interval, so;
+  eosId = sentenceEndIds_[sentenceIdx + 1];
   // Difference between eosId and bosId is the number of words.
   return eosId - bosId;
 }
 
 ByteRange Annotation::sentence(size_t sentenceIdx) const {
   size_t bosId, eosId;
-  bosId = (sentenceIdx == 0)
-              ? 0                                 // Avoid -1 access
-              : sentenceEndIds_[sentenceIdx - 1]; // Half interval, so;
-
-  eosId = sentenceEndIds_[sentenceIdx];
+  bosId = sentenceEndIds_[sentenceIdx]; // Half interval, so;
+  eosId = sentenceEndIds_[sentenceIdx + 1];
   ByteRange sentenceByteRange;
 
   if (bosId == eosId) {
     // We have an empty sentence. However, we want to be able to point where in
     // target this happened through the ranges. We are looking for the end of
-    // the flatByteRange and non-empty sentence before and construct empty
-    // string-view equivalent ByteRange.
+    // the flatByteRange and non-empty sentence before this happened and
+    // construct empty string-view equivalent ByteRange.
     ByteRange eos = flatByteRanges_[eosId - 1];
-    sentenceByteRange = (ByteRange){eos.end, eos.end};
+    sentenceByteRange = ByteRange{eos.end, eos.end};
   } else {
     ByteRange bos = flatByteRanges_[bosId];
     ByteRange eos = flatByteRanges_[eosId - 1];
-    sentenceByteRange = (ByteRange){bos.begin, eos.end};
+    sentenceByteRange = ByteRange{bos.begin, eos.end};
   }
   return sentenceByteRange;
 }
 
 ByteRange Annotation::word(size_t sentenceIdx, size_t wordIdx) const {
-  size_t bosOffset = (sentenceIdx == 0) ? 0 : sentenceEndIds_[sentenceIdx - 1];
+  size_t bosOffset = sentenceEndIds_[sentenceIdx];
   return flatByteRanges_[bosOffset + wordIdx];
 }
 
@@ -71,7 +65,7 @@ void AnnotatedText::appendSentence(std::string prefix, std::string &reference,
   for (auto &wordView : wordRanges) {
     size_t thisWordBegin = offset + wordView.data() - &reference[0];
     sentence.push_back(
-        (ByteRange){thisWordBegin, thisWordBegin + wordView.size()});
+        ByteRange{thisWordBegin, thisWordBegin + wordView.size()});
   }
   annotation.addSentence(sentence);
 }
@@ -85,7 +79,7 @@ void AnnotatedText::addSentence(std::vector<string_view>::iterator begin,
   std::vector<ByteRange> sentence;
   for (auto p = begin; p != end; p++) {
     size_t begin_offset = p->data() - &text[0];
-    sentence.push_back((ByteRange){begin_offset, begin_offset + p->size()});
+    sentence.push_back(ByteRange{begin_offset, begin_offset + p->size()});
   }
   annotation.addSentence(sentence);
 };

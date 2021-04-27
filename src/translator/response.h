@@ -41,38 +41,6 @@ struct Quality {
 /// sentences boundaries, which are required to interpret Quality and
 /// Alignment (s) at the moment.
 struct Response {
-
-public:
-  /// \cond HIDDEN_PUBLIC
-  /// Empty constructor, since there's explicit constructors this is required to
-  /// mimic the case where a struct with empty members are created, to be moved
-  /// in with legal values as they're written into.
-  Response(){};
-
-  // Move constructor.
-  Response(Response &&other)
-      : source(std::move(other.source)), target(std::move(other.target)),
-        alignments(std::move(other.alignments)),
-        qualityScores(std::move(other.qualityScores)){};
-
-  // The following copy bans are not strictly required anymore since Annotation
-  // is composed of the ByteRange primitive (which was previously string_view
-  // and required to be bound to string), but makes movement efficient by
-  // banning these letting compiler complain about copies.
-
-#ifndef WASM_BINDINGS
-  Response(const Response &) = delete;
-  Response &operator=(const Response &) = delete;
-#else
-  // Explicit indication to assign default copy-constructor is required because
-  // I specified a move constructor.
-  // There is no segfault here because we are no longer using string-views.
-  Response(const Response &) = default;
-  Response &operator=(const Response &) = default;
-#endif
-
-  /// \endcond
-
   /// Convenience function to obtain number of units translated. Same as
   /// `.source.numSentences()` and `.target.numSentences().` The processing of a
   /// text of into sentences are handled internally, and this information can be

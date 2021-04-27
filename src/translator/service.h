@@ -1,6 +1,7 @@
 #ifndef SRC_BERGAMOT_SERVICE_H_
 #define SRC_BERGAMOT_SERVICE_H_
 
+#include "TranslationRequest.h"
 #include "batch_translator.h"
 #include "batcher.h"
 #include "data/types.h"
@@ -20,36 +21,9 @@
 namespace marian {
 namespace bergamot {
 
-// Hack code to construct AlignedMemory* from void*
-inline AlignedMemory hackModel(const void* modelMemory) {
-  if(modelMemory != nullptr){
-    // Here is a hack to make TranslationModel works
-    size_t modelMemorySize = 73837568;   // Hack: model memory size should be changed to actual model size
-    AlignedMemory alignedMemory(modelMemorySize);
-    memcpy(alignedMemory.begin(), modelMemory, modelMemorySize);
-    return alignedMemory;
-  } else {
-    return AlignedMemory();
-  }
-}
-
-inline AlignedMemory hackShortLis(const void* shortlistMemory) {
-  if(shortlistMemory!= nullptr) {
-    // Hacks to obtain shortlist memory size as this will be checked during construction
-    size_t shortlistMemorySize = sizeof(uint64_t) * (6 + *((uint64_t*)shortlistMemory+4))
-                                 + sizeof(uint32_t) * *((uint64_t*)shortlistMemory+5);
-    // Here is a hack to make TranslationModel works
-    AlignedMemory alignedMemory(shortlistMemorySize);
-    memcpy(alignedMemory.begin(), shortlistMemory, shortlistMemorySize);
-    return alignedMemory;
-  }else {
-    return AlignedMemory();
-  }
-}
-
-/// Service offers  an asynchronous translation service. This is intended to be
-/// similar to the ones provided for training or decoding in ML pipelines with
-/// the following additional capabilities: 
+/// Service offers methods create an asynchronous translation service. This is
+/// intended to be similar to the ones provided for training or decoding in ML
+/// pipelines with the following additional capabilities:
 ///
 ///  1. Provision of a request -> response based translation flow unlike the
 ///  usual a line based translation or decoding provided in most ML frameworks.
@@ -57,8 +31,9 @@ inline AlignedMemory hackShortLis(const void* shortlistMemory) {
 ///  provide to client translation meta-information like alignments consistent
 ///  with the unnormalized input text.
 ///
-/// Service exposes methods to instantiate the service from a string configuration
-/// (which can cover most translators) and to translate an incoming blob of text.
+/// Service exposes methods to instantiate the service from a string
+/// configuration (which can cover most translators) and to translate an
+/// incoming blob of text.
 ///
 ///
 /// An example use of this API looks as follows:
@@ -70,7 +45,7 @@ inline AlignedMemory hackShortLis(const void* shortlistMemory) {
 ///      responseFuture = service.translate(std::move(input_text));
 ///  responseFuture.wait(); // Wait until translation has completed.
 ///  Response response(std::move(response.get());
-///  
+///
 /// // Do things with response.
 /// ```
 ///
@@ -84,7 +59,8 @@ public:
   /// @param modelMemory byte array (aligned to 256!!!) that contains the bytes
   /// of a model.bin. Optional, defaults to nullptr when not used
   /// @param shortlistMemory byte array of shortlist (aligned to 64)
-  explicit Service(Ptr<Options> options, AlignedMemory modelMemory, AlignedMemory shortlistMemory);
+  explicit Service(Ptr<Options> options, AlignedMemory modelMemory,
+                   AlignedMemory shortlistMemory);
 
   /// Construct Service purely from Options. This expects options which
   /// marian-decoder expects to be set for loading model shortlist and
@@ -96,19 +72,21 @@ public:
   ///    Service(options, AlignedMemory(),  AlignedMemory())
   /// ```
   /// wherein empty memory is passed and internal flow defaults to file-based
-  /// model, shortlist loading. 
-  explicit Service(Ptr<Options> options) : Service(options, AlignedMemory(),
-          AlignedMemory()){}
+  /// model, shortlist loading.
+  explicit Service(Ptr<Options> options)
+      : Service(options, AlignedMemory(), AlignedMemory()) {}
 
-/// Construct Service from a string configuration.
+  /// Construct Service from a string configuration.
   /// @param [in] config string parsable as YAML expected to adhere with marian
   /// config
   /// @param [in] model_memory byte array (aligned to 256!!!) that contains the
-  /// bytes of a model.bin. Optional, defaults to nullptr when not used
+  /// bytes of a model.bin. Optional.
   /// @param [in] shortlistMemory byte array of shortlist (aligned to 64)
   explicit Service(const std::string &config,
-                   const void* modelMemory = nullptr, const void* shortlistMemory = nullptr)
-      : Service(parseOptions(config), hackModel(modelMemory), hackShortLis(shortlistMemory)) {}
+                   AlignedMemory modelMemory = AlignedMemory(),
+                   AlignedMemory shortlistMemory = AlignedMemory())
+      : Service(parseOptions(config), std::move(modelMemory),
+                std::move(shortlistMemory)) {}
 
   /// Explicit destructor to clean up after any threads initialized in
   /// asynchronous operation mode.
@@ -178,14 +156,15 @@ private:
   Ptr<Options> options_;
   
   /// Model memory to load model passed as bytes.
-  AlignedMemory modelMemory_;      // ORDER DEPENDENCY (translators_)
+  AlignedMemory modelMemory_; // ORDER DEPENDENCY (translators_)
   /// Shortlist memory passed as bytes.
-  AlignedMemory shortlistMemory_;  // ORDER DEPENDENCY (translators_)
+  AlignedMemory shortlistMemory_; // ORDER DEPENDENCY (translators_)
 
   /// Holds instances of batch translators, just one in case
   /// of single-threaded application, numWorkers_ in case of multithreaded
   /// setting.
-  std::vector<BatchTranslator> translators_;  // ORDER DEPENDENCY (modelMemory_, shortlistMemory_)
+  std::vector<BatchTranslator>
+      translators_; // ORDER DEPENDENCY (modelMemory_, shortlistMemory_)
 
   /// Stores requestId of active request. Used to establish
   /// ordering among requests and logging/book-keeping.
