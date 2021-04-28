@@ -123,6 +123,12 @@ public:
   translateMultiple(std::vector<std::string> &&source,
                     TranslationRequest translationRequest);
 
+  /// Returns if model is alignment capable or not. Exists for not breaking
+  /// things at the extension.
+  bool isAlignmentSupported() const {
+    return options_->hasAndNotEmpty("alignment");
+  }
+
 private:
   /// Queue an input for translation.
   std::future<Response> queueRequest(std::string &&input,
