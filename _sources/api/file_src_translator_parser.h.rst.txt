@@ -47,8 +47,6 @@ Included By
 
 - :ref:`file_src_translator_service.h`
 
-- :ref:`file_src_translator_TranslationModel.cpp`
-
 
 
 
@@ -67,5 +65,5 @@ Functions
 
 - :ref:`exhale_function_parser_8h_1a9d7a795b4232908367ad7d9348c62455`
 
-- :ref:`exhale_function_parser_8h_1a8c401628cb998e9bb359af3f1cdda152`
+- :ref:`exhale_function_parser_8h_1a6c3beb1c6f8449716f2b2f9bc50a0ab2`
 

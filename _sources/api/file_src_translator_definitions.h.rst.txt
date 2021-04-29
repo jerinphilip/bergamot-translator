@@ -43,8 +43,6 @@ Included By
 -----------
 
 
-- :ref:`file_src_TranslationModel.h`
-
 - :ref:`file_src_translator_request.h`
 
 - :ref:`file_src_translator_response.h`
@@ -53,11 +51,11 @@ Included By
 
 - :ref:`file_src_translator_batcher.h`
 
-- :ref:`file_src_translator_text_processor.h`
-
 - :ref:`file_src_translator_byte_array_util.h`
 
 - :ref:`file_src_translator_request.cpp`
+
+- :ref:`file_src_translator_text_processor.h`
 
 - :ref:`file_src_translator_service.cpp`
 
@@ -88,7 +86,7 @@ Typedefs
 --------
 
 
-- :ref:`exhale_typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4`
+- :ref:`exhale_typedef_definitions_8h_1af7b499234642d2926f2e87d894f53f38`
 
 - :ref:`exhale_typedef_definitions_8h_1ad0a7527b1fbf64cfc20eaa76134785ef`
 

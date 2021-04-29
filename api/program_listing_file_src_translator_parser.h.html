@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File parser.h &mdash; Bergamot Translator v0.0.0 2021-04-26 documentation</title>
+  <title>Program Listing for File parser.h &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
   
 
   
@@ -199,7 +199,7 @@
 <span class="p">}</span>
 
 <span class="kr">inline</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span>
-<span class="n">parseOptions</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">config</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">parseOptions</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">config</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">validate</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">marian</span><span class="o">::</span><span class="n">Options</span> <span class="n">options</span><span class="p">;</span>
 
   <span class="c1">// @TODO(jerinphilip) There&#39;s something off here, @XapaJIaMnu suggests</span>
@@ -226,8 +226,11 @@
   <span class="n">options</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
   <span class="n">YAML</span><span class="o">::</span><span class="n">Node</span> <span class="n">configCopy</span> <span class="o">=</span> <span class="n">options</span><span class="p">.</span><span class="n">cloneToYamlNode</span><span class="p">();</span>
 
-  <span class="n">marian</span><span class="o">::</span><span class="n">ConfigValidator</span> <span class="n">validator</span><span class="p">(</span><span class="n">configCopy</span><span class="p">);</span>
-  <span class="n">validator</span><span class="p">.</span><span class="n">validateOptions</span><span class="p">(</span><span class="n">marian</span><span class="o">::</span><span class="n">cli</span><span class="o">::</span><span class="n">mode</span><span class="o">::</span><span class="n">translation</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">validate</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Perform validation on parsed options only when requested</span>
+    <span class="n">marian</span><span class="o">::</span><span class="n">ConfigValidator</span> <span class="n">validator</span><span class="p">(</span><span class="n">configCopy</span><span class="p">);</span>
+    <span class="n">validator</span><span class="p">.</span><span class="n">validateOptions</span><span class="p">(</span><span class="n">marian</span><span class="o">::</span><span class="n">cli</span><span class="o">::</span><span class="n">mode</span><span class="o">::</span><span class="n">translation</span><span class="p">);</span>
+  <span class="p">}</span>
 
   <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">);</span>
 <span class="p">}</span>

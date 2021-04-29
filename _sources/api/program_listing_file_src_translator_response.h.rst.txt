@@ -40,25 +40,6 @@ Program Listing for File response.h
    };
    
    struct Response {
-   
-   public:
-     Response(){};
-   
-     // Move constructor.
-     Response(Response &&other)
-         : source(std::move(other.source)), target(std::move(other.target)),
-           alignments(std::move(other.alignments)),
-           qualityScores(std::move(other.qualityScores)){};
-   
-     // The following copy bans are not strictly required anymore since Annotation
-     // is composed of the ByteRange primitive (which was previously string_view
-     // and required to be bound to string), but makes movement efficient by
-     // banning these letting compiler complain about copies.
-   
-     Response(const Response &) = delete;
-     Response &operator=(const Response &) = delete;
-   
-   
      const size_t size() const { return source.numSentences(); }
    
      AnnotatedText source;
@@ -68,6 +49,10 @@ Program Listing for File response.h
      std::vector<Quality> qualityScores;
    
      std::vector<Alignment> alignments;
+   
+     const std::string &getOriginalText() const { return source.text; }
+   
+     const std::string &getTranslatedText() const { return target.text; }
    };
    } // namespace bergamot
    } // namespace marian

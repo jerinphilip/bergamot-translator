@@ -43,9 +43,9 @@ Included By
 
 - :ref:`file_src_translator_request.h`
 
-- :ref:`file_src_translator_service.h`
-
 - :ref:`file_src_translator_response_builder.cpp`
+
+- :ref:`file_src_translator_service.h`
 
 
 

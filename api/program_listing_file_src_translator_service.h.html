@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File service.h &mdash; Bergamot Translator v0.0.0 2021-04-26 documentation</title>
+  <title>Program Listing for File service.h &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
   
 
   
@@ -200,8 +200,8 @@
   <span class="k">explicit</span> <span class="nf">Service</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">config</span><span class="p">,</span>
                    <span class="n">AlignedMemory</span> <span class="n">modelMemory</span> <span class="o">=</span> <span class="n">AlignedMemory</span><span class="p">(),</span>
                    <span class="n">AlignedMemory</span> <span class="n">shortlistMemory</span> <span class="o">=</span> <span class="n">AlignedMemory</span><span class="p">())</span>
-      <span class="o">:</span> <span class="n">Service</span><span class="p">(</span><span class="n">parseOptions</span><span class="p">(</span><span class="n">config</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">modelMemory</span><span class="p">),</span>
-                <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">shortlistMemory</span><span class="p">))</span> <span class="p">{}</span>
+      <span class="o">:</span> <span class="n">Service</span><span class="p">(</span><span class="n">parseOptions</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="cm">/*validate=*/</span><span class="nb">false</span><span class="p">),</span>
+                <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">modelMemory</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">shortlistMemory</span><span class="p">))</span> <span class="p">{}</span>
 
   <span class="o">~</span><span class="n">Service</span><span class="p">();</span>
 
@@ -211,10 +211,13 @@
                                   <span class="n">ResponseOptions</span> <span class="n">options</span><span class="p">);</span>
 
 
-
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span>
   <span class="n">translateMultiple</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span><span class="n">source</span><span class="p">,</span>
                     <span class="n">TranslationRequest</span> <span class="n">translationRequest</span><span class="p">);</span>
+
+  <span class="kt">bool</span> <span class="nf">isAlignmentSupported</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">options_</span><span class="o">-&gt;</span><span class="n">hasAndNotEmpty</span><span class="p">(</span><span class="s">&quot;alignment&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
 
 <span class="k">private</span><span class="o">:</span>
   <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">,</span>
@@ -230,6 +233,9 @@
   <span class="kt">void</span> <span class="nf">async_translate</span><span class="p">();</span>
 
   <span class="kt">size_t</span> <span class="n">numWorkers_</span><span class="p">;</span> <span class="c1">// ORDER DEPENDENCY (pcqueue_)</span>
+
+  <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options_</span><span class="p">;</span>
+
   <span class="n">AlignedMemory</span> <span class="n">modelMemory_</span><span class="p">;</span> <span class="c1">// ORDER DEPENDENCY (translators_)</span>
   <span class="n">AlignedMemory</span> <span class="n">shortlistMemory_</span><span class="p">;</span> <span class="c1">// ORDER DEPENDENCY (translators_)</span>
 

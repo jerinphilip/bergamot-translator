@@ -55,9 +55,9 @@ Included By
 -----------
 
 
-- :ref:`file_src_translator_service.h`
-
 - :ref:`file_src_translator_batch_translator.cpp`
+
+- :ref:`file_src_translator_service.h`
 
 
 

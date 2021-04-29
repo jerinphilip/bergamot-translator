@@ -32,7 +32,7 @@ Program Listing for File definitions.h
    
    template <class T> UPtr<T> UNew(UPtr<T> p) { return UPtr<T>(p); }
    
-   typedef AlignedVector<const void*> AlignedMemory;
+   typedef AlignedVector<char> AlignedMemory;
    
    } // namespace bergamot
    } // namespace marian

@@ -44,8 +44,8 @@ Program Listing for File service.h
      explicit Service(const std::string &config,
                       AlignedMemory modelMemory = AlignedMemory(),
                       AlignedMemory shortlistMemory = AlignedMemory())
-         : Service(parseOptions(config), std::move(modelMemory),
-                   std::move(shortlistMemory)) {}
+         : Service(parseOptions(config, /*validate=*/false),
+                   std::move(modelMemory), std::move(shortlistMemory)) {}
    
      ~Service();
    
@@ -55,10 +55,13 @@ Program Listing for File service.h
                                      ResponseOptions options);
    
    
-   
      std::vector<Response>
      translateMultiple(std::vector<std::string> &&source,
                        TranslationRequest translationRequest);
+   
+     bool isAlignmentSupported() const {
+       return options_->hasAndNotEmpty("alignment");
+     }
    
    private:
      std::future<Response> queueRequest(std::string &&input,
@@ -74,6 +77,9 @@ Program Listing for File service.h
      void async_translate();
    
      size_t numWorkers_; // ORDER DEPENDENCY (pcqueue_)
+   
+     Ptr<Options> options_;
+   
      AlignedMemory modelMemory_; // ORDER DEPENDENCY (translators_)
      AlignedMemory shortlistMemory_; // ORDER DEPENDENCY (translators_)
    

@@ -60,11 +60,6 @@ Program Listing for File sentence_ranges.h
    
      AnnotatedText(std::string &&text) : text(std::move(text)){};
    
-     // @jerinphilip: We will try the default move constructor for now.
-     // AnnotatedText(AnnotatedText &&annotatedBlob)
-     //     : text(std::move(annotatedBlob.text)),
-     //       annotation(std::move(annotatedBlob.annotation)) {}
-   
      const size_t numSentences() const { return annotation.numSentences(); }
    
      const size_t numWords(size_t sentenceIdx) const {

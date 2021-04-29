@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Class Service &mdash; Bergamot Translator v0.0.0 2021-04-26 documentation</title>
+  <title>Class Service &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
   
 
   
@@ -177,11 +177,13 @@
 <dl class="class">
 <dt id="_CPPv4N6marian8bergamot7ServiceE">
 <span id="_CPPv3N6marian8bergamot7ServiceE"></span><span id="_CPPv2N6marian8bergamot7ServiceE"></span><span id="marian::bergamot::Service"></span><span class="target" id="classmarian_1_1bergamot_1_1Service"></span><em class="property">class </em><code class="sig-name descname">Service</code><a class="headerlink" href="#_CPPv4N6marian8bergamot7ServiceE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> offers methods create an asynchronous translation service. </p>
+<dd><p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> offers methods create an asynchronous translation service that translates a plain (without any markups and emojis) UTF-8 encoded text. </p>
+<p>This implementation supports translation from 1 source language to 1 target language.</p>
 <p>This is intended to be similar to the ones provided for training or decoding in ML pipelines with the following additional capabilities:</p>
 <p><ol class="arabic simple">
 <li><p>Provision of a request -&gt; response based translation flow unlike the usual a line based translation or decoding provided in most ML frameworks.</p></li>
 <li><p>Internal handling of normalization etc which changes source text to provide to client translation meta-information like alignments consistent with the unnormalized input text.</p></li>
+<li><p>The API splits each text entry into sentences internally, which are then translated independent of each other. The translated sentences are then joined back together and returned in <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>.</p></li>
 </ol>
 </p>
 <p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> exposes methods to instantiate the service from a string configuration (which can cover most translators) and to translate an incoming blob of text.</p>
@@ -197,7 +199,7 @@
 </pre></div>
 </div>
 </p>
-<p>Optionally <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> can be initialized by also passing model_memory for purposes of efficiency (which defaults to nullpointer and then reads from file supplied through config). </p>
+<p>Optionally <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> can be initialized by also passing model memory for purposes of efficiency (which defaults to nullpointer and then reads from file supplied through config). </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
@@ -277,8 +279,10 @@
 <dl class="function">
 <dt id="_CPPv4N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest">
 <span id="_CPPv3N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest"></span><span id="_CPPv2N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest"></span><span id="marian::bergamot::Service::translateMultiple__std::vector:ss:RR.TranslationRequest"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1ae2f4606f179b0c5eda117e7b57f2e65e"></span>std::vector&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translateMultiple</code><span class="sig-paren">(</span>std::vector&lt;std::string&gt; &amp;&amp;<em>source</em>, <a class="reference internal" href="classTranslationRequest.html#_CPPv418TranslationRequest" title="TranslationRequest">TranslationRequest</a> <em>translationRequest</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Translate an input, providing <a class="reference internal" href="classTranslationRequest.html#classTranslationRequest"><span class="std std-ref">TranslationRequest</span></a> across all texts to construct <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>. </p>
-<p>Provides the browser with the ability to break texts into multiple <a class="reference internal" href="classmarian_1_1bergamot_1_1Request.html#classmarian_1_1bergamot_1_1Request"><span class="std std-ref">Request</span></a> keeping gains from efficiently batching internally. Also useful when one has to set/unset alignments or quality in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a> to save compute spent in constructing these objects. <dl class="simple">
+<dd><p>Translate multiple text-blobs in a single <em>blocking</em> API call, providing <a class="reference internal" href="classTranslationRequest.html#classTranslationRequest"><span class="std std-ref">TranslationRequest</span></a> which applies across all text-blobs dictating how to construct <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>. </p>
+<p><a class="reference internal" href="classTranslationRequest.html#classTranslationRequest"><span class="std std-ref">TranslationRequest</span></a> can be used to enable/disable additional information like quality-scores, alignments etc.</p>
+<p>All texts are combined to efficiently construct batches together providing speedups compared to calling <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service_1a8c72e0205db4a552cc6b8d9b5c67d939"><span class="std std-ref">translate()</span></a> indepdently on individual text-blob. Note that there will be minor differences in output when text-blobs are individually translated due to approximations but similar quality nonetheless. If you have async/multithread capabilities, it is recommended to work with futures and <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service_1a8c72e0205db4a552cc6b8d9b5c67d939"><span class="std std-ref">translate()</span></a> API.</p>
+<p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">source</span></code>: rvalue reference of the string to be translated </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">translationRequest</span></code>: <a class="reference internal" href="classTranslationRequest.html#classTranslationRequest"><span class="std std-ref">TranslationRequest</span></a> (Unified API) indicating whether or not to include some member in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>, also specify any additional configurable parameters. </p></li>
@@ -286,6 +290,12 @@
 </dd>
 </dl>
 </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4NK6marian8bergamot7Service20isAlignmentSupportedEv">
+<span id="_CPPv3NK6marian8bergamot7Service20isAlignmentSupportedEv"></span><span id="_CPPv2NK6marian8bergamot7Service20isAlignmentSupportedEv"></span><span id="marian::bergamot::Service::isAlignmentSupportedC"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a2d9dc4044b555f8d599edbd847d75925"></span>bool <code class="sig-name descname">isAlignmentSupported</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK6marian8bergamot7Service20isAlignmentSupportedEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns if model is alignment capable or not. </p>
 </dd></dl>
 
 </div>

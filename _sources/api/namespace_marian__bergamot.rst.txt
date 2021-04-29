@@ -17,7 +17,7 @@ Namespaces
 ----------
 
 
-- :ref:`namespace_marian__bergamot__@11`
+- :ref:`namespace_marian__bergamot__@9`
 
 
 Classes
@@ -88,7 +88,7 @@ Functions
 
 - :ref:`exhale_function_request_8cpp_1a1d3110f726c7c85e0202ac7316b449f9`
 
-- :ref:`exhale_function_parser_8h_1a8c401628cb998e9bb359af3f1cdda152`
+- :ref:`exhale_function_parser_8h_1a6c3beb1c6f8449716f2b2f9bc50a0ab2`
 
 - :ref:`exhale_function_definitions_8h_1af891fd0c2012708799d694f4705bcda1`
 
@@ -101,7 +101,7 @@ Typedefs
 --------
 
 
-- :ref:`exhale_typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4`
+- :ref:`exhale_typedef_definitions_8h_1af7b499234642d2926f2e87d894f53f38`
 
 - :ref:`exhale_typedef_response_8h_1a814145c7406e05875734e37f5c0c6dcc`
 
