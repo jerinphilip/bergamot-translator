@@ -28,11 +28,14 @@ loadVocabularies(marian::Ptr<marian::Options> options) {
 namespace marian {
 namespace bergamot {
 
-Service::Service(Ptr<Options> options, AlignedMemory modelMemory, AlignedMemory shortlistMemory) 
-    : requestId_(0), options_(options), vocabs_(std::move(loadVocabularies(options))),
+Service::Service(Ptr<Options> options, AlignedMemory modelMemory,
+                 AlignedMemory shortlistMemory)
+    : requestId_(0), options_(options),
+      vocabs_(std::move(loadVocabularies(options))),
       text_processor_(vocabs_, options), batcher_(options),
       numWorkers_(options->get<int>("cpu-threads")),
-      modelMemory_(std::move(modelMemory)), shortlistMemory_(std::move(shortlistMemory))
+      modelMemory_(std::move(modelMemory)),
+      shortlistMemory_(std::move(shortlistMemory))
 #ifndef WASM_COMPATIBLE_SOURCE
       // 0 elements in PCQueue is illegal and can lead to failures. Adding a
       // guard to have at least one entry allocated. In the single-threaded
@@ -55,7 +58,8 @@ void Service::build_translators(Ptr<Options> options, size_t numTranslators) {
   translators_.reserve(numTranslators);
   for (size_t cpuId = 0; cpuId < numTranslators; cpuId++) {
     marian::DeviceId deviceId(cpuId, DeviceType::cpu);
-    translators_.emplace_back(deviceId, vocabs_, options, &modelMemory_, &shortlistMemory_);
+    translators_.emplace_back(deviceId, vocabs_, options, &modelMemory_,
+                              &shortlistMemory_);
   }
 }
 
@@ -112,7 +116,7 @@ void Service::async_translate() {
 #endif // WASM_COMPATIBLE_SOURCE
 
 std::future<Response> Service::translate(std::string &&input) {
-  ResponseOptions responseOptions;  // Hardcode responseOptions for now
+  ResponseOptions responseOptions; // Hardcode responseOptions for now
   return translate(std::move(input), responseOptions);
 }
 
@@ -148,8 +152,8 @@ Service::translateMultiple(std::vector<std::string> &&inputs,
   return responses;
 }
 
-std::future<Response> Service::queueRequest(std::string &&input,
-                                            ResponseOptions responseOptions) {
+void Service::queueRequest(std::string &&input,
+                           ResponseOptions responseOptions) {
   Segments segments;
   AnnotatedText source(std::move(input));
   text_processor_.process(source, segments);
