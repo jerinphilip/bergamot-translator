@@ -38,8 +38,13 @@ int main(int argc, char *argv[]) {
   responseOptions.alignmentThreshold = 0.2f;
 
   // Wait on future until Response is complete
-  std::future<Response> responseFuture =
-      service.translate(std::move(input), responseOptions);
+  std::promise<Response> responsePromise;
+  std::future<Response> responseFuture = responsePromise.get_future();
+  auto callback = [&responsePromise](Response &&response) {
+    responsePromise.set_value(std::move(response));
+  };
+
+  service.translate(std::move(input), std::move(callback), responseOptions);
   responseFuture.wait();
   Response response = responseFuture.get();
 
