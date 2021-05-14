@@ -18,7 +18,7 @@ namespace bergamot {
 /// paragraph).
 
 class ResponseBuilder {
-public:
+ public:
   /// @param [in] responseOptions: ResponseOptions, indicating what to include
   /// or not in the response and any additional configurable parameters.
   /// @param [in] vocabs: marian vocab object (used in decoding)
@@ -26,8 +26,10 @@ public:
   ResponseBuilder(ResponseOptions responseOptions, AnnotatedText &&source,
                   std::vector<Ptr<Vocab const>> &vocabs,
                   std::promise<Response> &&promise)
-      : responseOptions_(responseOptions), source_(std::move(source)),
-        vocabs_(&vocabs), promise_(std::move(promise)) {}
+      : responseOptions_(responseOptions),
+        source_(std::move(source)),
+        vocabs_(&vocabs),
+        promise_(std::move(promise)) {}
 
   /// Constructs and sets the promise of a Response object from obtained
   /// histories after translating.
@@ -60,7 +62,7 @@ public:
     promise_.set_value(std::move(response));
   }
 
-private:
+ private:
   /// Builds qualityScores from histories and writes to response. expects
   /// buildTranslatedText to be run before to be able to obtain target text and
   /// subword information.
@@ -81,13 +83,13 @@ private:
   // Data members are context/curried args for the functor.
 
   ResponseOptions responseOptions_;
-  std::vector<Ptr<Vocab const>> *vocabs_; // vocabs are required for decoding
-                                          // and any source validation checks.
-  std::promise<Response> promise_; //  To be set when callback triggered and
-                                   //  after Response constructed.
+  std::vector<Ptr<Vocab const>> *vocabs_;  // vocabs are required for decoding
+                                           // and any source validation checks.
+  std::promise<Response> promise_;  //  To be set when callback triggered and
+                                    //  after Response constructed.
   AnnotatedText source_;
 };
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian
 
-#endif //  SRC_BERGAMOT_RESPONSE_BUILDER_H_
+#endif  //  SRC_BERGAMOT_RESPONSE_BUILDER_H_

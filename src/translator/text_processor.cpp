@@ -1,11 +1,12 @@
 #include "text_processor.h"
-#include "data/types.h"
-#include "definitions.h"
-#include "annotation.h"
 
-#include "common/options.h"
-#include "data/vocab.h"
 #include <vector>
+
+#include "annotation.h"
+#include "common/options.h"
+#include "data/types.h"
+#include "data/vocab.h"
+#include "definitions.h"
 
 namespace marian {
 namespace bergamot {
@@ -19,14 +20,12 @@ Segment TextProcessor::tokenize(const string_view &segment,
 TextProcessor::TextProcessor(std::vector<Ptr<Vocab const>> &vocabs,
                              Ptr<Options> options)
     : vocabs_(&vocabs), sentence_splitter_(options) {
-
   max_length_break_ = options->get<int>("max-length-break");
   max_length_break_ = max_length_break_ - 1;
   ABORT_IF(max_length_break_ < 0, "max-length-break cannot be < 0");
 }
 
 void TextProcessor::process(AnnotatedText &source, Segments &segments) {
-
   string_view query = string_view(source.text);
   auto sentenceStream = sentence_splitter_.createSentenceStream(query);
   std::string_view sentenceStringPiece;
@@ -65,5 +64,5 @@ void TextProcessor::truncate(Segment &segment,
   }
 }
 
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian

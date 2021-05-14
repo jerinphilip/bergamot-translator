@@ -1,22 +1,25 @@
 #include "service.h"
-#include "batch.h"
-#include "definitions.h"
 
 #include <string>
 #include <utility>
 
-inline std::vector<marian::Ptr<const marian::Vocab>>
-loadVocabularies(marian::Ptr<marian::Options> options,
-                 std::vector<std::shared_ptr<marian::bergamot::AlignedMemory>>&& vocabMemories) {
+#include "batch.h"
+#include "definitions.h"
+
+inline std::vector<marian::Ptr<const marian::Vocab>> loadVocabularies(
+    marian::Ptr<marian::Options> options,
+    std::vector<std::shared_ptr<marian::bergamot::AlignedMemory>>
+        &&vocabMemories) {
   // @TODO: parallelize vocab loading for faster startup
   std::vector<marian::Ptr<marian::Vocab const>> vocabs;
-  if(!vocabMemories.empty()){
+  if (!vocabMemories.empty()) {
     // load vocabs from buffer
     ABORT_IF(vocabMemories.size() < 2, "Insufficient number of vocabularies.");
     vocabs.resize(vocabMemories.size());
     for (size_t i = 0; i < vocabs.size(); i++) {
       marian::Ptr<marian::Vocab> vocab = marian::New<marian::Vocab>(options, i);
-      vocab->loadFromSerialized(absl::string_view(vocabMemories[i]->begin(), vocabMemories[i]->size()));
+      vocab->loadFromSerialized(absl::string_view(vocabMemories[i]->begin(),
+                                                  vocabMemories[i]->size()));
       vocabs[i] = vocab;
     }
   } else {
@@ -27,8 +30,9 @@ loadVocabularies(marian::Ptr<marian::Options> options,
     vocabs.resize(vfiles.size());
     std::unordered_map<std::string, marian::Ptr<marian::Vocab>> vmap;
     for (size_t i = 0; i < vocabs.size(); ++i) {
-      auto m = vmap.emplace(std::make_pair(vfiles[i], marian::Ptr<marian::Vocab>()));
-      if (m.second) { // new: load the vocab
+      auto m =
+          vmap.emplace(std::make_pair(vfiles[i], marian::Ptr<marian::Vocab>()));
+      if (m.second) {  // new: load the vocab
         m.first->second = marian::New<marian::Vocab>(options, i);
         m.first->second->load(vfiles[i]);
       }
@@ -42,9 +46,12 @@ namespace marian {
 namespace bergamot {
 
 Service::Service(Ptr<Options> options, MemoryBundle memoryBundle)
-    : requestId_(0), options_(options),
-      vocabs_(std::move(loadVocabularies(options, std::move(memoryBundle.vocabs)))),
-      text_processor_(vocabs_, options), batcher_(options),
+    : requestId_(0),
+      options_(options),
+      vocabs_(
+          std::move(loadVocabularies(options, std::move(memoryBundle.vocabs)))),
+      text_processor_(vocabs_, options),
+      batcher_(options),
       numWorkers_(options->get<int>("cpu-threads")),
       modelMemory_(std::move(memoryBundle.model)),
       shortlistMemory_(std::move(memoryBundle.shortlist))
@@ -70,7 +77,8 @@ void Service::build_translators(Ptr<Options> options, size_t numTranslators) {
   translators_.reserve(numTranslators);
   for (size_t cpuId = 0; cpuId < numTranslators; cpuId++) {
     marian::DeviceId deviceId(cpuId, DeviceType::cpu);
-    translators_.emplace_back(deviceId, vocabs_, options, &modelMemory_, &shortlistMemory_);
+    translators_.emplace_back(deviceId, vocabs_, options, &modelMemory_,
+                              &shortlistMemory_);
   }
 }
 
@@ -116,7 +124,7 @@ void Service::async_translate() {
     pcqueue_.ProduceSwap(batch);
   }
 }
-#else  // WASM_COMPATIBLE_SOURCE
+#else   // WASM_COMPATIBLE_SOURCE
 void Service::initialize_async_translators() {
   ABORT("Cannot run in async mode without multithreading.");
 }
@@ -124,16 +132,15 @@ void Service::initialize_async_translators() {
 void Service::async_translate() {
   ABORT("Cannot run in async mode without multithreading.");
 }
-#endif // WASM_COMPATIBLE_SOURCE
+#endif  // WASM_COMPATIBLE_SOURCE
 
 std::future<Response> Service::translate(std::string &&input) {
   ResponseOptions responseOptions;  // Hardcode responseOptions for now
   return translate(std::move(input), responseOptions);
 }
 
-std::vector<Response>
-Service::translateMultiple(std::vector<std::string> &&inputs,
-                           TranslationRequest translationRequest) {
+std::vector<Response> Service::translateMultiple(
+    std::vector<std::string> &&inputs, TranslationRequest translationRequest) {
   ResponseOptions responseOptions;
 
   // TODO(jerinphilip) Set options based on TranslationRequest, if and when it
@@ -200,7 +207,6 @@ void Service::dispatchTranslate() {
 Service::~Service() {
 #ifndef WASM_COMPATIBLE_SOURCE
   for (size_t workerId = 0; workerId < numWorkers_; workerId++) {
-
     Batch poison = Batch::poison();
     pcqueue_.ProduceSwap(poison);
   }
@@ -213,5 +219,5 @@ Service::~Service() {
 #endif
 }
 
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian

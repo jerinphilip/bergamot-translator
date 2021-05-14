@@ -1,4 +1,5 @@
 #include "response_builder.h"
+
 #include "response_options.h"
 
 namespace marian {
@@ -11,7 +12,7 @@ void ResponseBuilder::buildQualityScores(Histories &histories,
     // TODO(jerin): Change hardcode of nBest = 1
     NBestList onebest = history->nBest(1);
 
-    Result result = onebest[0]; // Expecting only one result;
+    Result result = onebest[0];  // Expecting only one result;
     Words words = std::get<0>(result);
     auto hyp = std::get<1>(result);
     // Quality scores: Sequence level is obtained as normalized path scores.
@@ -31,7 +32,7 @@ void ResponseBuilder::buildAlignments(Histories &histories,
     // TODO(jerin): Change hardcode of nBest = 1
     NBestList onebest = history->nBest(1);
 
-    Result result = onebest[0]; // Expecting only one result;
+    Result result = onebest[0];  // Expecting only one result;
     Words words = std::get<0>(result);
     // Alignments
     // TODO(jerinphilip): The following double conversion might not be
@@ -63,7 +64,7 @@ void ResponseBuilder::buildTranslatedText(Histories &histories,
     auto &history = histories[sentenceIdx];
     NBestList onebest = history->nBest(1);
 
-    Result result = onebest[0]; // Expecting only one result;
+    Result result = onebest[0];  // Expecting only one result;
     Words words = std::get<0>(result);
     auto targetVocab = vocabs_->back();
 
@@ -72,34 +73,34 @@ void ResponseBuilder::buildTranslatedText(Histories &histories,
     targetVocab->decodeWithByteRanges(words, decoded, targetSentenceMappings);
 
     switch (responseOptions_.concatStrategy) {
-    case ConcatStrategy::FAITHFUL: {
-      // For each sentence, prepend the filler text between the corresponding
-      // source-sentence and the source-sentence before.
-      string_view pre = response.source.gap(sentenceIdx);
-      response.target.appendSentence(std::string(pre.data(), pre.size()),
-                                     decoded, targetSentenceMappings);
+      case ConcatStrategy::FAITHFUL: {
+        // For each sentence, prepend the filler text between the corresponding
+        // source-sentence and the source-sentence before.
+        string_view pre = response.source.gap(sentenceIdx);
+        response.target.appendSentence(std::string(pre.data(), pre.size()),
+                                       decoded, targetSentenceMappings);
 
-      // If this is the last history to be decoded and translated-text
-      // constructed, append the text till the end, which could be spaces or
-      // empty.
-      if (sentenceIdx + 1 == histories.size()) {
-        string_view post = response.source.gap(sentenceIdx + 1);
-        response.target.text += std::string(post.data(), post.size());
+        // If this is the last history to be decoded and translated-text
+        // constructed, append the text till the end, which could be spaces or
+        // empty.
+        if (sentenceIdx + 1 == histories.size()) {
+          string_view post = response.source.gap(sentenceIdx + 1);
+          response.target.text += std::string(post.data(), post.size());
+        }
+        break;
       }
-      break;
-    }
-    case ConcatStrategy::SPACE: {
-      std::string delimiter = (sentenceIdx == 0) ? "" : " ";
-      response.target.appendSentence(delimiter, decoded,
-                                     targetSentenceMappings);
-      break;
-    }
+      case ConcatStrategy::SPACE: {
+        std::string delimiter = (sentenceIdx == 0) ? "" : " ";
+        response.target.appendSentence(delimiter, decoded,
+                                       targetSentenceMappings);
+        break;
+      }
 
-    default:
-      ABORT("Unknown concat-strategy");
+      default:
+        ABORT("Unknown concat-strategy");
     }
   }
 }
 
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian

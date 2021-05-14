@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+
 #include "translator/definitions.h"
 
 /* All possible Granularities for which Quality Scores can be returned for
@@ -21,7 +22,7 @@ enum class QualityScoreGranularity {
 /* This class represents the Quality Scores for various spans of a translated
  * text at a specific granularity. */
 class QualityScore {
-private:
+ private:
   // Sections of the translated text for the Quality Scores.
   std::vector<std::string_view> textViews;
 
@@ -31,7 +32,7 @@ private:
   // Granularity of the text for the Quality scores above
   QualityScoreGranularity textGranularity;
 
-public:
+ public:
   // ToDo: Public Methods
 };
 

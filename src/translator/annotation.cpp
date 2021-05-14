@@ -1,4 +1,5 @@
 #include "annotation.h"
+
 #include <cassert>
 #include <iostream>
 
@@ -14,7 +15,7 @@ void Annotation::addSentence(std::vector<ByteRange> &sentence) {
 
 size_t Annotation::numWords(size_t sentenceIdx) const {
   size_t bosId, eosId;
-  bosId = sentenceEndIds_[sentenceIdx]; // Half interval, so;
+  bosId = sentenceEndIds_[sentenceIdx];  // Half interval, so;
   eosId = sentenceEndIds_[sentenceIdx + 1];
   // Difference between eosId and bosId is the number of words.
   return eosId - bosId;
@@ -22,7 +23,7 @@ size_t Annotation::numWords(size_t sentenceIdx) const {
 
 ByteRange Annotation::sentence(size_t sentenceIdx) const {
   size_t bosId, eosId;
-  bosId = sentenceEndIds_[sentenceIdx]; // Half interval, so;
+  bosId = sentenceEndIds_[sentenceIdx];  // Half interval, so;
   eosId = sentenceEndIds_[sentenceIdx + 1];
   ByteRange sentenceByteRange;
 
@@ -59,8 +60,8 @@ string_view AnnotatedText::sentence(size_t sentenceIdx) const {
 void AnnotatedText::appendSentence(std::string prefix, std::string &reference,
                                    std::vector<string_view> &wordRanges) {
   text += prefix;
-  size_t offset = text.size(); // Get size before to do ByteRange arithmetic
-  text += reference;           // Append reference to text
+  size_t offset = text.size();  // Get size before to do ByteRange arithmetic
+  text += reference;            // Append reference to text
   std::vector<ByteRange> sentence;
   for (auto &wordView : wordRanges) {
     size_t thisWordBegin = offset + wordView.data() - reference.data();
@@ -127,5 +128,5 @@ string_view AnnotatedText::gap(size_t sentenceIdx) const {
   return string_view(start, end - start);
 }
 
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian

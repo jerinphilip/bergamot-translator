@@ -1,7 +1,8 @@
-#include "catch.hpp"
-#include "translator/annotation.h"
 #include <random>
 #include <vector>
+
+#include "catch.hpp"
+#include "translator/annotation.h"
 
 using namespace marian::bergamot;
 
@@ -23,8 +24,8 @@ TEST_CASE("Test Annotation API with random sentences") {
   std::mt19937 randomIntGen_;
   randomIntGen_.seed(42);
 
-  AnnotatedText testAnnotation; // This the container we add through API and
-                                // check if the access is correct.
+  AnnotatedText testAnnotation;  // This the container we add through API and
+                                 // check if the access is correct.
 
   // External book-keeping so we have ground truths. Each element represents a
   // sentence.
@@ -54,8 +55,7 @@ TEST_CASE("Test Annotation API with random sentences") {
     std::cout << "Preparing text and ground truth-tables" << std::endl;
   }
   for (size_t idx = 0; idx < sentences; idx++) {
-    if (idx != 0)
-      testAnnotation.text += "\n";
+    if (idx != 0) testAnnotation.text += "\n";
 
     // Words can be zero, we need to support empty word sentences as well.
     size_t numWords = randomIntGen_() % maxWords;

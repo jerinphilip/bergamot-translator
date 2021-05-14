@@ -1,4 +1,5 @@
 #include "batch.h"
+
 #include "request.h"
 
 namespace marian {
@@ -24,5 +25,5 @@ void Batch::completeBatch(const Histories &histories) {
     sentences_[i].completeSentence(histories[i]);
   }
 }
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian

@@ -1,10 +1,11 @@
 #ifndef BERGAMOT_SENTENCE_RANGES_H_
 #define BERGAMOT_SENTENCE_RANGES_H_
 
-#include "data/types.h"
 #include <cassert>
 #include <utility>
 #include <vector>
+
+#include "data/types.h"
 
 namespace marian {
 namespace bergamot {
@@ -56,7 +57,7 @@ struct ByteRange {
 /// sentences, both composed of (sub)-words, providing a List[List] like access
 /// while storing it in a compact and efficient manner.
 class Annotation {
-public:
+ public:
   /// Annotation is constructed empty. See `addSentence()` to populate it with
   /// annotations.
   Annotation() {
@@ -84,7 +85,7 @@ public:
   /// less than `.numSentences()`.
   ByteRange sentence(size_t sentenceIdx) const;
 
-private:
+ private:
   /// A flat storage for ByteRanges. Composed of word ByteRanges, extra
   /// information in sentenceEndIds_ to denote sentence boundary markers as
   /// indices.
@@ -109,9 +110,9 @@ private:
 /// unit.
 
 struct AnnotatedText {
-public:
-  std::string text;      ///< Blob of string elements in annotation refers to.
-  Annotation annotation; ///< sentence and (sub-) word annotations.
+ public:
+  std::string text;       ///< Blob of string elements in annotation refers to.
+  Annotation annotation;  ///< sentence and (sub-) word annotations.
 
   /// Construct an empty AnnotatedText. This is useful when the target string or
   /// ByteRanges are not known yet, but the public members can be used to
@@ -170,11 +171,11 @@ public:
   /// Returns a ByteRange representing sentence corresponding to sentenceIdx.
   ByteRange sentenceAsByteRange(size_t sentenceIdx) const;
 
-private:
+ private:
   string_view asStringView(const ByteRange &byteRange) const;
 };
 
-} // namespace bergamot
-} // namespace marian
+}  // namespace bergamot
+}  // namespace marian
 
-#endif //  BERGAMOT_SENTENCE_RANGES_H_
+#endif  //  BERGAMOT_SENTENCE_RANGES_H_

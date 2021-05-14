@@ -17,7 +17,7 @@
  * any of the others.
  */
 class TranslationRequest {
-private:
+ private:
   // The granularity for which Quality scores of the translated text will be
   // included in TranslationResult. QualityScoreGranularity::NONE means the
   // scores are not included in TranslationResult.
@@ -39,7 +39,7 @@ private:
   //     ]
   bool includeSentenceMapping = false;
 
-public:
+ public:
   TranslationRequest() {}
 
   TranslationRequest(const TranslationRequest &request)
