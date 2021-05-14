@@ -11,7 +11,5 @@ using namespace emscripten;
 
 // Binding code
 EMSCRIPTEN_BINDINGS(translation_request) {
-  class_<TranslationRequest>("TranslationRequest")
-    .constructor<>()
-    ;
+  class_<TranslationRequest>("TranslationRequest").constructor<>();
 }
