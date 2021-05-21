@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
   using marian::bergamot::Response;
 
   // Wait on future until Response is complete
+  marian::bergamot::ResponseOptions responseOptions;
+  responseOptions.concatStrategy = marian::bergamot::ConcatStrategy::SPACE;
   std::future<Response> responseFuture = service.translate(std::move(input));
   responseFuture.wait();
   const Response &response = responseFuture.get();
