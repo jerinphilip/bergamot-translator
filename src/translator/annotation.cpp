@@ -14,7 +14,7 @@ void AnnotatedText::appendSentence(string_view prefix, std::vector<string_view>:
                                    std::vector<string_view>::iterator end) {
   assert(annotation.token_begin_.back() == text.size());
   // We'll be adding tokens from the sentence and another gap.
-  annotation.token_begin_.reserve(annotation.token_begin_.size() + (end - begin) + 1);
+  // annotation.token_begin_.reserve(annotation.token_begin_.size() + (end - begin) + 1);
 
   // prefix is just end of the previous one.
   appendEndingWhitespace(prefix);
