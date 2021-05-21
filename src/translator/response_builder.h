@@ -39,19 +39,27 @@ class ResponseBuilder {
     ABORT_IF(source_.numSentences() != histories.size(), "Mismatch in source and translated sentences");
     Response response;
 
+    LOG(info, "Building response");
     // Move source_ into response.
     response.source = std::move(source_);
+    LOG(info, "Built response");
 
+    LOG(info, "Building response translated text");
     // Should be after source is set
     buildTranslatedText(histories, response);
+    LOG(info, "Built response translated text");
 
     // Should always be after buildTranslatedText
     if (responseOptions_.qualityScores) {
+      LOG(info, "Building response qualityscores");
       buildQualityScores(histories, response);
+      LOG(info, "Built response qualityscores");
     }
 
     if (responseOptions_.alignment) {
+      LOG(info, "Building response alignment");
       buildAlignments(histories, response);
+      LOG(info, "Built response alignment");
     }
 
     // Once complete, set promise.

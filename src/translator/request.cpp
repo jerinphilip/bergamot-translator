@@ -44,6 +44,8 @@ void Request::processHistory(size_t index, Ptr<History> history) {
   if (--counter_ == 0) {
     responseBuilder_(std::move(histories_));
   }
+
+  LOG(info, "{}/{} sentences remaining", counter_.load(), segments_.size());
 }
 
 bool Request::operator<(const Request &b) const {
