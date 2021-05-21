@@ -53,6 +53,8 @@ void ResponseBuilder::buildTranslatedText(Histories &histories, Response &respon
   // thing to do to avoid reallocations.
   response.target.text.reserve(response.source.text.size());
 
+  size_t interval = 1000;
+
   for (size_t sentenceIdx = 0; sentenceIdx < histories.size(); sentenceIdx++) {
     // TODO(jerin): Change hardcode of nBest = 1
 
@@ -70,6 +72,12 @@ void ResponseBuilder::buildTranslatedText(Histories &histories, Response &respon
       case ConcatStrategy::FAITHFUL: {
         // For each sentence, prepend the filler text between the corresponding
         // source-sentence and the source-sentence before.
+        if ((sentenceIdx + 1) % interval == 0) {
+          LOG(info, "appending sentence");
+          LOG(info, "Id: {}, #target-words: {}, #target-views: {}", sentenceIdx + 1, words.size(),
+              targetSentenceMappings.size());
+          LOG(info, "content {}", decoded);
+        }
         string_view pre = response.source.gap(sentenceIdx);
         response.target.appendSentence(pre, targetSentenceMappings.begin(), targetSentenceMappings.end());
 
@@ -77,11 +85,19 @@ void ResponseBuilder::buildTranslatedText(Histories &histories, Response &respon
         // constructed, append the text till the end, which could be spaces or
         // empty.
         if (sentenceIdx + 1 == histories.size()) {
+          LOG(info, "appending ending whitespace");
           response.target.appendEndingWhitespace(response.source.gap(sentenceIdx + 1));
+          LOG(info, "faithful translation completed");
         }
         break;
       }
       case ConcatStrategy::SPACE: {
+        if ((sentenceIdx + 1) % interval == 0) {
+          LOG(info, "appending sentence");
+          LOG(info, "Id: {}, #target-words: {}, #target-views: {}", sentenceIdx + 1, words.size(),
+              targetSentenceMappings.size());
+          LOG(info, "content {}", decoded);
+        }
         string_view delimiter = (sentenceIdx == 0) ? "" : " ";
         response.target.appendSentence(delimiter, targetSentenceMappings.begin(), targetSentenceMappings.end());
         break;
