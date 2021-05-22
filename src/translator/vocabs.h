@@ -3,20 +3,59 @@
 namespace marian {
 namespace bergamot {
 
+namespace {
+
+template <class KeyType, class HashType, class HashFn, class LoadFn>
+class VocabLoader {
+ public:
+  VocabLoader(Ptr<Options> options, std::vector<KeyType>& elements) {
+    for (size_t i = 0; i < elements.size(); i++) {
+      KeyType key = HashFn(elements[i]);
+      auto m = vmap_.emplace(std::make_pair(key, Ptr<Vocab>()));
+      if (m.second) {
+        // new: load the vocab
+        m.first->second = New<Vocab>(options, i);
+        LoadFn(m.first->second, elements[i]);
+      }
+    }
+  }
+
+  void load(std::vector<KeyType> keys, std::vector<Ptr<Vocab const>>& srcVocabs, Ptr<Vocab const>& trgVocab) {
+    for (auto& key : keys) {
+      srcVocabs.push_back(vmap_[key]);
+    }
+    trgVocab = srcVocabs.back();
+    srcVocabs.pop_back();
+  }
+
+ private:
+  std::unordered_map<KeyType, Ptr<Vocab>> vmap_;
+};
+
+}  // namespace
+
 /// Wrapper of Marian Vocab objects needed for translator.
 /// Holds multiple source vocabularies and one target vocabulary
 class Vocabs {
  public:
   /// Construct vocabs object from either byte-arrays or files
-  Vocabs(Ptr<Options> options, std::vector<std::shared_ptr<AlignedMemory>>&& vocabMemories) : options_(options) {
-    if (!vocabMemories.empty()) {
-      // load vocabs from buffer
-      load(std::move(vocabMemories));
-    } else {
-      // load vocabs from file
-      auto vocabPaths = options->get<std::vector<std::string>>("vocabs");
-      load(vocabPaths);
-    }
+  Vocabs(Ptr<Options> options, std::vector<std::shared_ptr<AlignedMemory>>&& vocabMemories) {
+    auto hashFn = [](std::shared_ptr<AlignedMemory>& memory) { return reinterpret_cast<uintptr_t>(memory.get()); };
+    auto loadFn = [](Ptr<Vocab>& vocab, std::shared_ptr<AlignedMemory>& memory) {
+      absl::string_view serialized = absl::string_view(memory->begin(), memory->size());
+      vocab->loadFromSerialized(serialized);
+    };
+
+    VocabLoader<std::shared_ptr<AlignedMemory>, uintptr_t, decltype(hashFn), decltype(loadFn)> loader(options,
+                                                                                                      vocabMemories);
+    loader.load(vocabMemories, srcVocabs_, trgVocab_);
+  }
+
+  Vocabs(Ptr<Options> options, std::vector<std::string>&& vocabPaths) {
+    auto hashFn = [](std::string& s) { return s; };
+    auto loadFn = [](Ptr<Vocab>& vocab, std::string& path) { vocab->load(path); };
+    VocabLoader<std::string, std::string, decltype(hashFn), decltype(loadFn)> loader(options, vocabPaths);
+    loader.load(vocabPaths, srcVocabs_, trgVocab_);
   }
 
   /// Get all source vocabularies (as a vector)
@@ -28,48 +67,6 @@ class Vocabs {
  private:
   std::vector<Ptr<Vocab const>> srcVocabs_;  // source vocabularies
   Ptr<Vocab const> trgVocab_;                // target vocabulary
-  Ptr<Options> options_;
-
-  // load from buffer
-  void load(std::vector<std::shared_ptr<AlignedMemory>>&& vocabMemories) {
-    // At least two vocabs: src and trg
-    ABORT_IF(vocabMemories.size() < 2, "Insufficient number of vocabularies.");
-    srcVocabs_.resize(vocabMemories.size());
-    // hashMap is introduced to avoid double loading the same vocab
-    // loading vocabs (either from buffers or files) is the biggest bottleneck of the speed
-    // uintptr_t holds unique keys (address) for share_ptr<AlignedMemory>
-    std::unordered_map<uintptr_t, Ptr<Vocab>> vmap;
-    for (size_t i = 0; i < srcVocabs_.size(); i++) {
-      auto m = vmap.emplace(std::make_pair(reinterpret_cast<uintptr_t>(vocabMemories[i].get()), Ptr<Vocab>()));
-      if (m.second) {  // new: load the vocab
-        m.first->second = New<Vocab>(options_, i);
-        m.first->second->loadFromSerialized(absl::string_view(vocabMemories[i]->begin(), vocabMemories[i]->size()));
-      }
-      srcVocabs_[i] = m.first->second;
-    }
-    // Initialize target vocab
-    trgVocab_ = srcVocabs_.back();
-    srcVocabs_.pop_back();
-  }
-
-  // load from file
-  void load(const std::vector<std::string>& vocabPaths) {
-    // with the current setup, we need at least two vocabs: src and trg
-    ABORT_IF(vocabPaths.size() < 2, "Insufficient number of vocabularies.");
-    srcVocabs_.resize(vocabPaths.size());
-    std::unordered_map<std::string, Ptr<Vocab>> vmap;
-    for (size_t i = 0; i < srcVocabs_.size(); ++i) {
-      auto m = vmap.emplace(std::make_pair(vocabPaths[i], Ptr<Vocab>()));
-      if (m.second) {  // new: load the vocab
-        m.first->second = New<Vocab>(options_, i);
-        m.first->second->load(vocabPaths[i]);
-      }
-      srcVocabs_[i] = m.first->second;
-    }
-    // Initialize target vocab
-    trgVocab_ = srcVocabs_.back();
-    srcVocabs_.pop_back();
-  }
 };
 
 }  // namespace bergamot
