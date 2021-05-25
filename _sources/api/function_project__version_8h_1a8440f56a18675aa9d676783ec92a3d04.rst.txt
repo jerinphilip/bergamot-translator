@@ -1,0 +1,13 @@
+.. _exhale_function_project__version_8h_1a8440f56a18675aa9d676783ec92a3d04:
+
+Function marian::bergamot::bergamotBuildVersion
+===============================================
+
+- Defined in :ref:`file_src_translator_project_version.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::bergamot::bergamotBuildVersion()

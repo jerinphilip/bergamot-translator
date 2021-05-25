@@ -11,9 +11,11 @@ Program Listing for File batcher.cpp
 .. code-block:: cpp
 
    #include "batcher.h"
+   
+   #include <cassert>
+   
    #include "batch.h"
    #include "common/logging.h"
-   #include <cassert>
    
    namespace marian {
    namespace bergamot {
@@ -31,8 +33,6 @@ Program Listing for File batcher.cpp
      assert(bucket_id < bucket_.size());
      bucket_[bucket_id].insert(sentence);
    }
-   
-   bool Batcher::operator>>(Batch &batch) { return cleaveBatch(batch); }
    
    bool Batcher::cleaveBatch(Batch &batch) {
      // For now simply iterates on buckets and converts batches greedily.  This
@@ -69,5 +69,5 @@ Program Listing for File batcher.cpp
      }
    }
    
-   } // namespace bergamot
-   } // namespace marian
+   }  // namespace bergamot
+   }  // namespace marian

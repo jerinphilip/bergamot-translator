@@ -1,0 +1,25 @@
+.. _exhale_class_classmarian_1_1bergamot_1_1app_1_1Decoder:
+
+Class Decoder
+=============
+
+- Defined in :ref:`file_app_cli.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public marian::bergamot::app::CLIAppInterface`` (:ref:`exhale_class_classmarian_1_1bergamot_1_1app_1_1CLIAppInterface`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: marian::bergamot::app::Decoder
+   :members:
+   :protected-members:
+   :undoc-members:

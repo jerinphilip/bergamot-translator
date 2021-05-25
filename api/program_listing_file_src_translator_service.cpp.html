@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File service.cpp &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>Program Listing for File service.cpp &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -94,7 +94,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -167,143 +167,71 @@
 <span id="program-listing-file-src-translator-service-cpp"></span><h1>Program Listing for File service.cpp<a class="headerlink" href="#program-listing-for-file-service-cpp" title="Permalink to this headline">¶</a></h1>
 <p>↰ <a class="reference internal" href="file_src_translator_service.cpp.html#file-src-translator-service-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/translator/service.cpp</span></code>)</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;service.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;batch.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;definitions.h&quot;</span><span class="cp"></span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;utility&gt;</span><span class="cp"></span>
 
-<span class="kr">inline</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span><span class="o">&gt;&gt;</span>
-<span class="n">loadVocabularies</span><span class="p">(</span><span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">// @TODO: parallelize vocab loading for faster startup</span>
-  <span class="k">auto</span> <span class="n">vfiles</span> <span class="o">=</span> <span class="n">options</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="s">&quot;vocabs&quot;</span><span class="p">);</span>
-  <span class="c1">// with the current setup, we need at least two vocabs: src and trg</span>
-  <span class="n">ABORT_IF</span><span class="p">(</span><span class="n">vfiles</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;Insufficient number of vocabularies.&quot;</span><span class="p">);</span>
-  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="n">vocabs</span><span class="p">(</span><span class="n">vfiles</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-  <span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span> <span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span><span class="o">&gt;&gt;</span> <span class="n">vmap</span><span class="p">;</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">vocabs</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">auto</span> <span class="n">m</span> <span class="o">=</span>
-        <span class="n">vmap</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="n">vfiles</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marian</span><span class="o">::</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span><span class="o">&gt;</span><span class="p">()));</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">second</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// new: load the vocab</span>
-      <span class="n">m</span><span class="p">.</span><span class="n">first</span><span class="o">-&gt;</span><span class="n">second</span> <span class="o">=</span> <span class="n">marian</span><span class="o">::</span><span class="n">New</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Vocab</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
-      <span class="n">m</span><span class="p">.</span><span class="n">first</span><span class="o">-&gt;</span><span class="n">second</span><span class="o">-&gt;</span><span class="n">load</span><span class="p">(</span><span class="n">vfiles</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-    <span class="p">}</span>
-    <span class="n">vocabs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span><span class="p">.</span><span class="n">first</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="n">vocabs</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="cp">#include</span> <span class="cpf">&quot;batch.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;definitions.h&quot;</span><span class="cp"></span>
 
 <span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
 <span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
 
-<span class="n">Service</span><span class="o">::</span><span class="n">Service</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="n">AlignedMemory</span> <span class="n">modelMemory</span><span class="p">,</span> <span class="n">AlignedMemory</span> <span class="n">shortlistMemory</span><span class="p">)</span>
-    <span class="o">:</span> <span class="n">requestId_</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">options_</span><span class="p">(</span><span class="n">options</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">loadVocabularies</span><span class="p">(</span><span class="n">options</span><span class="p">))),</span>
-      <span class="n">text_processor_</span><span class="p">(</span><span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">),</span> <span class="n">batcher_</span><span class="p">(</span><span class="n">options</span><span class="p">),</span>
-      <span class="n">numWorkers_</span><span class="p">(</span><span class="n">options</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;cpu-threads&quot;</span><span class="p">)),</span>
-      <span class="n">modelMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">modelMemory</span><span class="p">)),</span> <span class="n">shortlistMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">shortlistMemory</span><span class="p">))</span>
-<span class="cp">#ifndef WASM_COMPATIBLE_SOURCE</span>
-      <span class="c1">// 0 elements in PCQueue is illegal and can lead to failures. Adding a</span>
-      <span class="c1">// guard to have at least one entry allocated. In the single-threaded</span>
-      <span class="c1">// case, while initialized pcqueue_ remains unused.</span>
+<span class="n">Service</span><span class="o">::</span><span class="n">Service</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="n">MemoryBundle</span> <span class="n">memoryBundle</span><span class="p">)</span>
+    <span class="o">:</span> <span class="n">requestId_</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+      <span class="n">options_</span><span class="p">(</span><span class="n">options</span><span class="p">),</span>
+      <span class="n">vocabs_</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">memoryBundle</span><span class="p">.</span><span class="n">vocabs</span><span class="p">)),</span>
+      <span class="n">text_processor_</span><span class="p">(</span><span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">),</span>
+      <span class="n">batcher_</span><span class="p">(</span><span class="n">options</span><span class="p">),</span>
+      <span class="n">numWorkers_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">options</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;cpu-threads&quot;</span><span class="p">))),</span>
+      <span class="n">modelMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">memoryBundle</span><span class="p">.</span><span class="n">model</span><span class="p">)),</span>
+      <span class="n">shortlistMemory_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">memoryBundle</span><span class="p">.</span><span class="n">shortlist</span><span class="p">))</span>
+<span class="cp">#ifdef WASM_COMPATIBLE_SOURCE</span>
       <span class="p">,</span>
-      <span class="n">pcqueue_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">numWorkers_</span><span class="p">))</span>
+      <span class="n">blocking_translator_</span><span class="p">(</span><span class="n">DeviceId</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">DeviceType</span><span class="o">::</span><span class="n">cpu</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">options_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">modelMemory_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">shortlistMemory_</span><span class="p">)</span>
 <span class="cp">#endif</span>
 <span class="p">{</span>
-
-  <span class="k">if</span> <span class="p">(</span><span class="n">numWorkers_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">build_translators</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="cm">/*numTranslators=*/</span><span class="mi">1</span><span class="p">);</span>
-    <span class="n">initialize_blocking_translator</span><span class="p">();</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="n">build_translators</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">numWorkers_</span><span class="p">);</span>
-    <span class="n">initialize_async_translators</span><span class="p">();</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">build_translators</span><span class="p">(</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">options</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">numTranslators</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">translators_</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">numTranslators</span><span class="p">);</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">cpuId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">cpuId</span> <span class="o">&lt;</span> <span class="n">numTranslators</span><span class="p">;</span> <span class="n">cpuId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">marian</span><span class="o">::</span><span class="n">DeviceId</span> <span class="n">deviceId</span><span class="p">(</span><span class="n">cpuId</span><span class="p">,</span> <span class="n">DeviceType</span><span class="o">::</span><span class="n">cpu</span><span class="p">);</span>
-    <span class="n">translators_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">modelMemory_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">shortlistMemory_</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">initialize_blocking_translator</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">translators_</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">initialize</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">blocking_translate</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">Batch</span> <span class="n">batch</span><span class="p">;</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">batcher_</span> <span class="o">&gt;&gt;</span> <span class="n">batch</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">auto</span> <span class="o">&amp;</span><span class="n">translator</span> <span class="o">=</span> <span class="n">translators_</span><span class="p">.</span><span class="n">back</span><span class="p">();</span>
-    <span class="n">translator</span><span class="p">.</span><span class="n">translate</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="cp">#ifndef WASM_COMPATIBLE_SOURCE</span>
-<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">initialize_async_translators</span><span class="p">()</span> <span class="p">{</span>
+<span class="cp">#ifdef WASM_COMPATIBLE_SOURCE</span>
+  <span class="n">blocking_translator_</span><span class="p">.</span><span class="n">initialize</span><span class="p">();</span>
+<span class="cp">#else</span>
   <span class="n">workers_</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">numWorkers_</span><span class="p">);</span>
-
   <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">cpuId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">cpuId</span> <span class="o">&lt;</span> <span class="n">numWorkers_</span><span class="p">;</span> <span class="n">cpuId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">auto</span> <span class="o">&amp;</span><span class="n">translator</span> <span class="o">=</span> <span class="n">translators_</span><span class="p">[</span><span class="n">cpuId</span><span class="p">];</span>
-    <span class="n">workers_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">([</span><span class="o">&amp;</span><span class="n">translator</span><span class="p">,</span> <span class="k">this</span><span class="p">]</span> <span class="p">{</span>
+    <span class="n">workers_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">([</span><span class="n">cpuId</span><span class="p">,</span> <span class="k">this</span><span class="p">]</span> <span class="p">{</span>
+      <span class="n">marian</span><span class="o">::</span><span class="n">DeviceId</span> <span class="n">deviceId</span><span class="p">(</span><span class="n">cpuId</span><span class="p">,</span> <span class="n">DeviceType</span><span class="o">::</span><span class="n">cpu</span><span class="p">);</span>
+      <span class="n">BatchTranslator</span> <span class="nf">translator</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">options_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">modelMemory_</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">shortlistMemory_</span><span class="p">);</span>
       <span class="n">translator</span><span class="p">.</span><span class="n">initialize</span><span class="p">();</span>
-
-      <span class="c1">// Run thread mainloop</span>
       <span class="n">Batch</span> <span class="n">batch</span><span class="p">;</span>
-      <span class="n">Histories</span> <span class="n">histories</span><span class="p">;</span>
-      <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">pcqueue_</span><span class="p">.</span><span class="n">ConsumeSwap</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">batch</span><span class="p">.</span><span class="n">isPoison</span><span class="p">())</span> <span class="p">{</span>
-          <span class="k">return</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="n">translator</span><span class="p">.</span><span class="n">translate</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
-        <span class="p">}</span>
+      <span class="c1">// Run thread mainloop</span>
+      <span class="k">while</span> <span class="p">(</span><span class="n">batcher_</span> <span class="o">&gt;&gt;</span> <span class="n">batch</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">translator</span><span class="p">.</span><span class="n">translate</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
       <span class="p">}</span>
     <span class="p">});</span>
   <span class="p">}</span>
+<span class="cp">#endif</span>
 <span class="p">}</span>
 
-<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">async_translate</span><span class="p">()</span> <span class="p">{</span>
+<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">blockIfWASM</span><span class="p">()</span> <span class="p">{</span>
+<span class="cp">#ifdef WASM_COMPATIBLE_SOURCE</span>
   <span class="n">Batch</span> <span class="n">batch</span><span class="p">;</span>
+  <span class="c1">// There&#39;s no need to do shutdown here because it&#39;s single threaded.</span>
   <span class="k">while</span> <span class="p">(</span><span class="n">batcher_</span> <span class="o">&gt;&gt;</span> <span class="n">batch</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">pcqueue_</span><span class="p">.</span><span class="n">ProduceSwap</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
+    <span class="n">blocking_translator_</span><span class="p">.</span><span class="n">translate</span><span class="p">(</span><span class="n">batch</span><span class="p">);</span>
   <span class="p">}</span>
-<span class="p">}</span>
-<span class="cp">#else  </span><span class="c1">// WASM_COMPATIBLE_SOURCE</span>
-<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">initialize_async_translators</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">ABORT</span><span class="p">(</span><span class="s">&quot;Cannot run in async mode without multithreading.&quot;</span><span class="p">);</span>
+<span class="cp">#endif</span>
 <span class="p">}</span>
 
-<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">async_translate</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">ABORT</span><span class="p">(</span><span class="s">&quot;Cannot run in async mode without multithreading.&quot;</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="cp">#endif </span><span class="c1">// WASM_COMPATIBLE_SOURCE</span>
-
-<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">;</span>  <span class="c1">// Hardcode responseOptions for now</span>
-  <span class="k">return</span> <span class="nf">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span>
-<span class="n">Service</span><span class="o">::</span><span class="n">translateMultiple</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span><span class="n">inputs</span><span class="p">,</span>
-                           <span class="n">TranslationRequest</span> <span class="n">translationRequest</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">;</span>
-
-  <span class="c1">// TODO(jerinphilip) Set options based on TranslationRequest, if and when it</span>
-  <span class="c1">// becomes non-dummy.</span>
-
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">translateMultiple</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span><span class="n">inputs</span><span class="p">,</span> <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// We queue the individual Requests so they get compiled at batches to be</span>
   <span class="c1">// efficiently translated.</span>
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;&gt;</span> <span class="n">responseFutures</span><span class="p">;</span>
   <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">input</span> <span class="p">:</span> <span class="n">inputs</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">inputResponse</span> <span class="o">=</span>
-        <span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">inputResponse</span> <span class="o">=</span> <span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
     <span class="n">responseFutures</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">inputResponse</span><span class="p">));</span>
   <span class="p">}</span>
 
   <span class="c1">// Dispatch is called once per request so compilation of sentences from</span>
   <span class="c1">// multiple Requests happen.</span>
-  <span class="n">dispatchTranslate</span><span class="p">();</span>
+  <span class="n">blockIfWASM</span><span class="p">();</span>
 
   <span class="c1">// Now wait for all Requests to complete, the future to fire and return the</span>
   <span class="c1">// compiled Responses, we can probably return the future, but WASM quirks(?).</span>
@@ -316,8 +244,7 @@
   <span class="k">return</span> <span class="n">responses</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">,</span>
-                                            <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">,</span> <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">Segments</span> <span class="n">segments</span><span class="p">;</span>
   <span class="n">AnnotatedText</span> <span class="nf">source</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">));</span>
   <span class="n">text_processor_</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">segments</span><span class="p">);</span>
@@ -325,49 +252,31 @@
   <span class="n">std</span><span class="o">::</span><span class="n">promise</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">responsePromise</span><span class="p">;</span>
   <span class="k">auto</span> <span class="n">future</span> <span class="o">=</span> <span class="n">responsePromise</span><span class="p">.</span><span class="n">get_future</span><span class="p">();</span>
 
-  <span class="n">ResponseBuilder</span> <span class="nf">responseBuilder</span><span class="p">(</span><span class="n">responseOptions</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">source</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">,</span>
-                                  <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">responsePromise</span><span class="p">));</span>
-  <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">requestId_</span><span class="o">++</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">segments</span><span class="p">),</span>
-                                      <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">responseBuilder</span><span class="p">));</span>
+  <span class="n">ResponseBuilder</span> <span class="nf">responseBuilder</span><span class="p">(</span><span class="n">responseOptions</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">source</span><span class="p">),</span> <span class="n">vocabs_</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">responsePromise</span><span class="p">));</span>
+  <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">New</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">requestId_</span><span class="o">++</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">segments</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">responseBuilder</span><span class="p">));</span>
 
   <span class="n">batcher_</span><span class="p">.</span><span class="n">addWholeRequest</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
   <span class="k">return</span> <span class="n">future</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">,</span>
-                                         <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span>
-      <span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
-  <span class="n">dispatchTranslate</span><span class="p">();</span>
+<span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">Service</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">input</span><span class="p">,</span> <span class="n">ResponseOptions</span> <span class="n">responseOptions</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">queueRequest</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span> <span class="n">responseOptions</span><span class="p">);</span>
+  <span class="n">blockIfWASM</span><span class="p">();</span>
   <span class="k">return</span> <span class="n">future</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="kt">void</span> <span class="n">Service</span><span class="o">::</span><span class="n">dispatchTranslate</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">numWorkers_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">blocking_translate</span><span class="p">();</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="n">async_translate</span><span class="p">();</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
 <span class="n">Service</span><span class="o">::~</span><span class="n">Service</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">batcher_</span><span class="p">.</span><span class="n">shutdown</span><span class="p">();</span>
 <span class="cp">#ifndef WASM_COMPATIBLE_SOURCE</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">workerId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">workerId</span> <span class="o">&lt;</span> <span class="n">numWorkers_</span><span class="p">;</span> <span class="n">workerId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="n">Batch</span> <span class="n">poison</span> <span class="o">=</span> <span class="n">Batch</span><span class="o">::</span><span class="n">poison</span><span class="p">();</span>
-    <span class="n">pcqueue_</span><span class="p">.</span><span class="n">ProduceSwap</span><span class="p">(</span><span class="n">poison</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">workerId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">workerId</span> <span class="o">&lt;</span> <span class="n">numWorkers_</span><span class="p">;</span> <span class="n">workerId</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">workers_</span><span class="p">[</span><span class="n">workerId</span><span class="p">].</span><span class="n">joinable</span><span class="p">())</span> <span class="p">{</span>
-      <span class="n">workers_</span><span class="p">[</span><span class="n">workerId</span><span class="p">].</span><span class="n">join</span><span class="p">();</span>
-    <span class="p">}</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="o">&amp;</span><span class="nl">worker</span> <span class="p">:</span> <span class="n">workers_</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">worker</span><span class="p">.</span><span class="n">joinable</span><span class="p">());</span>
+    <span class="n">worker</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
   <span class="p">}</span>
 <span class="cp">#endif</span>
 <span class="p">}</span>
 
-<span class="p">}</span> <span class="c1">// namespace bergamot</span>
-<span class="p">}</span> <span class="c1">// namespace marian</span>
+<span class="p">}</span>  <span class="c1">// namespace bergamot</span>
+<span class="p">}</span>  <span class="c1">// namespace marian</span>
 </pre></div>
 </div>
 </div>

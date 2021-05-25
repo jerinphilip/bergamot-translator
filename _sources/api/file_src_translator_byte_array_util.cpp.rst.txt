@@ -31,9 +31,11 @@ Includes
 
 - ``byte_array_util.h`` (:ref:`file_src_translator_byte_array_util.h`)
 
-- ``iostream``
+- ``cstdlib``
 
-- ``stdlib.h``
+- ``data/shortlist.h``
+
+- ``memory``
 
 
 
@@ -53,11 +55,17 @@ Functions
 ---------
 
 
+- :ref:`exhale_function_byte__array__util_8cpp_1a6f199b6686a506deb71095f8b5f9868c`
+
 - :ref:`exhale_function_byte__array__util_8cpp_1ac17b7705d71079521a1e6db2059ada4f`
 
 - :ref:`exhale_function_byte__array__util_8cpp_1a03d0ea07c0548c3c9d9fa3b45e8eccc6`
 
+- :ref:`exhale_function_byte__array__util_8cpp_1aabe4ff9d24b6052f29cf6e70a2a49da2`
+
 - :ref:`exhale_function_byte__array__util_8cpp_1a765d72b8a59a480e11ebf649af13e9a9`
+
+- :ref:`exhale_function_byte__array__util_8cpp_1aaa0f17032d86df7185b5fdf414a3d632`
 
 
 Variables

@@ -31,6 +31,8 @@ Includes
 
 - ``response_builder.h`` (:ref:`file_src_translator_response_builder.h`)
 
+- ``response_options.h`` (:ref:`file_src_translator_response_options.h`)
+
 
 
 

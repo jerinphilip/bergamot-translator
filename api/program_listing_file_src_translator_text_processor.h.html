@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File text_processor.h &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>Program Listing for File text_processor.h &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -94,7 +94,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -169,14 +169,14 @@
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef SRC_BERGAMOT_TEXT_PROCESSOR_H_</span>
 <span class="cp">#define SRC_BERGAMOT_TEXT_PROCESSOR_H_</span>
 
+<span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;annotation.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;data/types.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;data/vocab.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;definitions.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;sentence_ranges.h&quot;</span><span class="cp"></span>
-
 <span class="cp">#include</span> <span class="cpf">&quot;sentence_splitter.h&quot;</span><span class="cp"></span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;vocabs.h&quot;</span><span class="cp"></span>
 
 <span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
 <span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
@@ -188,33 +188,32 @@
   <span class="c1">// Used in Service to convert an incoming blog of text to a vector of</span>
   <span class="c1">// sentences (vector of words). In addition, the ByteRanges of the</span>
   <span class="c1">// source-tokens in unnormalized text are provided as string_views.</span>
-<span class="k">public</span><span class="o">:</span>
-  <span class="k">explicit</span> <span class="n">TextProcessor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">vocabs</span><span class="p">,</span> <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span><span class="p">);</span>
+ <span class="k">public</span><span class="o">:</span>
+  <span class="k">explicit</span> <span class="n">TextProcessor</span><span class="p">(</span><span class="n">Vocabs</span> <span class="o">&amp;</span><span class="n">vocabs</span><span class="p">,</span> <span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span><span class="p">);</span>
 
   <span class="kt">void</span> <span class="nf">process</span><span class="p">(</span><span class="n">AnnotatedText</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">,</span> <span class="n">Segments</span> <span class="o">&amp;</span><span class="n">segments</span><span class="p">);</span>
 
-<span class="k">private</span><span class="o">:</span>
+ <span class="k">private</span><span class="o">:</span>
   <span class="c1">// Tokenizes an input string, returns Words corresponding. Loads the</span>
   <span class="c1">// corresponding byte-ranges into tokenRanges.</span>
-  <span class="n">Segment</span> <span class="n">tokenize</span><span class="p">(</span><span class="k">const</span> <span class="n">string_view</span> <span class="o">&amp;</span><span class="n">input</span><span class="p">,</span>
-                   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string_view</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">tokenRanges</span><span class="p">);</span>
+  <span class="n">Segment</span> <span class="n">tokenize</span><span class="p">(</span><span class="k">const</span> <span class="n">string_view</span> <span class="o">&amp;</span><span class="n">input</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string_view</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">tokenRanges</span><span class="p">);</span>
 
-  <span class="c1">// Truncate sentence into max_input_size segments.</span>
-  <span class="kt">void</span> <span class="nf">truncate</span><span class="p">(</span><span class="n">Segment</span> <span class="o">&amp;</span><span class="n">sentence</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string_view</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">tokenRanges</span><span class="p">,</span>
-                <span class="n">Segments</span> <span class="o">&amp;</span><span class="n">segments</span><span class="p">,</span> <span class="n">AnnotatedText</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">);</span>
+  <span class="c1">// Wrap into sentences of at most max_length_break_ tokens and add to source.</span>
+  <span class="kt">void</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">Segment</span> <span class="o">&amp;</span><span class="n">sentence</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string_view</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">tokenRanges</span><span class="p">,</span> <span class="n">Segments</span> <span class="o">&amp;</span><span class="n">segments</span><span class="p">,</span> <span class="n">AnnotatedText</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">);</span>
 
   <span class="c1">// shorthand, used only in truncate()</span>
-  <span class="k">const</span> <span class="n">Word</span> <span class="n">sourceEosId</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">vocabs_</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getEosId</span><span class="p">();</span> <span class="p">}</span>
+  <span class="c1">// vocabs_-&gt;sources().front() is invoked as we currently only support one source vocab</span>
+  <span class="k">const</span> <span class="n">Word</span> <span class="n">sourceEosId</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">vocabs_</span><span class="p">.</span><span class="n">sources</span><span class="p">().</span><span class="n">front</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getEosId</span><span class="p">();</span> <span class="p">}</span>
 
-  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Ptr</span><span class="o">&lt;</span><span class="n">Vocab</span> <span class="k">const</span><span class="o">&gt;&gt;</span> <span class="o">*</span><span class="n">vocabs_</span><span class="p">;</span>
+  <span class="k">const</span> <span class="n">Vocabs</span> <span class="o">&amp;</span><span class="n">vocabs_</span><span class="p">;</span>
   <span class="n">SentenceSplitter</span> <span class="n">sentence_splitter_</span><span class="p">;</span>
   <span class="kt">size_t</span> <span class="n">max_length_break_</span><span class="p">;</span>
 <span class="p">};</span>
 
-<span class="p">}</span> <span class="c1">// namespace bergamot</span>
-<span class="p">}</span> <span class="c1">// namespace marian</span>
+<span class="p">}</span>  <span class="c1">// namespace bergamot</span>
+<span class="p">}</span>  <span class="c1">// namespace marian</span>
 
-<span class="cp">#endif </span><span class="c1">// SRC_BERGAMOT_TEXT_PROCESSOR_H_</span>
+<span class="cp">#endif  </span><span class="c1">// SRC_BERGAMOT_TEXT_PROCESSOR_H_</span>
 </pre></div>
 </div>
 </div>

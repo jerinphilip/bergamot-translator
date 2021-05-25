@@ -29,17 +29,11 @@ Includes
 --------
 
 
-- ``TranslationRequest.h`` (:ref:`file_src_TranslationRequest.h`)
-
 - ``batch_translator.h`` (:ref:`file_src_translator_batch_translator.h`)
-
-- ``batcher.h`` (:ref:`file_src_translator_batcher.h`)
 
 - ``data/types.h``
 
-- ``pcqueue.h`` (:ref:`file_src_translator_pcqueue.h`)
-
-- ``queue`` (:ref:`file_src_translator_pcqueue.h`)
+- ``queue``
 
 - ``response.h`` (:ref:`file_src_translator_response.h`)
 
@@ -47,9 +41,15 @@ Includes
 
 - ``text_processor.h`` (:ref:`file_src_translator_text_processor.h`)
 
+- ``thread`` (:ref:`file_src_translator_threadsafe_batcher.cpp`)
+
+- ``threadsafe_batcher.h`` (:ref:`file_src_translator_threadsafe_batcher.h`)
+
 - ``translator/parser.h`` (:ref:`file_src_translator_parser.h`)
 
 - ``vector``
+
+- ``vocabs.h`` (:ref:`file_src_translator_vocabs.h`)
 
 
 
@@ -58,6 +58,8 @@ Included By
 
 
 - :ref:`file_src_translator_service.cpp`
+
+- :ref:`file_app_cli.h`
 
 
 

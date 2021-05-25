@@ -29,17 +29,19 @@ Includes
 --------
 
 
+- ``annotation.h`` (:ref:`file_src_translator_annotation.h`)
+
 - ``data/types.h``
 
 - ``data/vocab.h``
 
 - ``definitions.h`` (:ref:`file_src_translator_definitions.h`)
 
-- ``sentence_ranges.h`` (:ref:`file_src_translator_sentence_ranges.h`)
-
 - ``sentence_splitter.h`` (:ref:`file_src_translator_sentence_splitter.h`)
 
 - ``vector``
+
+- ``vocabs.h`` (:ref:`file_src_translator_vocabs.h`)
 
 
 

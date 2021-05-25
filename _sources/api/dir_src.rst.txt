@@ -13,10 +13,4 @@ Subdirectories
 - :ref:`dir_src_translator`
 
 
-Files
------
-
-- :ref:`file_src_QualityScore.h`
-- :ref:`file_src_TranslationRequest.h`
-
 

@@ -41,6 +41,8 @@ Included By
 
 - :ref:`file_src_TranslationRequest.h`
 
+- :ref:`file_src_TranslationResult.h`
+
 
 
 

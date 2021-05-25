@@ -11,32 +11,17 @@ Directories
 .. toctree::
    :maxdepth: 5
 
+   dir_app.rst
+
+.. toctree::
+   :maxdepth: 5
+
    dir_src.rst
 
 .. toctree::
    :maxdepth: 5
 
    dir_src_translator.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   dir_src_translator_CMakeFiles.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   dir_src_translator_CMakeFiles_3.10.2.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   dir_src_translator_CMakeFiles_3.10.2_CompilerIdC.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   dir_src_translator_CMakeFiles_3.10.2_CompilerIdCXX.rst
 
 Files
 *****
@@ -46,6 +31,16 @@ Files
    :maxdepth: 5
 
    file_src_translator_aligned.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_src_translator_annotation.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_src_translator_annotation.h.rst
 
 .. toctree::
    :maxdepth: 5
@@ -80,6 +75,11 @@ Files
 .. toctree::
    :maxdepth: 5
 
+   file_app_bergamot.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
    file_src_translator_byte_array_util.cpp.rst
 
 .. toctree::
@@ -90,12 +90,7 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file_src_translator_CMakeFiles_3.10.2_CompilerIdC_CMakeCCompilerId.c.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_translator_CMakeFiles_3.10.2_CompilerIdCXX_CMakeCXXCompilerId.cpp.rst
+   file_app_cli.h.rst
 
 .. toctree::
    :maxdepth: 5
@@ -105,27 +100,17 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file_src_translator_CMakeFiles_feature_tests.c.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_translator_CMakeFiles_feature_tests.cxx.rst
-
-.. toctree::
-   :maxdepth: 5
-
    file_src_translator_parser.h.rst
 
 .. toctree::
    :maxdepth: 5
 
-   file_src_translator_pcqueue.h.rst
+   file_src_translator_printer.h.rst
 
 .. toctree::
    :maxdepth: 5
 
-   file_src_QualityScore.h.rst
+   file_src_translator_project_version.h.rst
 
 .. toctree::
    :maxdepth: 5
@@ -160,16 +145,6 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file_src_translator_sentence_ranges.cpp.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_translator_sentence_ranges.h.rst
-
-.. toctree::
-   :maxdepth: 5
-
    file_src_translator_sentence_splitter.cpp.rst
 
 .. toctree::
@@ -200,4 +175,14 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file_src_TranslationRequest.h.rst
+   file_src_translator_threadsafe_batcher.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_src_translator_threadsafe_batcher.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_src_translator_vocabs.h.rst

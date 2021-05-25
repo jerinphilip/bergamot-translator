@@ -1,0 +1,27 @@
+.. _exhale_class_classmarian_1_1bergamot_1_1CLIAppInterface:
+
+Class CLIAppInterface
+=====================
+
+- Defined in :ref:`file_app_cli.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Derived Types
+*************
+
+- ``public marian::bergamot::MarianDecoder`` (:ref:`exhale_class_classmarian_1_1bergamot_1_1MarianDecoder`)
+- ``public marian::bergamot::ServiceCLI`` (:ref:`exhale_class_classmarian_1_1bergamot_1_1ServiceCLI`)
+- ``public marian::bergamot::WASMApp`` (:ref:`exhale_class_classmarian_1_1bergamot_1_1WASMApp`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: marian::bergamot::CLIAppInterface
+   :members:
+   :protected-members:
+   :undoc-members:

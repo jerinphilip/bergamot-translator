@@ -30,8 +30,8 @@ Program Listing for File response_options.h
    };
    
    struct ResponseOptions {
-     bool qualityScores{false}; 
-     bool alignment{false};     
+     bool qualityScores{false};  
+     bool alignment{false};      
    
      bool sentenceMappings{false};
    
@@ -41,7 +41,7 @@ Program Listing for File response_options.h
      ConcatStrategy concatStrategy{ConcatStrategy::FAITHFUL};
    };
    
-   } // namespace bergamot
-   } // namespace marian
+   }  // namespace bergamot
+   }  // namespace marian
    
-   #endif //  SRC_BERGAMOT_RESPONSE_OPTIONS_H_
+   #endif  //  SRC_BERGAMOT_RESPONSE_OPTIONS_H_

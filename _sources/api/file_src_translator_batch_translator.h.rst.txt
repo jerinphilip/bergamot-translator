@@ -37,8 +37,6 @@ Includes
 
 - ``definitions.h`` (:ref:`file_src_translator_definitions.h`)
 
-- ``pcqueue.h`` (:ref:`file_src_translator_pcqueue.h`)
-
 - ``request.h`` (:ref:`file_src_translator_request.h`)
 
 - ``string``
@@ -48,6 +46,8 @@ Includes
 - ``translator/scorers.h``
 
 - ``vector``
+
+- ``vocabs.h`` (:ref:`file_src_translator_vocabs.h`)
 
 
 

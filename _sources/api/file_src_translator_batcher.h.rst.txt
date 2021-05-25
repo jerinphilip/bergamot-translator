@@ -37,8 +37,6 @@ Includes
 
 - ``definitions.h`` (:ref:`file_src_translator_definitions.h`)
 
-- ``pcqueue.h`` (:ref:`file_src_translator_pcqueue.h`)
-
 - ``request.h`` (:ref:`file_src_translator_request.h`)
 
 - ``set``
@@ -53,7 +51,7 @@ Included By
 
 - :ref:`file_src_translator_batcher.cpp`
 
-- :ref:`file_src_translator_service.h`
+- :ref:`file_src_translator_threadsafe_batcher.h`
 
 
 

@@ -19,6 +19,8 @@ Namespaces
 
 - :ref:`namespace_marian__bergamot__@9`
 
+- :ref:`namespace_marian__bergamot__app`
+
 
 Classes
 -------
@@ -28,6 +30,8 @@ Classes
 
 - :ref:`exhale_struct_structmarian_1_1bergamot_1_1ByteRange`
 
+- :ref:`exhale_struct_structmarian_1_1bergamot_1_1MemoryBundle`
+
 - :ref:`exhale_struct_structmarian_1_1bergamot_1_1Point`
 
 - :ref:`exhale_struct_structmarian_1_1bergamot_1_1Quality`
@@ -35,8 +39,6 @@ Classes
 - :ref:`exhale_struct_structmarian_1_1bergamot_1_1Response`
 
 - :ref:`exhale_struct_structmarian_1_1bergamot_1_1ResponseOptions`
-
-- :ref:`exhale_struct_structmarian_1_1bergamot_1_1UnboundedPage`
 
 - :ref:`exhale_class_classmarian_1_1bergamot_1_1AlignedVector`
 
@@ -47,8 +49,6 @@ Classes
 - :ref:`exhale_class_classmarian_1_1bergamot_1_1Batcher`
 
 - :ref:`exhale_class_classmarian_1_1bergamot_1_1BatchTranslator`
-
-- :ref:`exhale_class_classmarian_1_1bergamot_1_1PCQueue`
 
 - :ref:`exhale_class_classmarian_1_1bergamot_1_1Request`
 
@@ -62,7 +62,9 @@ Classes
 
 - :ref:`exhale_class_classmarian_1_1bergamot_1_1TextProcessor`
 
-- :ref:`exhale_class_classmarian_1_1bergamot_1_1UnboundedSingleQueue`
+- :ref:`exhale_class_classmarian_1_1bergamot_1_1ThreadsafeBatcher`
+
+- :ref:`exhale_class_classmarian_1_1bergamot_1_1Vocabs`
 
 
 Enums
@@ -78,11 +80,21 @@ Functions
 ---------
 
 
+- :ref:`exhale_function_cli_8h_1a1dc9e2a23852790afe60c0b77f15cfa1`
+
+- :ref:`exhale_function_project__version_8h_1a8440f56a18675aa9d676783ec92a3d04`
+
 - :ref:`exhale_function_parser_8h_1a9d7a795b4232908367ad7d9348c62455`
+
+- :ref:`exhale_function_cli_8h_1aea65285ec34d40805bf7efe64a11fa13`
+
+- :ref:`exhale_function_byte__array__util_8cpp_1a6f199b6686a506deb71095f8b5f9868c`
 
 - :ref:`exhale_function_byte__array__util_8cpp_1ac17b7705d71079521a1e6db2059ada4f`
 
 - :ref:`exhale_function_byte__array__util_8cpp_1a03d0ea07c0548c3c9d9fa3b45e8eccc6`
+
+- :ref:`exhale_function_byte__array__util_8cpp_1aabe4ff9d24b6052f29cf6e70a2a49da2`
 
 - :ref:`exhale_function_byte__array__util_8cpp_1a765d72b8a59a480e11ebf649af13e9a9`
 
@@ -90,11 +102,7 @@ Functions
 
 - :ref:`exhale_function_parser_8h_1a6c3beb1c6f8449716f2b2f9bc50a0ab2`
 
-- :ref:`exhale_function_definitions_8h_1af891fd0c2012708799d694f4705bcda1`
-
-- :ref:`exhale_function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326`
-
-- :ref:`exhale_function_pcqueue_8h_1aa2de1e7c8107873cc8569bac95c8fa02`
+- :ref:`exhale_function_byte__array__util_8cpp_1aaa0f17032d86df7185b5fdf414a3d632`
 
 
 Typedefs
@@ -110,9 +118,3 @@ Typedefs
 - :ref:`exhale_typedef_definitions_8h_1ad0a7527b1fbf64cfc20eaa76134785ef`
 
 - :ref:`exhale_typedef_definitions_8h_1a11beb3c0bc803965512b9ccf8c6f23bb`
-
-- :ref:`exhale_typedef_pcqueue_8h_1aef632f08268676b44935dddd74bf0db5`
-
-- :ref:`exhale_typedef_definitions_8h_1a1585504382103205288347f667d5bbca`
-
-- :ref:`exhale_typedef_definitions_8h_1a0a0cdb717399bd6343aaa052aec6ffab`

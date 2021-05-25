@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Directory translator &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>Directory translator &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -94,7 +94,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -167,16 +167,12 @@
 <span id="dir-src-translator"></span><h1>Directory translator<a class="headerlink" href="#directory-translator" title="Permalink to this headline">¶</a></h1>
 <p>↰ <a class="reference internal" href="dir_src.html#dir-src"><span class="std std-ref">Parent directory</span></a> (<code class="docutils literal notranslate"><span class="pre">src</span></code>)</p>
 <p><em>Directory path:</em> <code class="docutils literal notranslate"><span class="pre">src/translator</span></code></p>
-<div class="section" id="subdirectories">
-<h2>Subdirectories<a class="headerlink" href="#subdirectories" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="dir_src_translator_CMakeFiles.html#dir-src-translator-cmakefiles"><span class="std std-ref">Directory CMakeFiles</span></a></p></li>
-</ul>
-</div>
 <div class="section" id="files">
 <h2>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="file_src_translator_aligned.h.html#file-src-translator-aligned-h"><span class="std std-ref">File aligned.h</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_annotation.cpp.html#file-src-translator-annotation-cpp"><span class="std std-ref">File annotation.cpp</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_annotation.h.html#file-src-translator-annotation-h"><span class="std std-ref">File annotation.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_batch.cpp.html#file-src-translator-batch-cpp"><span class="std std-ref">File batch.cpp</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_batch.h.html#file-src-translator-batch-h"><span class="std std-ref">File batch.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_batch_translator.cpp.html#file-src-translator-batch-translator-cpp"><span class="std std-ref">File batch_translator.cpp</span></a></p></li>
@@ -187,21 +183,23 @@
 <li><p><a class="reference internal" href="file_src_translator_byte_array_util.h.html#file-src-translator-byte-array-util-h"><span class="std std-ref">File byte_array_util.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_definitions.h.html#file-src-translator-definitions-h"><span class="std std-ref">File definitions.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_parser.h.html#file-src-translator-parser-h"><span class="std std-ref">File parser.h</span></a></p></li>
-<li><p><a class="reference internal" href="file_src_translator_pcqueue.h.html#file-src-translator-pcqueue-h"><span class="std std-ref">File pcqueue.h</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_printer.h.html#file-src-translator-printer-h"><span class="std std-ref">File printer.h</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_project_version.h.html#file-src-translator-project-version-h"><span class="std std-ref">File project_version.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_request.cpp.html#file-src-translator-request-cpp"><span class="std std-ref">File request.cpp</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_request.h.html#file-src-translator-request-h"><span class="std std-ref">File request.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_response.h.html#file-src-translator-response-h"><span class="std std-ref">File response.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_response_builder.cpp.html#file-src-translator-response-builder-cpp"><span class="std std-ref">File response_builder.cpp</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_response_builder.h.html#file-src-translator-response-builder-h"><span class="std std-ref">File response_builder.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_response_options.h.html#file-src-translator-response-options-h"><span class="std std-ref">File response_options.h</span></a></p></li>
-<li><p><a class="reference internal" href="file_src_translator_sentence_ranges.cpp.html#file-src-translator-sentence-ranges-cpp"><span class="std std-ref">File sentence_ranges.cpp</span></a></p></li>
-<li><p><a class="reference internal" href="file_src_translator_sentence_ranges.h.html#file-src-translator-sentence-ranges-h"><span class="std std-ref">File sentence_ranges.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_sentence_splitter.cpp.html#file-src-translator-sentence-splitter-cpp"><span class="std std-ref">File sentence_splitter.cpp</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_sentence_splitter.h.html#file-src-translator-sentence-splitter-h"><span class="std std-ref">File sentence_splitter.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_service.cpp.html#file-src-translator-service-cpp"><span class="std std-ref">File service.cpp</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_service.h.html#file-src-translator-service-h"><span class="std std-ref">File service.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_text_processor.cpp.html#file-src-translator-text-processor-cpp"><span class="std std-ref">File text_processor.cpp</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_text_processor.h.html#file-src-translator-text-processor-h"><span class="std std-ref">File text_processor.h</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_threadsafe_batcher.cpp.html#file-src-translator-threadsafe-batcher-cpp"><span class="std std-ref">File threadsafe_batcher.cpp</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_threadsafe_batcher.h.html#file-src-translator-threadsafe-batcher-h"><span class="std std-ref">File threadsafe_batcher.h</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_vocabs.h.html#file-src-translator-vocabs-h"><span class="std std-ref">File vocabs.h</span></a></p></li>
 </ul>
 </div>
 </div>

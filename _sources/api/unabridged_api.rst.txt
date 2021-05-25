@@ -21,6 +21,11 @@ Namespaces
 
    namespace_marian__bergamot__@9.rst
 
+.. toctree::
+   :maxdepth: 5
+
+   namespace_marian__bergamot__app.rst
+
 Classes and Structs
 *******************
 
@@ -34,6 +39,11 @@ Classes and Structs
    :maxdepth: 5
 
    structmarian_1_1bergamot_1_1ByteRange.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   structmarian_1_1bergamot_1_1MemoryBundle.rst
 
 .. toctree::
    :maxdepth: 5
@@ -58,17 +68,32 @@ Classes and Structs
 .. toctree::
    :maxdepth: 5
 
-   structmarian_1_1bergamot_1_1UnboundedPage.rst
-
-.. toctree::
-   :maxdepth: 5
-
    classmarian_1_1bergamot_1_1AlignedVector.rst
 
 .. toctree::
    :maxdepth: 5
 
    classmarian_1_1bergamot_1_1Annotation.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   classmarian_1_1bergamot_1_1app_1_1CLIAppInterface.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   classmarian_1_1bergamot_1_1app_1_1Decoder.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   classmarian_1_1bergamot_1_1app_1_1Native.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   classmarian_1_1bergamot_1_1app_1_1WASM.rst
 
 .. toctree::
    :maxdepth: 5
@@ -84,11 +109,6 @@ Classes and Structs
    :maxdepth: 5
 
    classmarian_1_1bergamot_1_1BatchTranslator.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   classmarian_1_1bergamot_1_1PCQueue.rst
 
 .. toctree::
    :maxdepth: 5
@@ -123,17 +143,12 @@ Classes and Structs
 .. toctree::
    :maxdepth: 5
 
-   classmarian_1_1bergamot_1_1UnboundedSingleQueue.rst
+   classmarian_1_1bergamot_1_1ThreadsafeBatcher.rst
 
 .. toctree::
    :maxdepth: 5
 
-   classQualityScore.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   classTranslationRequest.rst
+   classmarian_1_1bergamot_1_1Vocabs.rst
 
 Enums
 *****
@@ -149,11 +164,6 @@ Enums
 
    enum_response__options_8h_1a435be63c72825cbd4bfb8bd0d07b9099.rst
 
-.. toctree::
-   :maxdepth: 5
-
-   enum_QualityScore_8h_1a492cd0d07400e72d8f466530f1e0254c.rst
-
 Functions
 *********
 
@@ -161,32 +171,32 @@ Functions
 .. toctree::
    :maxdepth: 5
 
-   function_service_8cpp_1a3b4ed104eb0d6f42df86bbaeae6f25d9.rst
+   function_bergamot_8cpp_1a0ddf1224851353fc92bfbff6f499fa97.rst
 
 .. toctree::
    :maxdepth: 5
 
-   function_CMakeCCompilerId_8c_1a0ddf1224851353fc92bfbff6f499fa97.rst
+   function_cli_8h_1a1dc9e2a23852790afe60c0b77f15cfa1.rst
 
 .. toctree::
    :maxdepth: 5
 
-   function_CMakeCXXCompilerId_8cpp_1a0ddf1224851353fc92bfbff6f499fa97.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   function_feature__tests_8c_1a3c04138a5bfe5d72780bb7e82a18e627.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   function_feature__tests_8cxx_1a3c04138a5bfe5d72780bb7e82a18e627.rst
+   function_project__version_8h_1a8440f56a18675aa9d676783ec92a3d04.rst
 
 .. toctree::
    :maxdepth: 5
 
    function_parser_8h_1a9d7a795b4232908367ad7d9348c62455.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_cli_8h_1aea65285ec34d40805bf7efe64a11fa13.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_byte__array__util_8cpp_1a6f199b6686a506deb71095f8b5f9868c.rst
 
 .. toctree::
    :maxdepth: 5
@@ -197,6 +207,11 @@ Functions
    :maxdepth: 5
 
    function_byte__array__util_8cpp_1a03d0ea07c0548c3c9d9fa3b45e8eccc6.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   function_byte__array__util_8cpp_1aabe4ff9d24b6052f29cf6e70a2a49da2.rst
 
 .. toctree::
    :maxdepth: 5
@@ -216,17 +231,7 @@ Functions
 .. toctree::
    :maxdepth: 5
 
-   function_definitions_8h_1af891fd0c2012708799d694f4705bcda1.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   function_pcqueue_8h_1aa2de1e7c8107873cc8569bac95c8fa02.rst
+   function_byte__array__util_8cpp_1aaa0f17032d86df7185b5fdf414a3d632.rst
 
 Variables
 *********
@@ -236,56 +241,6 @@ Variables
    :maxdepth: 5
 
    variable_byte__array__util_8cpp_1a4842c3ae45a5ed6649fa7977904b076b.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_feature__tests_8c_1a1582568e32f689337602a16bf8a5bff0.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_feature__tests_8cxx_1a1582568e32f689337602a16bf8a5bff0.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_CMakeCCompilerId_8c_1a59647e99d304ed33b15cb284c27ed391.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_CMakeCXXCompilerId_8cpp_1a59647e99d304ed33b15cb284c27ed391.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_CMakeCCompilerId_8c_1a4b0efeb7a5d59313986b3a0390f050f6.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_CMakeCXXCompilerId_8cpp_1a4b0efeb7a5d59313986b3a0390f050f6.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_CMakeCCompilerId_8c_1a1ce162bad2fe6966ac8b33cc19e120b8.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_CMakeCXXCompilerId_8cpp_1a1ce162bad2fe6966ac8b33cc19e120b8.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_CMakeCCompilerId_8c_1a2321403dee54ee23f0c2fa849c60f7d4.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   variable_CMakeCXXCompilerId_8cpp_1a2321403dee54ee23f0c2fa849c60f7d4.rst
 
 .. toctree::
    :maxdepth: 5
@@ -301,95 +256,6 @@ Variables
    :maxdepth: 5
 
    variable_byte__array__util_8cpp_1a10954dd978803ff23ff998bf943bac2d.rst
-
-Defines
-*******
-
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCCompilerId_8c_1aba35d0d200deaeb06aee95ca297acb28.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCXXCompilerId_8cpp_1aba35d0d200deaeb06aee95ca297acb28.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCCompilerId_8c_1a07f8e5783674099cd7f5110e22a78cdb.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCCompilerId_8c_1a81dee0709ded976b2e0319239f72d174.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCXXCompilerId_8cpp_1a81dee0709ded976b2e0319239f72d174.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCXXCompilerId_8cpp_1a34cc889e576a1ae6c84ae9e0a851ba21.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCCompilerId_8c_1ad1280362da42492bbc11aa78cbf776ad.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCXXCompilerId_8cpp_1ad1280362da42492bbc11aa78cbf776ad.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCCompilerId_8c_1a46d5d95daa1bef867bd0179594310ed5.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCXXCompilerId_8cpp_1a46d5d95daa1bef867bd0179594310ed5.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCCompilerId_8c_1adbc5372f40838899018fadbc89bd588b.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCXXCompilerId_8cpp_1adbc5372f40838899018fadbc89bd588b.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCCompilerId_8c_1a43e1cad902b6477bec893cb6430bd6c8.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCXXCompilerId_8cpp_1a43e1cad902b6477bec893cb6430bd6c8.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCCompilerId_8c_1a2ae9b72bb13abaabfcf2ee0ba7d3fa1d.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_CMakeCXXCompilerId_8cpp_1a2ae9b72bb13abaabfcf2ee0ba7d3fa1d.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   define_pcqueue_8h_1a41cea4b22d5d60c5b80dcbbabf1f47a6.rst
 
 Typedefs
 ********
@@ -419,18 +285,3 @@ Typedefs
    :maxdepth: 5
 
    typedef_definitions_8h_1a11beb3c0bc803965512b9ccf8c6f23bb.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   typedef_pcqueue_8h_1aef632f08268676b44935dddd74bf0db5.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   typedef_definitions_8h_1a1585504382103205288347f667d5bbca.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   typedef_definitions_8h_1a0a0cdb717399bd6343aaa052aec6ffab.rst

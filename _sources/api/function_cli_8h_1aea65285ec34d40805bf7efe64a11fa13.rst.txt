@@ -1,0 +1,13 @@
+.. _exhale_function_cli_8h_1aea65285ec34d40805bf7efe64a11fa13:
+
+Function marian::bergamot::execute
+==================================
+
+- Defined in :ref:`file_app_cli.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::bergamot::execute(const std::string&, Ptr<Options>)

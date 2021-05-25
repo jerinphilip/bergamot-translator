@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Struct AnnotatedText &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>Struct AnnotatedText &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Struct ByteRange" href="structmarian_1_1bergamot_1_1ByteRange.html" />
-    <link rel="prev" title="Namespace marian::bergamot::@9" href="namespace_marian__bergamot__@9.html" /> 
+    <link rel="prev" title="Namespace marian::bergamot::app" href="namespace_marian__bergamot__app.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -96,7 +96,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -170,7 +170,7 @@
   <div class="section" id="struct-annotatedtext">
 <span id="exhale-struct-structmarian-1-1bergamot-1-1annotatedtext"></span><h1>Struct AnnotatedText<a class="headerlink" href="#struct-annotatedtext" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p>Defined in <a class="reference internal" href="file_src_translator_sentence_ranges.h.html#file-src-translator-sentence-ranges-h"><span class="std std-ref">File sentence_ranges.h</span></a></p></li>
+<li><p>Defined in <a class="reference internal" href="file_src_translator_annotation.h.html#file-src-translator-annotation-h"><span class="std std-ref">File annotation.h</span></a></p></li>
 </ul>
 <div class="section" id="struct-documentation">
 <h2>Struct Documentation<a class="headerlink" href="#struct-documentation" title="Permalink to this headline">¶</a></h2>
@@ -200,6 +200,27 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv4N6marian8bergamot13AnnotatedText14appendSentenceE11string_viewNSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorE">
+<span id="_CPPv3N6marian8bergamot13AnnotatedText14appendSentenceE11string_viewNSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorE"></span><span id="_CPPv2N6marian8bergamot13AnnotatedText14appendSentenceE11string_viewNSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorE"></span><span id="marian::bergamot::AnnotatedText::appendSentence__string_view.std::vector:string_view:::iterator.std::vector:string_view:::iterator"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1a9cb43fc10b03df8871457b328b18c8d3"></span>void <code class="sig-name descname">appendSentence</code><span class="sig-paren">(</span>string_view <em>prefix</em>, std::vector&lt;string_view&gt;::iterator <em>tokens_begin</em>, std::vector&lt;string_view&gt;::iterator <em>tokens_end</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot13AnnotatedText14appendSentenceE11string_viewNSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Appends a sentence to the existing text and transparently rebases string_views. </p>
+<p>Since this tracks only prefix, remember appendEndingWhitespace. The string_views must not already be in text. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N6marian8bergamot13AnnotatedText22appendEndingWhitespaceE11string_view">
+<span id="_CPPv3N6marian8bergamot13AnnotatedText22appendEndingWhitespaceE11string_view"></span><span id="_CPPv2N6marian8bergamot13AnnotatedText22appendEndingWhitespaceE11string_view"></span><span id="marian::bergamot::AnnotatedText::appendEndingWhitespace__string_view"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1ab0160b4119130a307ded205b5de7d6b9"></span>void <code class="sig-name descname">appendEndingWhitespace</code><span class="sig-paren">(</span>string_view <em>whitespace</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot13AnnotatedText22appendEndingWhitespaceE11string_view" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Append the whitespace at the end of input. </p>
+<p>string_view must not be in text. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N6marian8bergamot13AnnotatedText22recordExistingSentenceENSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorEPKc">
+<span id="_CPPv3N6marian8bergamot13AnnotatedText22recordExistingSentenceENSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorEPKc"></span><span id="_CPPv2N6marian8bergamot13AnnotatedText22recordExistingSentenceENSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorEPKc"></span><span id="marian::bergamot::AnnotatedText::recordExistingSentence__std::vector:string_view:::iterator.std::vector:string_view:::iterator.cCP"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1a412ad7c6c013f95f8799a9bcd93e292a"></span>void <code class="sig-name descname">recordExistingSentence</code><span class="sig-paren">(</span>std::vector&lt;string_view&gt;::iterator <em>tokens_begin</em>, std::vector&lt;string_view&gt;::iterator <em>tokens_end</em>, <em class="property">const</em> char *<em>sentence_begin</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot13AnnotatedText22recordExistingSentenceENSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorEPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Record the existence of a sentence that is already in text. </p>
+<p>The iterators are over string_views for each token that must be in text already. This function must be called to record sentences in order. Normally the beginning of the sentence can be inferred from tokens_begin-&gt;data() but the tokens could be empty, so sentence_begin is required to know where the sentence is. </p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv4NK6marian8bergamot13AnnotatedText12numSentencesEv">
 <span id="_CPPv3NK6marian8bergamot13AnnotatedText12numSentencesEv"></span><span id="_CPPv2NK6marian8bergamot13AnnotatedText12numSentencesEv"></span><span id="marian::bergamot::AnnotatedText::numSentencesC"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1aae5c59607d9051a64b51b63094bb4c78"></span><em class="property">const</em> size_t <code class="sig-name descname">numSentences</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK6marian8bergamot13AnnotatedText12numSentencesEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns the number of sentences in the annotation structure. </p>
@@ -212,24 +233,6 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N6marian8bergamot13AnnotatedText14appendSentenceENSt6stringERNSt6stringERNSt6vectorI11string_viewEE">
-<span id="_CPPv3N6marian8bergamot13AnnotatedText14appendSentenceENSt6stringERNSt6stringERNSt6vectorI11string_viewEE"></span><span id="_CPPv2N6marian8bergamot13AnnotatedText14appendSentenceENSt6stringERNSt6stringERNSt6vectorI11string_viewEE"></span><span id="marian::bergamot::AnnotatedText::appendSentence__ss.ssR.std::vector:string_view:R"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1ad57e13ef7db814f76cb8149aa68508be"></span>void <code class="sig-name descname">appendSentence</code><span class="sig-paren">(</span>std::string <em>prefix</em>, std::string &amp;<em>reference</em>, std::vector&lt;string_view&gt; &amp;<em>wordRanges</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot13AnnotatedText14appendSentenceENSt6stringERNSt6stringERNSt6vectorI11string_viewEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Appends a sentence to the existing text and transparently rebases string_views. </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N6marian8bergamot13AnnotatedText11addSentenceERNSt6vectorI11string_viewEE">
-<span id="_CPPv3N6marian8bergamot13AnnotatedText11addSentenceERNSt6vectorI11string_viewEE"></span><span id="_CPPv2N6marian8bergamot13AnnotatedText11addSentenceERNSt6vectorI11string_viewEE"></span><span id="marian::bergamot::AnnotatedText::addSentence__std::vector:string_view:R"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1a126f6af45bb88b347377e77f98e164ba"></span>void <code class="sig-name descname">addSentence</code><span class="sig-paren">(</span>std::vector&lt;string_view&gt; &amp;<em>wordRanges</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot13AnnotatedText11addSentenceERNSt6vectorI11string_viewEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Adds a sentence, used to load from SentencePiece annotations conveniently. </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N6marian8bergamot13AnnotatedText11addSentenceENSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorE">
-<span id="_CPPv3N6marian8bergamot13AnnotatedText11addSentenceENSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorE"></span><span id="_CPPv2N6marian8bergamot13AnnotatedText11addSentenceENSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorE"></span><span id="marian::bergamot::AnnotatedText::addSentence__std::vector:string_view:::iterator.std::vector:string_view:::iterator"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1a1bc31c35cd494a46d6cad4672d1110c4"></span>void <code class="sig-name descname">addSentence</code><span class="sig-paren">(</span>std::vector&lt;string_view&gt;::iterator <em>begin</em>, std::vector&lt;string_view&gt;::iterator <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot13AnnotatedText11addSentenceENSt6vectorI11string_viewE8iteratorENSt6vectorI11string_viewE8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Adds a sentence between two iterators, often useful while constructing from parts of a container. </p>
-</dd></dl>
-
-<dl class="function">
 <dt id="_CPPv4NK6marian8bergamot13AnnotatedText4wordE6size_t6size_t">
 <span id="_CPPv3NK6marian8bergamot13AnnotatedText4wordE6size_t6size_t"></span><span id="_CPPv2NK6marian8bergamot13AnnotatedText4wordE6size_t6size_t"></span><span id="marian::bergamot::AnnotatedText::word__s.sC"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1a6fc6717954462d2cfa430bc19765864c"></span>string_view <code class="sig-name descname">word</code><span class="sig-paren">(</span>size_t <em>sentenceIdx</em>, size_t <em>wordIdx</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK6marian8bergamot13AnnotatedText4wordE6size_t6size_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns a string_view representing wordIdx in sentenceIdx. </p>
@@ -239,6 +242,25 @@
 <dt id="_CPPv4NK6marian8bergamot13AnnotatedText8sentenceE6size_t">
 <span id="_CPPv3NK6marian8bergamot13AnnotatedText8sentenceE6size_t"></span><span id="_CPPv2NK6marian8bergamot13AnnotatedText8sentenceE6size_t"></span><span id="marian::bergamot::AnnotatedText::sentence__sC"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1a845b4c9348106ffdab1a07a883fd5734"></span>string_view <code class="sig-name descname">sentence</code><span class="sig-paren">(</span>size_t <em>sentenceIdx</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK6marian8bergamot13AnnotatedText8sentenceE6size_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns a string_view representing sentence corresponding to sentenceIdx. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4NK6marian8bergamot13AnnotatedText3gapE6size_t">
+<span id="_CPPv3NK6marian8bergamot13AnnotatedText3gapE6size_t"></span><span id="_CPPv2NK6marian8bergamot13AnnotatedText3gapE6size_t"></span><span id="marian::bergamot::AnnotatedText::gap__sC"></span><span class="target" id="structmarian_1_1bergamot_1_1AnnotatedText_1a73164862b3b44d070a124d7e3e1e1454"></span>string_view <code class="sig-name descname">gap</code><span class="sig-paren">(</span>size_t <em>sentenceIdx</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK6marian8bergamot13AnnotatedText3gapE6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the string_view of the gap between two sentences in the container. </p>
+<p>More precisely where <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">sentenceIdx,</span> <span class="pre">N</span> <span class="pre">=</span> <a class="reference internal" href="#structmarian_1_1bergamot_1_1AnnotatedText_1aae5c59607d9051a64b51b63094bb4c78"><span class="std std-ref"><span class="pre">numSentences()</span></span></a></code> for brevity:</p>
+<p><ul class="simple">
+<li><p>For <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">0</span></code>: The gap between the start of text and the 0th sentence.</p></li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">1...N-1</span></code>, returns the text comprising of the gap between the <code class="docutils literal notranslate"><span class="pre">i</span></code>-th and <code class="docutils literal notranslate"><span class="pre">i+1</span></code>-th sentence.</p></li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">N</span></code>, the gap between the last (N-1th) sentence and end of text. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist">
+<li><p><code class="docutils literal notranslate"><span class="pre">sentenceIdx</span></code>: Can be between <code class="docutils literal notranslate"><span class="pre">[0,</span> <a class="reference internal" href="#structmarian_1_1bergamot_1_1AnnotatedText_1aae5c59607d9051a64b51b63094bb4c78"><span class="std std-ref"><span class="pre">numSentences()</span></span></a><span class="pre">]</span></code>. </p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+</ul>
+</p>
 </dd></dl>
 
 <dl class="function">
@@ -281,7 +303,7 @@
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="structmarian_1_1bergamot_1_1ByteRange.html" class="btn btn-neutral float-right" title="Struct ByteRange" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="namespace_marian__bergamot__@9.html" class="btn btn-neutral float-left" title="Namespace marian::bergamot::@9" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="namespace_marian__bergamot__app.html" class="btn btn-neutral float-left" title="Namespace marian::bergamot::app" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

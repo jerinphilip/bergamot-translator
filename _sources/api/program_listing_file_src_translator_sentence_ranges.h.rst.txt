@@ -78,6 +78,9 @@ Program Listing for File sentence_ranges.h
    
      string_view sentence(size_t sentenceIdx) const;
    
+   
+     string_view gap(size_t sentenceIdx) const;
+   
      ByteRange wordAsByteRange(size_t sentenceIdx, size_t wordIdx) const;
    
      ByteRange sentenceAsByteRange(size_t sentenceIdx) const;

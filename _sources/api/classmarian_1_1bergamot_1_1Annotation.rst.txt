@@ -3,7 +3,7 @@
 Class Annotation
 ================
 
-- Defined in :ref:`file_src_translator_sentence_ranges.h`
+- Defined in :ref:`file_src_translator_annotation.h`
 
 
 Class Documentation

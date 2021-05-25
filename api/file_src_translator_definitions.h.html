@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>File definitions.h &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>File definitions.h &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -94,7 +94,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -173,7 +173,7 @@
 <li><p><a class="reference internal" href="#includes" id="id2">Includes</a></p></li>
 <li><p><a class="reference internal" href="#included-by" id="id3">Included By</a></p></li>
 <li><p><a class="reference internal" href="#namespaces" id="id4">Namespaces</a></p></li>
-<li><p><a class="reference internal" href="#functions" id="id5">Functions</a></p></li>
+<li><p><a class="reference internal" href="#classes" id="id5">Classes</a></p></li>
 <li><p><a class="reference internal" href="#typedefs" id="id6">Typedefs</a></p></li>
 </ul>
 </div>
@@ -191,6 +191,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">aligned.h</span></code> (<a class="reference internal" href="file_src_translator_aligned.h.html#file-src-translator-aligned-h"><span class="std std-ref">File aligned.h</span></a>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">data/types.h</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">data/vocab_base.h</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">string_view</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">vector</span></code></p></li>
 </ul>
 </div>
@@ -200,10 +201,12 @@
 <li><p><a class="reference internal" href="file_src_translator_request.h.html#file-src-translator-request-h"><span class="std std-ref">File request.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_response.h.html#file-src-translator-response-h"><span class="std std-ref">File response.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_batch_translator.h.html#file-src-translator-batch-translator-h"><span class="std std-ref">File batch_translator.h</span></a></p></li>
-<li><p><a class="reference internal" href="file_src_translator_batcher.h.html#file-src-translator-batcher-h"><span class="std std-ref">File batcher.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_byte_array_util.h.html#file-src-translator-byte-array-util-h"><span class="std std-ref">File byte_array_util.h</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_batcher.h.html#file-src-translator-batcher-h"><span class="std std-ref">File batcher.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_request.cpp.html#file-src-translator-request-cpp"><span class="std std-ref">File request.cpp</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_sentence_splitter.h.html#file-src-translator-sentence-splitter-h"><span class="std std-ref">File sentence_splitter.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_text_processor.h.html#file-src-translator-text-processor-h"><span class="std std-ref">File text_processor.h</span></a></p></li>
+<li><p><a class="reference internal" href="file_src_translator_threadsafe_batcher.h.html#file-src-translator-threadsafe-batcher-h"><span class="std std-ref">File threadsafe_batcher.h</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_service.cpp.html#file-src-translator-service-cpp"><span class="std std-ref">File service.cpp</span></a></p></li>
 <li><p><a class="reference internal" href="file_src_translator_text_processor.cpp.html#file-src-translator-text-processor-cpp"><span class="std std-ref">File text_processor.cpp</span></a></p></li>
 </ul>
@@ -215,11 +218,10 @@
 <li><p><a class="reference internal" href="namespace_marian__bergamot.html#namespace-marian-bergamot"><span class="std std-ref">Namespace marian::bergamot</span></a></p></li>
 </ul>
 </div>
-<div class="section" id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="function_definitions_8h_1af891fd0c2012708799d694f4705bcda1.html#exhale-function-definitions-8h-1af891fd0c2012708799d694f4705bcda1"><span class="std std-ref">Template Function marian::bergamot::UNew(Args&amp;&amp;…)</span></a></p></li>
-<li><p><a class="reference internal" href="function_definitions_8h_1a7babf66383dc1ecd341241a9dd065326.html#exhale-function-definitions-8h-1a7babf66383dc1ecd341241a9dd065326"><span class="std std-ref">Template Function marian::bergamot::UNew(UPtr&lt;T&gt;)</span></a></p></li>
+<li><p><a class="reference internal" href="structmarian_1_1bergamot_1_1MemoryBundle.html#exhale-struct-structmarian-1-1bergamot-1-1memorybundle"><span class="std std-ref">Struct MemoryBundle</span></a></p></li>
 </ul>
 </div>
 <div class="section" id="typedefs">
@@ -228,8 +230,6 @@
 <li><p><a class="reference internal" href="typedef_definitions_8h_1af7b499234642d2926f2e87d894f53f38.html#exhale-typedef-definitions-8h-1af7b499234642d2926f2e87d894f53f38"><span class="std std-ref">Typedef marian::bergamot::AlignedMemory</span></a></p></li>
 <li><p><a class="reference internal" href="typedef_definitions_8h_1ad0a7527b1fbf64cfc20eaa76134785ef.html#exhale-typedef-definitions-8h-1ad0a7527b1fbf64cfc20eaa76134785ef"><span class="std std-ref">Typedef marian::bergamot::Segment</span></a></p></li>
 <li><p><a class="reference internal" href="typedef_definitions_8h_1a11beb3c0bc803965512b9ccf8c6f23bb.html#exhale-typedef-definitions-8h-1a11beb3c0bc803965512b9ccf8c6f23bb"><span class="std std-ref">Typedef marian::bergamot::Segments</span></a></p></li>
-<li><p><a class="reference internal" href="typedef_definitions_8h_1a1585504382103205288347f667d5bbca.html#exhale-typedef-definitions-8h-1a1585504382103205288347f667d5bbca"><span class="std std-ref">Typedef marian::bergamot::SentenceTokenRanges</span></a></p></li>
-<li><p><a class="reference internal" href="typedef_definitions_8h_1a0a0cdb717399bd6343aaa052aec6ffab.html#exhale-typedef-definitions-8h-1a0a0cdb717399bd6343aaa052aec6ffab"><span class="std std-ref">Typedef marian::bergamot::TokenRanges</span></a></p></li>
 </ul>
 </div>
 </div>

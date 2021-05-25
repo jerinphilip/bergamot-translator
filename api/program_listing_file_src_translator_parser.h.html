@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File parser.h &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>Program Listing for File parser.h &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -94,7 +94,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -180,26 +180,27 @@
 
 <span class="kr">inline</span> <span class="n">marian</span><span class="o">::</span><span class="n">ConfigParser</span> <span class="n">createConfigParser</span><span class="p">()</span> <span class="p">{</span>
   <span class="n">marian</span><span class="o">::</span><span class="n">ConfigParser</span> <span class="n">cp</span><span class="p">(</span><span class="n">marian</span><span class="o">::</span><span class="n">cli</span><span class="o">::</span><span class="n">mode</span><span class="o">::</span><span class="n">translation</span><span class="p">);</span>
-  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span>
-      <span class="s">&quot;--ssplit-prefix-file&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
-      <span class="s">&quot;File with nonbreaking prefixes for sentence splitting.&quot;</span><span class="p">);</span>
+  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;--ssplit-prefix-file&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
+                            <span class="s">&quot;File with nonbreaking prefixes for sentence splitting.&quot;</span><span class="p">);</span>
 
-  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;--ssplit-mode&quot;</span><span class="p">,</span> <span class="s">&quot;Server Options&quot;</span><span class="p">,</span>
-                            <span class="s">&quot;[paragraph, sentence, wrapped_text]&quot;</span><span class="p">,</span> <span class="s">&quot;paragraph&quot;</span><span class="p">);</span>
+  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;--ssplit-mode&quot;</span><span class="p">,</span> <span class="s">&quot;Server Options&quot;</span><span class="p">,</span> <span class="s">&quot;[paragraph, sentence, wrapped_text]&quot;</span><span class="p">,</span> <span class="s">&quot;paragraph&quot;</span><span class="p">);</span>
 
-  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span>
-      <span class="s">&quot;--max-length-break&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
-      <span class="s">&quot;Maximum input tokens to be processed in a single sentence.&quot;</span><span class="p">,</span> <span class="mi">128</span><span class="p">);</span>
+  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;--max-length-break&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;Maximum input tokens to be processed in a single sentence.&quot;</span><span class="p">,</span> <span class="mi">128</span><span class="p">);</span>
 
-  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span>
-      <span class="s">&quot;--check-bytearray&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
-      <span class="s">&quot;Flag holds whether to check the content of the bytearray (true by default)&quot;</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;--bytearray&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
+                     <span class="s">&quot;Flag holds whether to construct service from bytearrays, only for testing purpose&quot;</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
 
-    <span class="k">return</span> <span class="n">cp</span><span class="p">;</span>
+  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;--check-bytearray&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
+                     <span class="s">&quot;Flag holds whether to check the content of the bytearrays (true by default)&quot;</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+
+  <span class="n">cp</span><span class="p">.</span><span class="n">addOption</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;--bergamot-mode&quot;</span><span class="p">,</span> <span class="s">&quot;Bergamot Options&quot;</span><span class="p">,</span>
+                            <span class="s">&quot;Operating mode for bergamot: [wasm, service-cli, decoder]&quot;</span><span class="p">,</span> <span class="s">&quot;service-cli&quot;</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">cp</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="kr">inline</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span>
-<span class="n">parseOptions</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">config</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">validate</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+<span class="kr">inline</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span> <span class="n">parseOptions</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">config</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">validate</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">marian</span><span class="o">::</span><span class="n">Options</span> <span class="n">options</span><span class="p">;</span>
 
   <span class="c1">// @TODO(jerinphilip) There&#39;s something off here, @XapaJIaMnu suggests</span>
@@ -235,10 +236,10 @@
   <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">marian</span><span class="o">::</span><span class="n">Options</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="p">}</span> <span class="c1">//  namespace bergamot</span>
-<span class="p">}</span> <span class="c1">//  namespace marian</span>
+<span class="p">}</span>  <span class="c1">//  namespace bergamot</span>
+<span class="p">}</span>  <span class="c1">//  namespace marian</span>
 
-<span class="cp">#endif </span><span class="c1">//  SRC_BERGAMOT_PARSER_H</span>
+<span class="cp">#endif  </span><span class="c1">//  SRC_BERGAMOT_PARSER_H</span>
 </pre></div>
 </div>
 </div>

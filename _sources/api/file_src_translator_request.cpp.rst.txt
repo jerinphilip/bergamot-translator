@@ -29,6 +29,8 @@ Includes
 --------
 
 
+- ``annotation.h`` (:ref:`file_src_translator_annotation.h`)
+
 - ``common/logging.h``
 
 - ``definitions.h`` (:ref:`file_src_translator_definitions.h`)
@@ -36,8 +38,6 @@ Includes
 - ``request.h`` (:ref:`file_src_translator_request.h`)
 
 - ``response.h`` (:ref:`file_src_translator_response.h`)
-
-- ``sentence_ranges.h`` (:ref:`file_src_translator_sentence_ranges.h`)
 
 - ``string``
 

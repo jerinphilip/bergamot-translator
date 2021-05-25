@@ -33,6 +33,8 @@ Includes
 
 - ``data/types.h``
 
+- ``definitions.h`` (:ref:`file_src_translator_definitions.h`)
+
 - ``ssplit.h``
 
 - ``string``

@@ -13,25 +13,23 @@ Program Listing for File request.h
    #ifndef SRC_BERGAMOT_REQUEST_H_
    #define SRC_BERGAMOT_REQUEST_H_
    
+   #include <cassert>
+   #include <future>
+   #include <vector>
+   
+   #include "annotation.h"
+   #include "common/logging.h"
+   #include "data/types.h"
    #include "definitions.h"
    #include "response.h"
    #include "response_builder.h"
-   #include "sentence_ranges.h"
-   
-   #include "common/logging.h"
-   #include "data/types.h"
    #include "translator/beam_search.h"
-   
-   #include <cassert>
-   
-   #include <future>
-   #include <vector>
    
    namespace marian {
    namespace bergamot {
    
    class Request {
-   public:
+    public:
      Request(size_t Id, Segments &&segments, ResponseBuilder &&responseBuilder);
    
      size_t segmentTokens(size_t index) const;
@@ -44,7 +42,7 @@ Program Listing for File request.h
    
      void processHistory(size_t index, Ptr<History> history);
    
-   private:
+    private:
      size_t Id_;
    
      std::atomic<int> counter_;
@@ -57,8 +55,7 @@ Program Listing for File request.h
    };
    
    class RequestSentence {
-   
-   public:
+    public:
      RequestSentence(size_t, Ptr<Request>);
    
      size_t numTokens() const;
@@ -69,14 +66,14 @@ Program Listing for File request.h
    
      friend bool operator<(const RequestSentence &a, const RequestSentence &b);
    
-   private:
+    private:
      size_t index_;
      Ptr<Request> request_;
    };
    
    typedef std::vector<RequestSentence> RequestSentences;
    
-   } // namespace bergamot
-   } // namespace marian
+   }  // namespace bergamot
+   }  // namespace marian
    
-   #endif // SRC_BERGAMOT_REQUEST_H_
+   #endif  // SRC_BERGAMOT_REQUEST_H_

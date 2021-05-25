@@ -1,0 +1,13 @@
+.. _exhale_function_cli_8h_1aaf3dd1c49d048e87afc01d41d250fab3:
+
+Template Function marian::bergamot::executeApp
+==============================================
+
+- Defined in :ref:`file_app_cli.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: marian::bergamot::executeApp(Ptr<Options>)

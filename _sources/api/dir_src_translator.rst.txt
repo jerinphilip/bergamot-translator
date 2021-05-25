@@ -11,16 +11,13 @@ Directory translator
 
 *Directory path:* ``src/translator``
 
-Subdirectories
---------------
-
-- :ref:`dir_src_translator_CMakeFiles`
-
 
 Files
 -----
 
 - :ref:`file_src_translator_aligned.h`
+- :ref:`file_src_translator_annotation.cpp`
+- :ref:`file_src_translator_annotation.h`
 - :ref:`file_src_translator_batch.cpp`
 - :ref:`file_src_translator_batch.h`
 - :ref:`file_src_translator_batch_translator.cpp`
@@ -31,20 +28,22 @@ Files
 - :ref:`file_src_translator_byte_array_util.h`
 - :ref:`file_src_translator_definitions.h`
 - :ref:`file_src_translator_parser.h`
-- :ref:`file_src_translator_pcqueue.h`
+- :ref:`file_src_translator_printer.h`
+- :ref:`file_src_translator_project_version.h`
 - :ref:`file_src_translator_request.cpp`
 - :ref:`file_src_translator_request.h`
 - :ref:`file_src_translator_response.h`
 - :ref:`file_src_translator_response_builder.cpp`
 - :ref:`file_src_translator_response_builder.h`
 - :ref:`file_src_translator_response_options.h`
-- :ref:`file_src_translator_sentence_ranges.cpp`
-- :ref:`file_src_translator_sentence_ranges.h`
 - :ref:`file_src_translator_sentence_splitter.cpp`
 - :ref:`file_src_translator_sentence_splitter.h`
 - :ref:`file_src_translator_service.cpp`
 - :ref:`file_src_translator_service.h`
 - :ref:`file_src_translator_text_processor.cpp`
 - :ref:`file_src_translator_text_processor.h`
+- :ref:`file_src_translator_threadsafe_batcher.cpp`
+- :ref:`file_src_translator_threadsafe_batcher.h`
+- :ref:`file_src_translator_vocabs.h`
 
 

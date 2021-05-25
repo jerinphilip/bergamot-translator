@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Class Annotation &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>Class Annotation &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -44,7 +44,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Class Batch" href="classmarian_1_1bergamot_1_1Batch.html" />
+    <link rel="next" title="Class CLIAppInterface" href="classmarian_1_1bergamot_1_1app_1_1CLIAppInterface.html" />
     <link rel="prev" title="Template Class AlignedVector" href="classmarian_1_1bergamot_1_1AlignedVector.html" /> 
 </head>
 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -96,7 +96,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -170,37 +170,25 @@
   <div class="section" id="class-annotation">
 <span id="exhale-class-classmarian-1-1bergamot-1-1annotation"></span><h1>Class Annotation<a class="headerlink" href="#class-annotation" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p>Defined in <a class="reference internal" href="file_src_translator_sentence_ranges.h.html#file-src-translator-sentence-ranges-h"><span class="std std-ref">File sentence_ranges.h</span></a></p></li>
+<li><p>Defined in <a class="reference internal" href="file_src_translator_annotation.h.html#file-src-translator-annotation-h"><span class="std std-ref">File annotation.h</span></a></p></li>
 </ul>
 <div class="section" id="class-documentation">
 <h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="_CPPv4N6marian8bergamot10AnnotationE">
 <span id="_CPPv3N6marian8bergamot10AnnotationE"></span><span id="_CPPv2N6marian8bergamot10AnnotationE"></span><span id="marian::bergamot::Annotation"></span><span class="target" id="classmarian_1_1bergamot_1_1Annotation"></span><em class="property">class </em><code class="sig-name descname">Annotation</code><a class="headerlink" href="#_CPPv4N6marian8bergamot10AnnotationE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>An <a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> is a collection of ByteRanges used to denote ancillary information of sentences and words on a text of string. </p>
-<p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> is meant for consumption on platforms where <code class="docutils literal notranslate"><span class="pre">string_view</span></code> creates problems (eg: exports through WASM) conveniently rebasing them as required into ByteRanges. See <a class="reference internal" href="structmarian_1_1bergamot_1_1AnnotatedText.html#structmarian_1_1bergamot_1_1AnnotatedText"><span class="std std-ref">AnnotatedText</span></a> for cases where this is a non-issue.</p>
-<p><strong>Usage</strong></p>
-<p>To ensure rebasing is consistent during creation and updation, use <code class="docutils literal notranslate"><a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref"><span class="pre">Annotation</span></span></a></code> best through <code class="docutils literal notranslate"><a class="reference internal" href="structmarian_1_1bergamot_1_1AnnotatedText.html#structmarian_1_1bergamot_1_1AnnotatedText"><span class="std std-ref"><span class="pre">AnnotatedText</span></span></a></code>, which also holds the reference string and can work with <code class="docutils literal notranslate"><span class="pre">string_views</span></code>.</p>
-<p>If used separately, it is on the user to ensure the reference string is the same as what the <a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> refers to. For best results, an instance is expected to be read only in this mode of operation.</p>
-<p><strong>Idea</strong></p>
-<p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> is intended to be the same structure conceptually as below, except the <code class="docutils literal notranslate"><span class="pre">std::vector&lt;std::vector&lt;</span><a class="reference internal" href="structmarian_1_1bergamot_1_1ByteRange.html#structmarian_1_1bergamot_1_1ByteRange"><span class="std std-ref"><span class="pre">ByteRange</span></span></a><span class="pre">&gt;&gt;</span></code> hammered into a flat structure to avoid multiple reallocs keeping efficiency in mind. This is achieved by having markers of where sentence ends in the flat container storing word ByteRanges.</p>
-<p><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="n">ByteRange</span> <span class="n">Word</span><span class="p">;</span>
-<span class="c1">// std::vector&lt;ByteRange&gt;, a single sentence</span>
-<span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Word</span><span class="o">&gt;</span> <span class="n">Sentence</span><span class="p">;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">ByteRange</span><span class="o">&gt;</span> <span class="c1">// multiple sentences</span>
-<span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Sentence</span><span class="o">&gt;</span> <span class="n">Annotation</span><span class="p">;</span>
-
-<span class="n">Annotation</span> <span class="n">example</span><span class="p">;</span>
-</pre></div>
-</div>
- This structure exists to provide a consistent API to access the nested sentences of varying lengths, which occur in source-text processed into multiple sentences, and target-text translated from source as multiple sentences, both composed of (sub)-words, providing a List[List] like access while storing it in a compact and efficient manner. </p>
+<dd><p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> expresses sentence and token boundary information as ranges of bytes in a string, but does not itself own the string. </p>
+<p>See also <a class="reference internal" href="structmarian_1_1bergamot_1_1AnnotatedText.html#structmarian_1_1bergamot_1_1AnnotatedText"><span class="std std-ref">AnnotatedText</span></a>, which owns <a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> and the string. <a class="reference internal" href="structmarian_1_1bergamot_1_1AnnotatedText.html#structmarian_1_1bergamot_1_1AnnotatedText"><span class="std std-ref">AnnotatedText</span></a> wraps these <a class="reference internal" href="structmarian_1_1bergamot_1_1ByteRange.html#structmarian_1_1bergamot_1_1ByteRange"><span class="std std-ref">ByteRange</span></a> functions to provide a string_view interface.</p>
+<p>Text is divided into gaps (whitespace between sentences) and sentences like so: gap sentence gap sentence gap Because gaps appear at the beginning and end of the text, there’s always one more gap than there are sentences.</p>
+<p>The entire text is a unbroken sequence of tokens (i.e. the end of a token is the beginning of the next token). A gap is exactly one token containing whatever whitespace is between the sentences. A sentence is a sequence of tokens.</p>
+<p>Since we are using SentencePiece, a token can include whitespace. The term “word” is used, somewhat incorrectly, as a synonym of token.</p>
+<p>A gap can be empty (for example there may not have been whitespace at the beginning). A sentence can also be empty (typically the translation system produced empty output). That’s fine, these are just empty ranges as you would expect. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
 <dt id="_CPPv4N6marian8bergamot10Annotation10AnnotationEv">
 <span id="_CPPv3N6marian8bergamot10Annotation10AnnotationEv"></span><span id="_CPPv2N6marian8bergamot10Annotation10AnnotationEv"></span><span id="marian::bergamot::Annotation::Annotation"></span><span class="target" id="classmarian_1_1bergamot_1_1Annotation_1afd47aa62ec85433251acaa466c5a27c5"></span><code class="sig-name descname">Annotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot10Annotation10AnnotationEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p><a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation"><span class="std std-ref">Annotation</span></a> is constructed empty. </p>
-<p>See <code class="docutils literal notranslate"><a class="reference internal" href="#classmarian_1_1bergamot_1_1Annotation_1aff1d537737cde28cc80d0ca04bc7b428"><span class="std std-ref"><span class="pre">addSentence()</span></span></a></code> to populate it with annotations. </p>
+<dd><p>Initially an empty string. Populated by <a class="reference internal" href="structmarian_1_1bergamot_1_1AnnotatedText.html#structmarian_1_1bergamot_1_1AnnotatedText"><span class="std std-ref">AnnotatedText</span></a>. </p>
 </dd></dl>
 
 <dl class="function">
@@ -212,13 +200,6 @@
 <dt id="_CPPv4NK6marian8bergamot10Annotation8numWordsE6size_t">
 <span id="_CPPv3NK6marian8bergamot10Annotation8numWordsE6size_t"></span><span id="_CPPv2NK6marian8bergamot10Annotation8numWordsE6size_t"></span><span id="marian::bergamot::Annotation::numWords__sC"></span><span class="target" id="classmarian_1_1bergamot_1_1Annotation_1ae74963e9e56009f19e19fb0f17aea4de"></span>size_t <code class="sig-name descname">numWords</code><span class="sig-paren">(</span>size_t <em>sentenceIdx</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK6marian8bergamot10Annotation8numWordsE6size_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns number of words in the sentence identified by <code class="docutils literal notranslate"><span class="pre">sentenceIdx</span></code>. </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N6marian8bergamot10Annotation11addSentenceERNSt6vectorI9ByteRangeEE">
-<span id="_CPPv3N6marian8bergamot10Annotation11addSentenceERNSt6vectorI9ByteRangeEE"></span><span id="_CPPv2N6marian8bergamot10Annotation11addSentenceERNSt6vectorI9ByteRangeEE"></span><span id="marian::bergamot::Annotation::addSentence__std::vector:ByteRange:R"></span><span class="target" id="classmarian_1_1bergamot_1_1Annotation_1aff1d537737cde28cc80d0ca04bc7b428"></span>void <code class="sig-name descname">addSentence</code><span class="sig-paren">(</span>std::vector&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1ByteRange.html#_CPPv4N6marian8bergamot9ByteRangeE" title="marian::bergamot::ByteRange">ByteRange</a>&gt; &amp;<em>sentence</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot10Annotation11addSentenceERNSt6vectorI9ByteRangeEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Adds a sentences from <code class="docutils literal notranslate"><span class="pre">vector&lt;</span><a class="reference internal" href="structmarian_1_1bergamot_1_1ByteRange.html#structmarian_1_1bergamot_1_1ByteRange"><span class="std std-ref"><span class="pre">ByteRange</span></span></a><span class="pre">&gt;</span></code> representation, internally doing extra book-keeping for the sentence terminal markings. </p>
-<p>Sentences are expected to be added in order as they occur in text. </p>
 </dd></dl>
 
 <dl class="function">
@@ -235,6 +216,11 @@
 <p><code class="docutils literal notranslate"><span class="pre">sentenceIdx</span></code> follows 0-based indexing, and behaviour is defined only when less than <code class="docutils literal notranslate"><span class="pre">.numSentences()</span></code>. </p>
 </dd></dl>
 
+<dl class="function">
+<dt id="_CPPv4NK6marian8bergamot10Annotation3gapE6size_t">
+<span id="_CPPv3NK6marian8bergamot10Annotation3gapE6size_t"></span><span id="_CPPv2NK6marian8bergamot10Annotation3gapE6size_t"></span><span id="marian::bergamot::Annotation::gap__sC"></span><span class="target" id="classmarian_1_1bergamot_1_1Annotation_1a84034b92130ec83a036decf691e158e5"></span><a class="reference internal" href="structmarian_1_1bergamot_1_1ByteRange.html#_CPPv4N6marian8bergamot9ByteRangeE" title="marian::bergamot::ByteRange">ByteRange</a> <code class="sig-name descname">gap</code><span class="sig-paren">(</span>size_t <em>gapIdx</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK6marian8bergamot10Annotation3gapE6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
 </div>
 </dd></dl>
 
@@ -247,7 +233,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="classmarian_1_1bergamot_1_1Batch.html" class="btn btn-neutral float-right" title="Class Batch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="classmarian_1_1bergamot_1_1app_1_1CLIAppInterface.html" class="btn btn-neutral float-right" title="Class CLIAppInterface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="classmarian_1_1bergamot_1_1AlignedVector.html" class="btn btn-neutral float-left" title="Template Class AlignedVector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

@@ -35,6 +35,8 @@ Includes
 
 - ``response_options.h`` (:ref:`file_src_translator_response_options.h`)
 
+- ``vocabs.h`` (:ref:`file_src_translator_vocabs.h`)
+
 
 
 Included By

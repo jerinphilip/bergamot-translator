@@ -33,6 +33,8 @@ Includes
 
 - ``batch_translator.h`` (:ref:`file_src_translator_batch_translator.h`)
 
+- ``byte_array_util.h`` (:ref:`file_src_translator_byte_array_util.h`)
+
 - ``common/logging.h``
 
 - ``data/corpus.h``

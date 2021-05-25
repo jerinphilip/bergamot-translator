@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File batch.h &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>Program Listing for File batch.h &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -94,7 +94,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -175,19 +175,11 @@
 <span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
 <span class="k">namespace</span> <span class="n">bergamot</span> <span class="p">{</span>
 
+<span class="c1">// An empty batch is poison.</span>
 <span class="k">class</span> <span class="nc">Batch</span> <span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
+ <span class="k">public</span><span class="o">:</span>
   <span class="n">Batch</span><span class="p">()</span> <span class="p">{}</span>
   <span class="kt">void</span> <span class="n">clear</span><span class="p">()</span> <span class="p">{</span> <span class="n">sentences_</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span> <span class="p">}</span>
-
-  <span class="c1">//  Methods to construct and determine poison.</span>
-  <span class="k">static</span> <span class="n">Batch</span> <span class="n">poison</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">Batch</span> <span class="n">batch</span><span class="p">;</span>
-    <span class="n">batch</span><span class="p">.</span><span class="n">poison_</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">batch</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="kt">bool</span> <span class="n">isPoison</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">poison_</span><span class="p">;</span> <span class="p">}</span>
 
   <span class="kt">size_t</span> <span class="n">size</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">sentences_</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="p">}</span>
 
@@ -209,15 +201,14 @@
   <span class="c1">// Convenience function to log batch-statistics. numTokens, max-length.</span>
   <span class="kt">void</span> <span class="nf">log</span><span class="p">();</span>
 
-<span class="k">private</span><span class="o">:</span>
-  <span class="kt">bool</span> <span class="n">poison_</span><span class="p">{</span><span class="nb">false</span><span class="p">};</span>
+ <span class="k">private</span><span class="o">:</span>
   <span class="n">RequestSentences</span> <span class="n">sentences_</span><span class="p">;</span>
 <span class="p">};</span>
 
-<span class="p">}</span> <span class="c1">// namespace bergamot</span>
-<span class="p">}</span> <span class="c1">// namespace marian</span>
+<span class="p">}</span>  <span class="c1">// namespace bergamot</span>
+<span class="p">}</span>  <span class="c1">// namespace marian</span>
 
-<span class="cp">#endif </span><span class="c1">// SRC_BERGAMOT_BATCH_H_</span>
+<span class="cp">#endif  </span><span class="c1">// SRC_BERGAMOT_BATCH_H_</span>
 </pre></div>
 </div>
 </div>

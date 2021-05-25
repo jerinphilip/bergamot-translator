@@ -52,10 +52,3 @@ Namespaces
 
 - :ref:`namespace_marian__bergamot`
 
-
-Functions
----------
-
-
-- :ref:`exhale_function_service_8cpp_1a3b4ed104eb0d6f42df86bbaeae6f25d9`
-

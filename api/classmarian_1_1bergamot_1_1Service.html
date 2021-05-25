@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Class Service &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>Class Service &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -96,7 +96,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -199,17 +199,17 @@
 </pre></div>
 </div>
 </p>
-<p>Optionally <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> can be initialized by also passing model memory for purposes of efficiency (which defaults to nullpointer and then reads from file supplied through config). </p>
+<p>Optionally <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> can be initialized by also passing bytearray memories for purposes of efficiency (which defaults to empty and then reads from file supplied through config). </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
-<dt id="_CPPv4N6marian8bergamot7Service7ServiceE3PtrI7OptionsE13AlignedMemory13AlignedMemory">
-<span id="_CPPv3N6marian8bergamot7Service7ServiceE3PtrI7OptionsE13AlignedMemory13AlignedMemory"></span><span id="_CPPv2N6marian8bergamot7Service7ServiceE3PtrI7OptionsE13AlignedMemory13AlignedMemory"></span><span id="marian::bergamot::Service::Service__Ptr:Options:.AlignedMemory.AlignedMemory"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a6cb06fc11a9cc3ddd08abd1bb3c7e47b"></span><code class="sig-name descname">Service</code><span class="sig-paren">(</span>Ptr&lt;Options&gt; <em>options</em>, <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a> <em>modelMemory</em>, <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a> <em>shortlistMemory</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service7ServiceE3PtrI7OptionsE13AlignedMemory13AlignedMemory" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p><dl class="simple">
+<dt id="_CPPv4N6marian8bergamot7Service7ServiceE3PtrI7OptionsE12MemoryBundle">
+<span id="_CPPv3N6marian8bergamot7Service7ServiceE3PtrI7OptionsE12MemoryBundle"></span><span id="_CPPv2N6marian8bergamot7Service7ServiceE3PtrI7OptionsE12MemoryBundle"></span><span id="marian::bergamot::Service::Service__Ptr:Options:.MemoryBundle"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a4e20f711976bd70c73c3661eb35da6c0"></span><code class="sig-name descname">Service</code><span class="sig-paren">(</span>Ptr&lt;Options&gt; <em>options</em>, <a class="reference internal" href="structmarian_1_1bergamot_1_1MemoryBundle.html#_CPPv4N6marian8bergamot12MemoryBundleE" title="marian::bergamot::MemoryBundle">MemoryBundle</a> <em>memoryBundle</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service7ServiceE3PtrI7OptionsE12MemoryBundle" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Construct <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> from Marian options. </p>
+<p>If memoryBundle is empty, <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> is initialized from file-based loading. Otherwise, <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> is initialized from the given bytearray memories. <dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">options</span></code>: Marian options object </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">modelMemory</span></code>: byte array (aligned to 256!!!) that contains the bytes of a model.bin. Optional, defaults to nullptr when not used </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">shortlistMemory</span></code>: byte array of shortlist (aligned to 64) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memoryBundle</span></code>: holds all byte-array memories. Can be a set/subset of model, shortlist, vocabs and ssplitPrefixFile bytes. Optional. </p></li>
 </ul>
 </dd>
 </dl>
@@ -217,25 +217,13 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N6marian8bergamot7Service7ServiceE3PtrI7OptionsE">
-<span id="_CPPv3N6marian8bergamot7Service7ServiceE3PtrI7OptionsE"></span><span id="_CPPv2N6marian8bergamot7Service7ServiceE3PtrI7OptionsE"></span><span id="marian::bergamot::Service::Service__Ptr:Options:"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a42c178bc7bc1c8ae4b0985cafaac64bb"></span><code class="sig-name descname">Service</code><span class="sig-paren">(</span>Ptr&lt;Options&gt; <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service7ServiceE3PtrI7OptionsE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Construct <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> purely from Options. </p>
-<p>This expects options which marian-decoder expects to be set for loading model shortlist and vocabularies from files in addition to parameters that set unset desired features (e.g: alignments, quality-scores).</p>
-<p>This is equivalent to a call to: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Service</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">AlignedMemory</span><span class="p">(),</span>  <span class="n">AlignedMemory</span><span class="p">())</span>
-</pre></div>
-</div>
- wherein empty memory is passed and internal flow defaults to file-based model, shortlist loading. </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N6marian8bergamot7Service7ServiceERKNSt6stringE13AlignedMemory13AlignedMemory">
-<span id="_CPPv3N6marian8bergamot7Service7ServiceERKNSt6stringE13AlignedMemory13AlignedMemory"></span><span id="_CPPv2N6marian8bergamot7Service7ServiceERKNSt6stringE13AlignedMemory13AlignedMemory"></span><span id="marian::bergamot::Service::Service__ssCR.AlignedMemory.AlignedMemory"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a0c321d115f8777818bb0ac71ee86e4b4"></span><code class="sig-name descname">Service</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>config</em>, <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a> <em>modelMemory</em> = <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a>(), <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a> <em>shortlistMemory</em> = <a class="reference internal" href="typedef_definitions_8h_1a464c119f7c81e3cdcdf2014087a6c8e4.html#_CPPv4N6marian8bergamot13AlignedMemoryE" title="marian::bergamot::AlignedMemory">AlignedMemory</a>()<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service7ServiceERKNSt6stringE13AlignedMemory13AlignedMemory" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N6marian8bergamot7Service7ServiceERKNSt6stringE12MemoryBundle">
+<span id="_CPPv3N6marian8bergamot7Service7ServiceERKNSt6stringE12MemoryBundle"></span><span id="_CPPv2N6marian8bergamot7Service7ServiceERKNSt6stringE12MemoryBundle"></span><span id="marian::bergamot::Service::Service__ssCR.MemoryBundle"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a6adf4b22f377541675298bb598d4422c"></span><code class="sig-name descname">Service</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>config</em>, <a class="reference internal" href="structmarian_1_1bergamot_1_1MemoryBundle.html#_CPPv4N6marian8bergamot12MemoryBundleE" title="marian::bergamot::MemoryBundle">MemoryBundle</a> <em>memoryBundle</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service7ServiceERKNSt6stringE12MemoryBundle" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Construct <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> from a string configuration. </p>
-<p><dl class="simple">
+<p>If memoryBundle is empty, <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> is initialized from file-based loading. Otherwise, <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service"><span class="std std-ref">Service</span></a> is initialized from the given bytearray memories. <dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">config</span></code>: string parsable as YAML expected to adhere with marian config </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">model_memory</span></code>: byte array (aligned to 256!!!) that contains the bytes of a model.bin. Optional. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">shortlistMemory</span></code>: byte array of shortlist (aligned to 64) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">memoryBundle</span></code>: holds all byte-array memories. Can be a set/subset of model, shortlist, vocabs and ssplitPrefixFile bytes. Optional. </p></li>
 </ul>
 </dd>
 </dl>
@@ -249,21 +237,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE">
-<span id="_CPPv3N6marian8bergamot7Service9translateERRNSt6stringE"></span><span id="_CPPv2N6marian8bergamot7Service9translateERRNSt6stringE"></span><span id="marian::bergamot::Service::translate__ssRR"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a8c72e0205db4a552cc6b8d9b5c67d939"></span>std::future&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translate</code><span class="sig-paren">(</span>std::string &amp;&amp;<em>source</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>To stay efficient and to refer to the string for alignments, expects ownership be moved through <code class="docutils literal notranslate"><span class="pre">std::move(..)</span></code> </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">source</span></code>: rvalue reference of string to be translated. </p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions">
-<span id="_CPPv3N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="_CPPv2N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="marian::bergamot::Service::translate__ssRR.ResponseOptions"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a11584a0db6e2aac9ad2350bef327eb99"></span>std::future&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translate</code><span class="sig-paren">(</span>std::string &amp;&amp;<em>source</em>, <a class="reference internal" href="structmarian_1_1bergamot_1_1ResponseOptions.html#_CPPv4N6marian8bergamot15ResponseOptionsE" title="marian::bergamot::ResponseOptions">ResponseOptions</a> <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="_CPPv2N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions"></span><span id="marian::bergamot::Service::translate__ssRR.ResponseOptions"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1a9b47be78bc5a44c0a49a4612ad9aa4ed"></span>std::future&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translate</code><span class="sig-paren">(</span>std::string &amp;&amp;<em>source</em>, <a class="reference internal" href="structmarian_1_1bergamot_1_1ResponseOptions.html#_CPPv4N6marian8bergamot15ResponseOptionsE" title="marian::bergamot::ResponseOptions">ResponseOptions</a> <em>options</em> = <a class="reference internal" href="structmarian_1_1bergamot_1_1ResponseOptions.html#_CPPv4N6marian8bergamot15ResponseOptionsE" title="marian::bergamot::ResponseOptions">ResponseOptions</a>()<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service9translateERRNSt6stringE15ResponseOptions" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Translate an input, providing Options to construct <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>. </p>
 <p>This is useful when one has to set/unset alignments or quality in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a> to save compute spent in constructing these objects.</p>
 <p><dl class="simple">
@@ -277,15 +252,15 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest">
-<span id="_CPPv3N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest"></span><span id="_CPPv2N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest"></span><span id="marian::bergamot::Service::translateMultiple__std::vector:ss:RR.TranslationRequest"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1ae2f4606f179b0c5eda117e7b57f2e65e"></span>std::vector&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translateMultiple</code><span class="sig-paren">(</span>std::vector&lt;std::string&gt; &amp;&amp;<em>source</em>, <a class="reference internal" href="classTranslationRequest.html#_CPPv418TranslationRequest" title="TranslationRequest">TranslationRequest</a> <em>translationRequest</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE18TranslationRequest" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Translate multiple text-blobs in a single <em>blocking</em> API call, providing <a class="reference internal" href="classTranslationRequest.html#classTranslationRequest"><span class="std std-ref">TranslationRequest</span></a> which applies across all text-blobs dictating how to construct <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>. </p>
-<p><a class="reference internal" href="classTranslationRequest.html#classTranslationRequest"><span class="std std-ref">TranslationRequest</span></a> can be used to enable/disable additional information like quality-scores, alignments etc.</p>
-<p>All texts are combined to efficiently construct batches together providing speedups compared to calling <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service_1a8c72e0205db4a552cc6b8d9b5c67d939"><span class="std std-ref">translate()</span></a> indepdently on individual text-blob. Note that there will be minor differences in output when text-blobs are individually translated due to approximations but similar quality nonetheless. If you have async/multithread capabilities, it is recommended to work with futures and <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service_1a8c72e0205db4a552cc6b8d9b5c67d939"><span class="std std-ref">translate()</span></a> API.</p>
+<dt id="_CPPv4N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE15ResponseOptions">
+<span id="_CPPv3N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE15ResponseOptions"></span><span id="_CPPv2N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE15ResponseOptions"></span><span id="marian::bergamot::Service::translateMultiple__std::vector:ss:RR.ResponseOptions"></span><span class="target" id="classmarian_1_1bergamot_1_1Service_1ad3ae286084094748fbebdcd7868fafe3"></span>std::vector&lt;<a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#_CPPv4N6marian8bergamot8ResponseE" title="marian::bergamot::Response">Response</a>&gt; <code class="sig-name descname">translateMultiple</code><span class="sig-paren">(</span>std::vector&lt;std::string&gt; &amp;&amp;<em>source</em>, <a class="reference internal" href="structmarian_1_1bergamot_1_1ResponseOptions.html#_CPPv4N6marian8bergamot15ResponseOptionsE" title="marian::bergamot::ResponseOptions">ResponseOptions</a> <em>responseOptions</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6marian8bergamot7Service17translateMultipleERRNSt6vectorINSt6stringEEE15ResponseOptions" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Translate multiple text-blobs in a single <em>blocking</em> API call, providing <a class="reference internal" href="structmarian_1_1bergamot_1_1ResponseOptions.html#structmarian_1_1bergamot_1_1ResponseOptions"><span class="std std-ref">ResponseOptions</span></a> which applies across all text-blobs dictating how to construct <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>. </p>
+<p><a class="reference internal" href="structmarian_1_1bergamot_1_1ResponseOptions.html#structmarian_1_1bergamot_1_1ResponseOptions"><span class="std std-ref">ResponseOptions</span></a> can be used to enable/disable additional information like quality-scores, alignments etc.</p>
+<p>All texts are combined to efficiently construct batches together providing speedups compared to calling <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service_1a9b47be78bc5a44c0a49a4612ad9aa4ed"><span class="std std-ref">translate()</span></a> indepdently on individual text-blob. Note that there will be minor differences in output when text-blobs are individually translated due to approximations but similar quality nonetheless. If you have async/multithread capabilities, it is recommended to work with futures and <a class="reference internal" href="#classmarian_1_1bergamot_1_1Service_1a9b47be78bc5a44c0a49a4612ad9aa4ed"><span class="std std-ref">translate()</span></a> API.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">source</span></code>: rvalue reference of the string to be translated </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">translationRequest</span></code>: <a class="reference internal" href="classTranslationRequest.html#classTranslationRequest"><span class="std std-ref">TranslationRequest</span></a> (Unified API) indicating whether or not to include some member in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>, also specify any additional configurable parameters. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">translationRequest</span></code>: <a class="reference internal" href="structmarian_1_1bergamot_1_1ResponseOptions.html#structmarian_1_1bergamot_1_1ResponseOptions"><span class="std std-ref">ResponseOptions</span></a> indicating whether or not to include some member in the <a class="reference internal" href="structmarian_1_1bergamot_1_1Response.html#structmarian_1_1bergamot_1_1Response"><span class="std std-ref">Response</span></a>, also specify any additional configurable parameters. </p></li>
 </ul>
 </dd>
 </dl>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Program Listing for File batch.cpp &mdash; Bergamot Translator v0.0.0 2021-04-29 documentation</title>
+  <title>Program Listing for File batch.cpp &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                v0.0.0
+                v0.3.1
               </div>
             
           
@@ -94,7 +94,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Building marian code for bergamot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marian-integration.html">Bergamot C++ Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="library_index.html">Library API</a></li>
 </ul>
 
@@ -167,6 +167,7 @@
 <span id="program-listing-file-src-translator-batch-cpp"></span><h1>Program Listing for File batch.cpp<a class="headerlink" href="#program-listing-for-file-batch-cpp" title="Permalink to this headline">¶</a></h1>
 <p>↰ <a class="reference internal" href="file_src_translator_batch.cpp.html#file-src-translator-batch-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/translator/batch.cpp</span></code>)</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;batch.h&quot;</span><span class="cp"></span>
+
 <span class="cp">#include</span> <span class="cpf">&quot;request.h&quot;</span><span class="cp"></span>
 
 <span class="k">namespace</span> <span class="n">marian</span> <span class="p">{</span>
@@ -179,21 +180,18 @@
     <span class="n">maxLength</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">maxLength</span><span class="p">,</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sentence</span><span class="p">.</span><span class="n">numTokens</span><span class="p">()));</span>
   <span class="p">}</span>
 
-  <span class="n">LOG</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="s">&quot;Batch(tokens={}, max-length={}, sentences_={})&quot;</span><span class="p">,</span> <span class="n">numTokens</span><span class="p">,</span>
-      <span class="n">maxLength</span><span class="p">,</span> <span class="n">sentences_</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+  <span class="n">LOG</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="s">&quot;Batch(tokens={}, max-length={}, sentences_={})&quot;</span><span class="p">,</span> <span class="n">numTokens</span><span class="p">,</span> <span class="n">maxLength</span><span class="p">,</span> <span class="n">sentences_</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
 <span class="p">}</span>
 
-<span class="kt">void</span> <span class="n">Batch</span><span class="o">::</span><span class="n">add</span><span class="p">(</span><span class="k">const</span> <span class="n">RequestSentence</span> <span class="o">&amp;</span><span class="n">sentence</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">sentences_</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">sentence</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="kt">void</span> <span class="n">Batch</span><span class="o">::</span><span class="n">add</span><span class="p">(</span><span class="k">const</span> <span class="n">RequestSentence</span> <span class="o">&amp;</span><span class="n">sentence</span><span class="p">)</span> <span class="p">{</span> <span class="n">sentences_</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">sentence</span><span class="p">);</span> <span class="p">}</span>
 
 <span class="kt">void</span> <span class="n">Batch</span><span class="o">::</span><span class="n">completeBatch</span><span class="p">(</span><span class="k">const</span> <span class="n">Histories</span> <span class="o">&amp;</span><span class="n">histories</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sentences_</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">sentences_</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">completeSentence</span><span class="p">(</span><span class="n">histories</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
   <span class="p">}</span>
 <span class="p">}</span>
-<span class="p">}</span> <span class="c1">// namespace bergamot</span>
-<span class="p">}</span> <span class="c1">// namespace marian</span>
+<span class="p">}</span>  <span class="c1">// namespace bergamot</span>
+<span class="p">}</span>  <span class="c1">// namespace marian</span>
 </pre></div>
 </div>
 </div>
