@@ -80,13 +80,9 @@ Functions
 ---------
 
 
-- :ref:`exhale_function_cli_8h_1a1dc9e2a23852790afe60c0b77f15cfa1`
-
 - :ref:`exhale_function_project__version_8h_1a8440f56a18675aa9d676783ec92a3d04`
 
 - :ref:`exhale_function_parser_8h_1a9d7a795b4232908367ad7d9348c62455`
-
-- :ref:`exhale_function_cli_8h_1aea65285ec34d40805bf7efe64a11fa13`
 
 - :ref:`exhale_function_byte__array__util_8cpp_1a6f199b6686a506deb71095f8b5f9868c`
 

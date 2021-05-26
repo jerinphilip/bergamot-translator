@@ -24,7 +24,7 @@ Program Listing for File project_version.h
    
    std::string bergamotBuildVersion() {
        // e.g. v1.2.3-alpha.1.1+abc123d
-       return "v0.3.1+faab66f";
+       return "v0.3.1+ee291f5";
    }
    
    } // namespace bergamot

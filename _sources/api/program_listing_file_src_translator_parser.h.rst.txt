@@ -39,7 +39,7 @@ Program Listing for File parser.h
                         "Flag holds whether to check the content of the bytearrays (true by default)", true);
    
      cp.addOption<std::string>("--bergamot-mode", "Bergamot Options",
-                               "Operating mode for bergamot: [wasm, service-cli, decoder]", "service-cli");
+                               "Operating mode for bergamot: [wasm, native, decoder]", "native");
    
      return cp;
    }

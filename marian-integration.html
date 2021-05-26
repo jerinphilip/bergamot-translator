@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Bergamot C++ Library &mdash; Bergamot Translator v0.3.1 2021-05-25 documentation</title>
+  <title>Bergamot C++ Library &mdash; Bergamot Translator v0.3.1 2021-05-26 documentation</title>
   
 
   
@@ -213,7 +213,7 @@ compatible with marian.  Therefore, it is required to set
 <span class="n">$</span> <span class="n">mkdir</span> <span class="n">build</span>
 <span class="n">$</span> <span class="n">cd</span> <span class="n">build</span>
 <span class="n">$</span> <span class="n">cmake</span> <span class="p">..</span> <span class="o">-</span><span class="n">DUSE_WASM_COMPATIBLE_SOURCE</span><span class="o">=</span><span class="n">off</span> <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Release</span>
-<span class="n">$</span> <span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+<span class="n">$</span> <span class="n">make</span> <span class="o">-</span><span class="n">j2</span> 
 </pre></div>
 </div>
 <p>The build will generate the library that can be linked to any project. All the
@@ -231,11 +231,11 @@ provided in <code class="docutils literal notranslate"><span class="pre">app/cli
 <code class="docutils literal notranslate"><span class="pre">bergamot</span></code> by means of a <code class="docutils literal notranslate"><span class="pre">--bergamot-mode</span> <span class="pre">BERGAMOT_MODE</span></code> switch.</p>
 <p>The following modes are available:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--bergamot-mode</span> <span class="pre">native</span></code> (<a class="reference external" href="./api/classmarian_1_1bergamot_1_1app_1_1Decoder.html#exhale-class-classmarian-1-1bergamot-1-1app-1-1decoder">Native</a>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--bergamot-mode</span> <span class="pre">wasm</span></code>    (<a class="reference external" href="./api/classmarian_1_1bergamot_1_1app_1_1WASM.html#exhale-class-classmarian-1-1bergamot-1-1app-1-1wasm">WASM</a>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--bergamot-mode</span> <span class="pre">decoder</span></code> (<a class="reference external" href="./api/classmarian_1_1bergamot_1_1app_1_1Decoder.html#exhale-class-classmarian-1-1bergamot-1-1app-1-1decoder">Decoder</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--bergamot-mode</span> <span class="pre">native</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--bergamot-mode</span> <span class="pre">wasm</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--bergamot-mode</span> <span class="pre">decoder</span></code></p></li>
 </ul>
-<p>Note: The links above only work with the sphinx rendered documentation, and points to documentation for the respective CLI.</p>
+<p>Find documentation on these modes with the API documentation for apps <a class="reference external" href="./api/namespace_marian__bergamot__app.html#functions">here</a>.</p>
 </div>
 <div class="section" id="example-command-line-run">
 <h2>Example command line run<a class="headerlink" href="#example-command-line-run" title="Permalink to this headline">¶</a></h2>
@@ -247,7 +247,7 @@ at:</p>
 <li><p><a class="reference external" href="http://data.statmt.org/bergamot/models/deen/ende.student.tiny11.tar.gz">data.statmt.org/bergamot/models/deen/ende.student.tiny11.tar.gz</a></p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">MODEL_DIR</span><span class="o">=</span>... <span class="c1"># path to where the model-files are.</span>
-<span class="nv">BERGAMOT_MODE</span><span class="o">=</span><span class="s1">&#39;service-cli&#39;</span>
+<span class="nv">BERGAMOT_MODE</span><span class="o">=</span><span class="s1">&#39;native&#39;</span>
 <span class="nv">ARGS</span><span class="o">=(</span>
     --bergamot-mode <span class="nv">$BERGAMOT_MODE</span>
     -m <span class="nv">$MODEL_DIR</span>/model.intgemm.alphas.bin <span class="c1"># Path to model file.</span>
