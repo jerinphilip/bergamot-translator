@@ -11,7 +11,7 @@ jobs:
     name: cached
     env:
       gcc: 8
-      CCACHE_DIR: "${{ github.workspace }}/.ccache"
+      ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache"
     runs-on: ubuntu-18.04
@@ -41,7 +41,7 @@ jobs:
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
       with:
-        path: ${{ env.CCACHE_DIR }}
+        path: ${{ env.ccache_dir }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
           ccache
@@ -53,7 +53,7 @@ jobs:
         echo "CCACHE_COMPILER_CHECK=${{ env.cache_cmd }}" >> $GITHUB_ENV
         echo "CCACHE_BASE_DIR=${{ github.workspace }}" >> $GITHUB_ENV
         echo "CCACHE_COMPRESS=true" >> $GITHUB_ENV
-        echo "CCACHE_DIR=${{ github.workspace }}/.ccache" >> $GITHUB_ENV
+        echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
         echo "CCACHE_MAXSIZE=100M" >> $GITHUB_ENV
     - name: ccache prolog
       run: |-
@@ -96,7 +96,7 @@ jobs:
     name: fresh
     env:
       gcc: 8
-      CCACHE_DIR: "${{ github.workspace }}/.ccache"
+      ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on "
     runs-on: ubuntu-18.04
