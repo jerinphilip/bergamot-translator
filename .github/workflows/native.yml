@@ -13,7 +13,7 @@ jobs:
       gcc: 8
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
-      cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCOMPILE_SERVER=off"
+      cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCOMPILE_SERVER=off -DUSE_WASM_COMPATIBLE_SOURCE=off -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache"
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout
@@ -88,7 +88,7 @@ jobs:
       gcc: 8
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
-      cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCOMPILE_SERVER=off"
+      cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCOMPILE_SERVER=off -DUSE_WASM_COMPATIBLE_SOURCE=off "
     runs-on: ubuntu-18.04
     if: ${{ needs.cached.result == 'failure' }}
     needs: cached
