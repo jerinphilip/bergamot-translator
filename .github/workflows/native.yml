@@ -162,5 +162,5 @@ jobs:
     - name: Dump needs context
       env:
         NEEDS_CONTEXT: ${ toJSON(needs) }
-      run: echo $needs_CONTEXT
+      run: echo $NEEDS_CONTEXT
 
