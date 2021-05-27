@@ -374,6 +374,7 @@ jobs:
         cd build
         cmake -L .. ${{ env.cmake }}
     - name: Build from source
+      working-directory: build
       run: make -j2
     - name: ccache epilog
       run: 'ccache -s # Print current cache stats'
@@ -425,6 +426,7 @@ jobs:
         cd build
         cmake -L .. ${{ env.cmake }}
     - name: Build from source
+      working-directory: build
       run: make -j2
     - name: Print Versions
       working-directory: build
@@ -517,6 +519,7 @@ jobs:
         cd build
         cmake -L .. ${{ env.cmake }}
     - name: Build from source
+      working-directory: build
       run: make -j2
     - name: ccache epilog
       run: 'ccache -s # Print current cache stats'
@@ -570,6 +573,7 @@ jobs:
         cd build
         cmake -L .. ${{ env.cmake }}
     - name: Build from source
+      working-directory: build
       run: make -j2
     - name: Print Versions
       working-directory: build
