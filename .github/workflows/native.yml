@@ -327,7 +327,7 @@ jobs:
       cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
-    runs-on: macos-10.05
+    runs-on: macos-10.15
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -403,7 +403,7 @@ jobs:
     name: MacOS full (fresh build)
     env:
       cmake: -DCOMPILE_TESTS=on
-    runs-on: macos-10.05
+    runs-on: macos-10.15
     if: ${{ needs.mac_full.result == 'failure' }}
     needs: mac_full
     steps:
@@ -450,7 +450,7 @@ jobs:
           bergamot-translator-tests/**/*.out
   mac_full_log:
     name: Log a few contexts
-    runs-on: macos-10.05
+    runs-on: macos-10.15
     if: ${{ always() }}
     needs: mac_full
     steps:
@@ -470,7 +470,7 @@ jobs:
       unittests: false
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
-    runs-on: macos-10.05
+    runs-on: macos-10.15
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -548,7 +548,7 @@ jobs:
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on
       brt_tags: "'#wasm'"
       unittests: false
-    runs-on: macos-10.05
+    runs-on: macos-10.15
     if: ${{ needs.mac_minimal.result == 'failure' }}
     needs: mac_minimal
     steps:
@@ -595,7 +595,7 @@ jobs:
           bergamot-translator-tests/**/*.out
   mac_minimal_log:
     name: Log a few contexts
-    runs-on: macos-10.05
+    runs-on: macos-10.15
     if: ${{ always() }}
     needs: mac_minimal
     steps:
