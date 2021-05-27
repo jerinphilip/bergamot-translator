@@ -33,21 +33,21 @@ jobs:
         sudo sh -c "echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list"
         sudo apt-get update -o Dir::Etc::sourcelist="/etc/apt/sources.list.d/intel-mkl.list"
         sudo apt-get install -y --no-install-recommends intel-mkl-64bit-2020.0-088
-    - name: Cache-op for build-cache through ccache
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.CCACHE_DIR }}
-        key: ccache-${{ matrix.name }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
-        restore-keys: |-
-          ccache-${{ matrix.name }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-
-          ccache-${{ matrix.name }}-${{ steps.ccache_vars.outputs.hash }}-
-          ccache-${{ matrix.name }}-
     - name: Generate ccache_vars for ccache based on machine
       shell: bash
       id: ccache_vars
       run: |-
         echo "::set-output name=hash::$(${{ env.cache_cmd }})
         echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')
+    - name: Cache-op for build-cache through ccache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.CCACHE_DIR }}
+        key: ccache-${{ job.name }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
+        restore-keys: |-
+          ccache-${{ job.name }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-
+          ccache-${{ job.name }}-${{ steps.ccache_vars.outputs.hash }}-
+          ccache-${{ job.name }}-
     - name: ccache environment setup
       run: |-
         echo "CCACHE_COMPILER_CHECK=${{ env.cache_cmd }}" >> $GITHUB_ENV
