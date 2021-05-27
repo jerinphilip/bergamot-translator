@@ -76,7 +76,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: "${{ env.unittests }}"
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -98,7 +98,7 @@ jobs:
       gcc: 8
       cmake: -DCOMPILE_TESTS=on
     runs-on: ubuntu-18.04
-    if: "${{ needs.ubuntu_full.result == 'failure' }}"
+    if: ${{ needs.ubuntu_full.result == 'failure' }}
     needs: ubuntu_full
     steps:
     - name: Checkout
@@ -132,7 +132,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: "${{ env.unittests }}"
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -151,7 +151,7 @@ jobs:
   ubuntu_full_log:
     name: Log a few contexts
     runs-on: ubuntu-18.04
-    if: "${{ always() }}"
+    if: ${{ always() }}
     needs: ubuntu_full
     steps:
     - name: Dump needs context
@@ -233,7 +233,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: "${{ env.unittests }}"
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -257,7 +257,7 @@ jobs:
       brt_tags: "'#wasm'"
       unittests: false
     runs-on: ubuntu-18.04
-    if: "${{ needs.ubuntu_minimal.result == 'failure' }}"
+    if: ${{ needs.ubuntu_minimal.result == 'failure' }}
     needs: ubuntu_minimal
     steps:
     - name: Checkout
@@ -291,7 +291,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: "${{ env.unittests }}"
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -310,7 +310,7 @@ jobs:
   ubuntu_minimal_log:
     name: Log a few contexts
     runs-on: ubuntu-18.04
-    if: "${{ always() }}"
+    if: ${{ always() }}
     needs: ubuntu_minimal
     steps:
     - name: Dump needs context
@@ -384,7 +384,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: "${{ env.unittests }}"
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -405,7 +405,7 @@ jobs:
     env:
       cmake: -DCOMPILE_TESTS=on
     runs-on: macos-10.15
-    if: "${{ needs.mac_full.result == 'failure' }}"
+    if: ${{ needs.mac_full.result == 'failure' }}
     needs: mac_full
     steps:
     - name: Checkout
@@ -434,7 +434,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: "${{ env.unittests }}"
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -453,7 +453,7 @@ jobs:
   mac_full_log:
     name: Log a few contexts
     runs-on: macos-10.15
-    if: "${{ always() }}"
+    if: ${{ always() }}
     needs: mac_full
     steps:
     - name: Dump needs context
@@ -529,7 +529,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: "${{ env.unittests }}"
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -552,7 +552,7 @@ jobs:
       brt_tags: "'#wasm'"
       unittests: false
     runs-on: macos-10.15
-    if: "${{ needs.mac_minimal.result == 'failure' }}"
+    if: ${{ needs.mac_minimal.result == 'failure' }}
     needs: mac_minimal
     steps:
     - name: Checkout
@@ -581,7 +581,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: "${{ env.unittests }}"
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -600,7 +600,7 @@ jobs:
   mac_minimal_log:
     name: Log a few contexts
     runs-on: macos-10.15
-    if: "${{ always() }}"
+    if: ${{ always() }}
     needs: mac_minimal
     steps:
     - name: Dump needs context
