@@ -103,7 +103,7 @@ jobs:
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on "
     runs-on: ubuntu-18.04
-    if: ${{ needs.cached.result != 'success' }}
+    if: ${{ needs.cached.outputs.job_status != 'success' }}
     needs: cached
     steps:
     - name: Checkout
