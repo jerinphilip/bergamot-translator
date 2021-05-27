@@ -83,6 +83,15 @@ jobs:
     - name: Run regression-tests (BRT)
       working-directory: bergamot-translator-tests
       run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+    - name: Upload regression-tests artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: brt-${{ github.job }}
+        path: |-
+          bergamot-translator-tests/**/*.expected
+          bergamot-translator-tests/**/*.log
+          bergamot-translator-tests/**/*.out
   fresh:
     name: fresh
     env:
@@ -132,4 +141,13 @@ jobs:
     - name: Run regression-tests (BRT)
       working-directory: bergamot-translator-tests
       run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+    - name: Upload regression-tests artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: brt-${{ github.job }}
+        path: |-
+          bergamot-translator-tests/**/*.expected
+          bergamot-translator-tests/**/*.log
+          bergamot-translator-tests/**/*.out
 
