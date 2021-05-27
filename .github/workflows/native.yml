@@ -89,9 +89,9 @@ jobs:
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCOMPILE_SERVER=off"
-    needs: cached
     runs-on: ubuntu-18.04
     if: ${{ needs.cached.result == 'failure' }}
+    needs: cached
     steps:
     - name: Checkout
       uses: actions/checkout@v2
