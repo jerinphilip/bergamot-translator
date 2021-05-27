@@ -163,8 +163,8 @@ jobs:
       env:
         NEEDS_CONTEXT: ${{ toJSON(needs) }}
       run: echo $NEEDS_CONTEXT
-    - name: Evaluate needs.cached.result
+    - name: Evaluate needs.cached.result == "failure"
       env:
-        EXPR_VALUE: ${{ needs.cached.result }}
+        EXPR_VALUE: ${{ needs.cached.result == "failure" }}
       run: echo $EXPR_VALUE
 
