@@ -13,7 +13,7 @@ jobs:
       gcc: 8
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
-      cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCOMPILE_SERVER=off -DUSE_WASM_COMPATIBLE_SOURCE=off -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache"
+      cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache"
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout
@@ -44,9 +44,10 @@ jobs:
         path: ${{ env.CCACHE_DIR }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
-          ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-
-          ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-
-          ccache-${{ github.job }}-
+          ccache
+          ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
+          ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}
+          ccache-${{ github.job }}
     - name: ccache environment setup
       run: |-
         echo "CCACHE_COMPILER_CHECK=${{ env.cache_cmd }}" >> $GITHUB_ENV
@@ -88,7 +89,7 @@ jobs:
       gcc: 8
       CCACHE_DIR: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
-      cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCOMPILE_SERVER=off -DUSE_WASM_COMPATIBLE_SOURCE=off "
+      cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on "
     runs-on: ubuntu-18.04
     if: ${{ needs.cached.result == 'failure' }}
     needs: cached
