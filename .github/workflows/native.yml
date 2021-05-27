@@ -16,6 +16,9 @@ jobs:
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache"
     runs-on: ubuntu-18.04
     steps:
+    - name: Hard fail to check trigger for other workflow
+      shell: bash
+      run: exit 1
     - name: Checkout
       uses: actions/checkout@v2
       with:
