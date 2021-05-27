@@ -77,6 +77,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -133,6 +134,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -168,6 +170,7 @@ jobs:
       gcc: 8
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       brt_tags: "'#wasm'"
+      unittests: false
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
     runs-on: ubuntu-18.04
@@ -233,6 +236,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -254,6 +258,7 @@ jobs:
       gcc: 8
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on
       brt_tags: "'#wasm'"
+      unittests: false
     runs-on: ubuntu-18.04
     if: ${{ needs.ubuntu_minimal.result == 'failure' }}
     needs: ubuntu_minimal
@@ -290,6 +295,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
+      if: ${{ env.unittests }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
