@@ -161,6 +161,6 @@ jobs:
     steps:
     - name: Dump needs context
       env:
-        NEEDS_CONTEXT: ${ toJSON(needs) }
+        NEEDS_CONTEXT: ${{ toJSON(needs) }}
       run: echo $NEEDS_CONTEXT
 
