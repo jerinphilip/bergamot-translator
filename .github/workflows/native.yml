@@ -103,7 +103,7 @@ jobs:
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on "
     runs-on: ubuntu-18.04
-    if: ${{ needs.cached.outputs.job_status != 'success' }}
+    if: ${{ ${{ needs.cached.result == 'failure' }} }}
     needs: cached
     steps:
     - name: Checkout
@@ -153,4 +153,12 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
+  log:
+    name: log
+    runs-on: ubuntu-18.04
+    if: ${{ ${{ always() }} }}
+    needs: cached
+    steps:
+    - name: Log vars
+      run: echo ${{ fromJSON(needs) }}
 
