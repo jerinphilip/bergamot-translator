@@ -64,8 +64,7 @@ jobs:
         mkdir -p build
         cd build
         CC=/usr/bin/gcc-${{ env.gcc }} CXX=/usr/bin/g++-${{ env.gcc }} CUDAHOSTCXX=/usr/bin/g++-${{ env.gcc }} \
-        cmake -L .. \
-          ${{ env.cmake }}
+        cmake -L .. ${{ env.cmake }}
     - name: Build from source
       working-directory: build
       run: make -j2
@@ -123,8 +122,7 @@ jobs:
         mkdir -p build
         cd build
         CC=/usr/bin/gcc-${{ env.gcc }} CXX=/usr/bin/g++-${{ env.gcc }} CUDAHOSTCXX=/usr/bin/g++-${{ env.gcc }} \
-        cmake -L .. \
-          ${{ env.cmake }}
+        cmake -L .. ${{ env.cmake }}
     - name: Build from source
       working-directory: build
       run: make -j2
@@ -223,8 +221,7 @@ jobs:
         mkdir -p build
         cd build
         CC=/usr/bin/gcc-${{ env.gcc }} CXX=/usr/bin/g++-${{ env.gcc }} CUDAHOSTCXX=/usr/bin/g++-${{ env.gcc }} \
-        cmake -L .. \
-          ${{ env.cmake }}
+        cmake -L .. ${{ env.cmake }}
     - name: Build from source
       working-directory: build
       run: make -j2
@@ -284,8 +281,7 @@ jobs:
         mkdir -p build
         cd build
         CC=/usr/bin/gcc-${{ env.gcc }} CXX=/usr/bin/g++-${{ env.gcc }} CUDAHOSTCXX=/usr/bin/g++-${{ env.gcc }} \
-        cmake -L .. \
-          ${{ env.cmake }}
+        cmake -L .. ${{ env.cmake }}
     - name: Build from source
       working-directory: build
       run: make -j2
@@ -316,6 +312,292 @@ jobs:
     runs-on: ubuntu-18.04
     if: ${{ always() }}
     needs: ubuntu_minimal
+    steps:
+    - name: Dump needs context
+      env:
+        NEEDS_CONTEXT: ${{ toJSON(needs) }}
+      run: echo $NEEDS_CONTEXT
+    - name: Evaluate needs.cached.result == 'failure'
+      env:
+        EXPR_VALUE: ${{ needs.cached.result == 'failure' }}
+      run: echo $EXPR_VALUE
+  mac_full:
+    name: MacOS full
+    env:
+      cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      ccache_dir: "${{ github.workspace }}/.ccache"
+      cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
+    runs-on: macos-10.05
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Install Dependencies
+      run: |-
+        brew update
+        brew install openblas protobuf coreutils
+    - name: Setup BLAS
+      run: |-
+        echo "LDFLAGS=-L/usr/local/opt/openblas/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I/usr/local/opt/openblas/include" >> $GITHUB_ENV
+    - name: Generate ccache_vars for ccache based on machine
+      shell: bash
+      id: ccache_vars
+      run: |-
+        echo "::set-output name=hash::$(${{ env.cache_cmd }})"
+        echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
+    - name: Cache-op for build-cache through ccache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.ccache_dir }}
+        key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
+        restore-keys: |-
+          ccache
+          ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
+          ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}
+          ccache-${{ github.job }}
+    - name: ccache environment setup
+      run: |-
+        echo "CCACHE_COMPILER_CHECK=${{ env.cache_cmd }}" >> $GITHUB_ENV
+        echo "CCACHE_BASE_DIR=${{ github.workspace }}" >> $GITHUB_ENV
+        echo "CCACHE_COMPRESS=true" >> $GITHUB_ENV
+        echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
+        echo "CCACHE_MAXSIZE=100M" >> $GITHUB_ENV
+    - name: ccache prolog
+      run: |-
+        ccache -s # Print current cache stats
+        ccache -z # Zero cache entry
+    - name: cmake
+      run: |-
+        mkdir -p build
+        cd build
+        cmake -L .. ${{ env.cmake }}
+    - name: Build from source
+      run: make -j2
+    - name: ccache epilog
+      run: 'ccache -s # Print current cache stats'
+    - name: Print Versions
+      working-directory: build
+      run: ./app/bergamot-translator-app --version
+    - name: Run unit tests
+      working-directory: build
+      run: make test
+      if: ${{ env.unittests }}
+    - name: Install regression-test framework (BRT)
+      working-directory: bergamot-translator-tests
+      run: make install
+    - name: Run regression-tests (BRT)
+      working-directory: bergamot-translator-tests
+      run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+    - name: Upload regression-tests artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: brt-${{ github.job }}
+        path: |-
+          bergamot-translator-tests/**/*.expected
+          bergamot-translator-tests/**/*.log
+          bergamot-translator-tests/**/*.out
+  mac_full_fresh:
+    name: MacOS full (fresh build)
+    env:
+      cmake: -DCOMPILE_TESTS=on
+    runs-on: macos-10.05
+    if: ${{ needs.mac_full.result == 'failure' }}
+    needs: mac_full
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Install Dependencies
+      run: |-
+        brew update
+        brew install openblas protobuf coreutils
+    - name: Setup BLAS
+      run: |-
+        echo "LDFLAGS=-L/usr/local/opt/openblas/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I/usr/local/opt/openblas/include" >> $GITHUB_ENV
+    - name: cmake
+      run: |-
+        mkdir -p build
+        cd build
+        cmake -L .. ${{ env.cmake }}
+    - name: Build from source
+      run: make -j2
+    - name: Print Versions
+      working-directory: build
+      run: ./app/bergamot-translator-app --version
+    - name: Run unit tests
+      working-directory: build
+      run: make test
+      if: ${{ env.unittests }}
+    - name: Install regression-test framework (BRT)
+      working-directory: bergamot-translator-tests
+      run: make install
+    - name: Run regression-tests (BRT)
+      working-directory: bergamot-translator-tests
+      run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+    - name: Upload regression-tests artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: brt-${{ github.job }}
+        path: |-
+          bergamot-translator-tests/**/*.expected
+          bergamot-translator-tests/**/*.log
+          bergamot-translator-tests/**/*.out
+  mac_full_log:
+    name: Log a few contexts
+    runs-on: macos-10.05
+    if: ${{ always() }}
+    needs: mac_full
+    steps:
+    - name: Dump needs context
+      env:
+        NEEDS_CONTEXT: ${{ toJSON(needs) }}
+      run: echo $NEEDS_CONTEXT
+    - name: Evaluate needs.cached.result == 'failure'
+      env:
+        EXPR_VALUE: ${{ needs.cached.result == 'failure' }}
+      run: echo $EXPR_VALUE
+  mac_minimal:
+    name: MacOS minimal
+    env:
+      cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      brt_tags: "'#wasm'"
+      unittests: false
+      ccache_dir: "${{ github.workspace }}/.ccache"
+      cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
+    runs-on: macos-10.05
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Install Dependencies
+      run: |-
+        brew update
+        brew install openblas protobuf coreutils
+    - name: Setup BLAS
+      run: |-
+        echo "LDFLAGS=-L/usr/local/opt/openblas/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I/usr/local/opt/openblas/include" >> $GITHUB_ENV
+    - name: Generate ccache_vars for ccache based on machine
+      shell: bash
+      id: ccache_vars
+      run: |-
+        echo "::set-output name=hash::$(${{ env.cache_cmd }})"
+        echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
+    - name: Cache-op for build-cache through ccache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.ccache_dir }}
+        key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
+        restore-keys: |-
+          ccache
+          ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
+          ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}
+          ccache-${{ github.job }}
+    - name: ccache environment setup
+      run: |-
+        echo "CCACHE_COMPILER_CHECK=${{ env.cache_cmd }}" >> $GITHUB_ENV
+        echo "CCACHE_BASE_DIR=${{ github.workspace }}" >> $GITHUB_ENV
+        echo "CCACHE_COMPRESS=true" >> $GITHUB_ENV
+        echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
+        echo "CCACHE_MAXSIZE=100M" >> $GITHUB_ENV
+    - name: ccache prolog
+      run: |-
+        ccache -s # Print current cache stats
+        ccache -z # Zero cache entry
+    - name: cmake
+      run: |-
+        mkdir -p build
+        cd build
+        cmake -L .. ${{ env.cmake }}
+    - name: Build from source
+      run: make -j2
+    - name: ccache epilog
+      run: 'ccache -s # Print current cache stats'
+    - name: Print Versions
+      working-directory: build
+      run: ./app/bergamot-translator-app --version
+    - name: Run unit tests
+      working-directory: build
+      run: make test
+      if: ${{ env.unittests }}
+    - name: Install regression-test framework (BRT)
+      working-directory: bergamot-translator-tests
+      run: make install
+    - name: Run regression-tests (BRT)
+      working-directory: bergamot-translator-tests
+      run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+    - name: Upload regression-tests artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: brt-${{ github.job }}
+        path: |-
+          bergamot-translator-tests/**/*.expected
+          bergamot-translator-tests/**/*.log
+          bergamot-translator-tests/**/*.out
+  mac_minimal_fresh:
+    name: MacOS minimal (fresh build)
+    env:
+      cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on
+      brt_tags: "'#wasm'"
+      unittests: false
+    runs-on: macos-10.05
+    if: ${{ needs.mac_minimal.result == 'failure' }}
+    needs: mac_minimal
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Install Dependencies
+      run: |-
+        brew update
+        brew install openblas protobuf coreutils
+    - name: Setup BLAS
+      run: |-
+        echo "LDFLAGS=-L/usr/local/opt/openblas/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I/usr/local/opt/openblas/include" >> $GITHUB_ENV
+    - name: cmake
+      run: |-
+        mkdir -p build
+        cd build
+        cmake -L .. ${{ env.cmake }}
+    - name: Build from source
+      run: make -j2
+    - name: Print Versions
+      working-directory: build
+      run: ./app/bergamot-translator-app --version
+    - name: Run unit tests
+      working-directory: build
+      run: make test
+      if: ${{ env.unittests }}
+    - name: Install regression-test framework (BRT)
+      working-directory: bergamot-translator-tests
+      run: make install
+    - name: Run regression-tests (BRT)
+      working-directory: bergamot-translator-tests
+      run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+    - name: Upload regression-tests artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: brt-${{ github.job }}
+        path: |-
+          bergamot-translator-tests/**/*.expected
+          bergamot-translator-tests/**/*.log
+          bergamot-translator-tests/**/*.out
+  mac_minimal_log:
+    name: Log a few contexts
+    runs-on: macos-10.05
+    if: ${{ always() }}
+    needs: mac_minimal
     steps:
     - name: Dump needs context
       env:
