@@ -104,6 +104,7 @@ jobs:
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on "
       precondition: ${{ needs.cached.result == 'failure' }}
     runs-on: ubuntu-18.04
+    if: ${{ env.precondition }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -152,11 +153,13 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
+    needs: cached
   log:
     name: log
     env:
       precondition: ${{ always() }}
     runs-on: ubuntu-18.04
+    if: ${{ env.precondition }}
     steps:
     - name: Dump needs context
       env:
@@ -166,4 +169,5 @@ jobs:
       env:
         EXPR_VALUE: ${{ needs.cached.result == 'failure' }}
       run: echo $EXPR_VALUE
+    needs: cached
 
