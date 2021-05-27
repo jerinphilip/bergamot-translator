@@ -6,12 +6,6 @@ name: default
   pull_request:
     branches:
     - main
-env:
-  gcc: 8
-  CCACHE_DIR: "${{ github.workspace }}/.ccache"
-  cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
-  cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCOMPILE_SERVER=off"
-  brt_tags: "'#native'"
 jobs:
   cached:
     name: cached
@@ -96,6 +90,7 @@ jobs:
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCOMPILE_SERVER=off"
       brt_tags: "'#native'"
+    needs: cached
     runs-on: ubuntu-18.04
     if: ${{ needs.cached.result == 'failure' }}
     steps:
@@ -136,3 +131,4 @@ jobs:
     - name: Run regression-tests (BRT)
       working-directory: bergamot-translator-tests
       run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+
