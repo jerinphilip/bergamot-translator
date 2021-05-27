@@ -92,8 +92,8 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
-  ubuntu-fresh:
-    name: ubuntu-fresh
+  ubuntu_fresh:
+    name: ubuntu_fresh
     env:
       gcc: 8
       ccache_dir: "${{ github.workspace }}/.ccache"
