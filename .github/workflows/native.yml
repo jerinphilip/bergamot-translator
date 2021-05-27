@@ -161,6 +161,6 @@ jobs:
     steps:
     - name: Log vars
       run: |-
-        echo "${{ fromJSON(needs) }}"
-        echo "${{ fromJSON(needs.cached) }}"
+        echo "${{ toJSON(needs) }}"
+        echo "${{ toJSON(needs.cached) }}"
 
