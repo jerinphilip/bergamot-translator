@@ -336,7 +336,7 @@ jobs:
     - name: Install Dependencies
       run: |-
         brew update
-        brew install openblas protobuf coreutils
+        brew install openblas protobuf coreutils ccache
     - name: Setup BLAS
       run: |-
         echo "LDFLAGS=-L/usr/local/opt/openblas/lib" >> $GITHUB_ENV
@@ -414,7 +414,7 @@ jobs:
     - name: Install Dependencies
       run: |-
         brew update
-        brew install openblas protobuf coreutils
+        brew install openblas protobuf coreutils ccache
     - name: Setup BLAS
       run: |-
         echo "LDFLAGS=-L/usr/local/opt/openblas/lib" >> $GITHUB_ENV
@@ -479,7 +479,7 @@ jobs:
     - name: Install Dependencies
       run: |-
         brew update
-        brew install openblas protobuf coreutils
+        brew install openblas protobuf coreutils ccache
     - name: Setup BLAS
       run: |-
         echo "LDFLAGS=-L/usr/local/opt/openblas/lib" >> $GITHUB_ENV
@@ -559,7 +559,7 @@ jobs:
     - name: Install Dependencies
       run: |-
         brew update
-        brew install openblas protobuf coreutils
+        brew install openblas protobuf coreutils ccache
     - name: Setup BLAS
       run: |-
         echo "LDFLAGS=-L/usr/local/opt/openblas/lib" >> $GITHUB_ENV
