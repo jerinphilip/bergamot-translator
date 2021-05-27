@@ -11,7 +11,7 @@ jobs:
     name: Ubuntu full
     env:
       gcc: 8
-      cmake: -DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
     runs-on: ubuntu-18.04
@@ -96,7 +96,7 @@ jobs:
     name: Ubuntu full (fresh build)
     env:
       gcc: 8
-      cmake: -DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on
+      cmake: -DCOMPILE_TESTS=on
     runs-on: ubuntu-18.04
     if: ${{ needs.ubuntu_full.result == 'failure' }}
     needs: ubuntu_full
@@ -166,7 +166,7 @@ jobs:
     name: Ubuntu minimal
     env:
       gcc: 8
-      cmake: -DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       brt_tags: "'#wasm'"
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
@@ -252,7 +252,7 @@ jobs:
     name: Ubuntu minimal (fresh build)
     env:
       gcc: 8
-      cmake: -DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DUSE_WASM_COMPATIBLE_SOURCE=on
+      cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on
       brt_tags: "'#wasm'"
     runs-on: ubuntu-18.04
     if: ${{ needs.ubuntu_minimal.result == 'failure' }}
