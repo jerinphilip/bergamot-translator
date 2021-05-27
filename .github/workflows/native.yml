@@ -102,9 +102,8 @@ jobs:
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on "
-      precondition: ${{ needs.cached.result == 'failure' }}
     runs-on: ubuntu-18.04
-    if: ${{ env.precondition }}
+    if: ${{ needs.cached.result == 'failure' }}
     needs: cached
     steps:
     - name: Checkout
@@ -156,10 +155,8 @@ jobs:
           bergamot-translator-tests/**/*.out
   log:
     name: log
-    env:
-      precondition: ${{ always() }}
     runs-on: ubuntu-18.04
-    if: ${{ env.precondition }}
+    if: ${{ always() }}
     needs: cached
     steps:
     - name: Dump needs context
