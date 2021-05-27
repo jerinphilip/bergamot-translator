@@ -37,8 +37,8 @@ jobs:
       shell: bash
       id: ccache_vars
       run: |-
-        echo "::set-output name=hash::$(${{ env.cache_cmd }})
-        echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')
+        echo "::set-output name=hash::$(${{ env.cache_cmd }})"
+        echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
       with:
