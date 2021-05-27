@@ -14,6 +14,7 @@ jobs:
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache"
+      precondition: ${{ always() }}
     runs-on: ubuntu-18.04
     steps:
     - name: Hard fail to check trigger for other workflow
@@ -103,7 +104,7 @@ jobs:
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
       cmake: "-DCMAKE_BUILD_TYPE=Release -DCOMPILE_TESTS=on "
     runs-on: ubuntu-18.04
-    if: ${{ needs.cached.result == 'failure' }}
+    if: ${{ env.precondition }}
     needs: cached
     steps:
     - name: Checkout
@@ -156,7 +157,7 @@ jobs:
   log:
     name: log
     runs-on: ubuntu-18.04
-    if: ${{ always() }}
+    if: ${{ env.precondition }}
     needs: cached
     steps:
     - name: Dump needs context
