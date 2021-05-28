@@ -55,7 +55,7 @@ jobs:
         echo "CCACHE_BASE_DIR=${{ github.workspace }}" >> $GITHUB_ENV
         echo "CCACHE_COMPRESS=true" >> $GITHUB_ENV
         echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
-        echo "CCACHE_MAXSIZE=100M" >> $GITHUB_ENV
+        echo "CCACHE_MAXSIZE=50M" >> $GITHUB_ENV
     - name: ccache prolog
       run: |-
         ccache -s # Print current cache stats
@@ -213,7 +213,7 @@ jobs:
         echo "CCACHE_BASE_DIR=${{ github.workspace }}" >> $GITHUB_ENV
         echo "CCACHE_COMPRESS=true" >> $GITHUB_ENV
         echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
-        echo "CCACHE_MAXSIZE=100M" >> $GITHUB_ENV
+        echo "CCACHE_MAXSIZE=50M" >> $GITHUB_ENV
     - name: ccache prolog
       run: |-
         ccache -s # Print current cache stats
@@ -367,7 +367,7 @@ jobs:
         echo "CCACHE_BASE_DIR=${{ github.workspace }}" >> $GITHUB_ENV
         echo "CCACHE_COMPRESS=true" >> $GITHUB_ENV
         echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
-        echo "CCACHE_MAXSIZE=100M" >> $GITHUB_ENV
+        echo "CCACHE_MAXSIZE=50M" >> $GITHUB_ENV
     - name: ccache prolog
       run: |-
         ccache -s # Print current cache stats
@@ -514,7 +514,7 @@ jobs:
         echo "CCACHE_BASE_DIR=${{ github.workspace }}" >> $GITHUB_ENV
         echo "CCACHE_COMPRESS=true" >> $GITHUB_ENV
         echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
-        echo "CCACHE_MAXSIZE=100M" >> $GITHUB_ENV
+        echo "CCACHE_MAXSIZE=50M" >> $GITHUB_ENV
     - name: ccache prolog
       run: |-
         ccache -s # Print current cache stats
