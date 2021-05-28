@@ -13,7 +13,7 @@ jobs:
       cc: gcc-8
       cxx: g++-8
       cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
-      unittests: ${{ true }}
+      unittests: true
       ccache_dir: "${{ github.workspace }}/.ccache"
       ccache_compilercheck: content
     runs-on: ubuntu-18.04
@@ -105,7 +105,7 @@ jobs:
       cxx: g++-8
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       brt_tags: "'#wasm'"
-      unittests: ${{ false }}
+      unittests: false
       ccache_dir: "${{ github.workspace }}/.ccache"
       ccache_compilercheck: content
     runs-on: ubuntu-18.04
