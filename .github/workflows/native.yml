@@ -150,20 +150,6 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
-  ubuntu_full_log:
-    name: Log a few contexts
-    runs-on: ubuntu-18.04
-    if: ${{ always() }}
-    needs: ubuntu_full
-    steps:
-    - name: Dump needs context
-      env:
-        NEEDS_CONTEXT: ${{ toJSON(needs) }}
-      run: echo $NEEDS_CONTEXT
-    - name: Evaluate needs.cached.result == 'failure'
-      env:
-        EXPR_VALUE: ${{ needs.cached.result == 'failure' }}
-      run: echo $EXPR_VALUE
   ubuntu_minimal:
     name: Ubuntu minimal
     env:
@@ -309,20 +295,6 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
-  ubuntu_minimal_log:
-    name: Log a few contexts
-    runs-on: ubuntu-18.04
-    if: ${{ always() }}
-    needs: ubuntu_minimal
-    steps:
-    - name: Dump needs context
-      env:
-        NEEDS_CONTEXT: ${{ toJSON(needs) }}
-      run: echo $NEEDS_CONTEXT
-    - name: Evaluate needs.cached.result == 'failure'
-      env:
-        EXPR_VALUE: ${{ needs.cached.result == 'failure' }}
-      run: echo $EXPR_VALUE
   mac_full:
     name: MacOS full
     env:
@@ -456,20 +428,6 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
-  mac_full_log:
-    name: Log a few contexts
-    runs-on: macos-10.15
-    if: ${{ always() }}
-    needs: mac_full
-    steps:
-    - name: Dump needs context
-      env:
-        NEEDS_CONTEXT: ${{ toJSON(needs) }}
-      run: echo $NEEDS_CONTEXT
-    - name: Evaluate needs.cached.result == 'failure'
-      env:
-        EXPR_VALUE: ${{ needs.cached.result == 'failure' }}
-      run: echo $EXPR_VALUE
   mac_minimal:
     name: MacOS minimal
     env:
@@ -603,18 +561,4 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
-  mac_minimal_log:
-    name: Log a few contexts
-    runs-on: macos-10.15
-    if: ${{ always() }}
-    needs: mac_minimal
-    steps:
-    - name: Dump needs context
-      env:
-        NEEDS_CONTEXT: ${{ toJSON(needs) }}
-      run: echo $NEEDS_CONTEXT
-    - name: Evaluate needs.cached.result == 'failure'
-      env:
-        EXPR_VALUE: ${{ needs.cached.result == 'failure' }}
-      run: echo $EXPR_VALUE
 
