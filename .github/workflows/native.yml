@@ -296,7 +296,7 @@ jobs:
   mac_full:
     name: MacOS full
     env:
-      cmake: -DCOMPILE_TESTS=on -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      cmake: -DCOMPILE_TESTS=on -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=off -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       brt_tags: "'#mac'"
       unittests: ${{ true }}
       ccache_dir: "${{ github.workspace }}/.ccache"
@@ -376,7 +376,7 @@ jobs:
   mac_full_fresh:
     name: MacOS full (fresh build)
     env:
-      cmake: -DCOMPILE_TESTS=on -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off
+      cmake: -DCOMPILE_TESTS=on -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=off
       brt_tags: "'#mac'"
       unittests: ${{ true }}
     runs-on: macos-10.15
@@ -428,7 +428,7 @@ jobs:
   mac_minimal:
     name: MacOS minimal
     env:
-      cmake: -DCOMPILE_TESTS=off -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      cmake: -DCOMPILE_TESTS=off -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=on -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       brt_tags: "'#wasm'"
       unittests: ${{ false }}
       ccache_dir: "${{ github.workspace }}/.ccache"
@@ -508,7 +508,7 @@ jobs:
   mac_minimal_fresh:
     name: MacOS minimal (fresh build)
     env:
-      cmake: -DCOMPILE_TESTS=off -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_WASM_COMPATIBLE_SOURCE=on
+      cmake: -DCOMPILE_TESTS=off -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=on -DUSE_WASM_COMPATIBLE_SOURCE=on
       brt_tags: "'#wasm'"
       unittests: ${{ false }}
     runs-on: macos-10.15
