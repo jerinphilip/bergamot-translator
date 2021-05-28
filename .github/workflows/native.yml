@@ -7,8 +7,8 @@ name: default
     branches:
     - main
 jobs:
-  ubuntu_full:
-    name: Ubuntu full
+  ubuntu_1804_full:
+    name: Ubuntu 18.04 full
     env:
       gcc: 8
       cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
@@ -93,15 +93,15 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
-  ubuntu_full_fresh:
-    name: Ubuntu full (fresh build)
+  ubuntu_1804_full_fresh:
+    name: Ubuntu 18.04 full (fresh build)
     env:
       gcc: 8
       cmake: -DCOMPILE_TESTS=on
       unittests: ${{ true }}
     runs-on: ubuntu-18.04
-    if: ${{ always() && needs.ubuntu_full.result == 'failure' }}
-    needs: ubuntu_full
+    if: ${{ always() && needs.ubuntu_1804_full.result == 'failure' }}
+    needs: ubuntu_1804_full
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -150,8 +150,8 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
-  ubuntu_minimal:
-    name: Ubuntu minimal
+  ubuntu_1804_minimal:
+    name: Ubuntu 18.04 minimal
     env:
       gcc: 8
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
@@ -237,16 +237,16 @@ jobs:
           bergamot-translator-tests/**/*.expected
           bergamot-translator-tests/**/*.log
           bergamot-translator-tests/**/*.out
-  ubuntu_minimal_fresh:
-    name: Ubuntu minimal (fresh build)
+  ubuntu_1804_minimal_fresh:
+    name: Ubuntu 18.04 minimal (fresh build)
     env:
       gcc: 8
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on
       brt_tags: "'#wasm'"
       unittests: ${{ false }}
     runs-on: ubuntu-18.04
-    if: ${{ always() && needs.ubuntu_minimal.result == 'failure' }}
-    needs: ubuntu_minimal
+    if: ${{ always() && needs.ubuntu_1804_minimal.result == 'failure' }}
+    needs: ubuntu_1804_minimal
     steps:
     - name: Checkout
       uses: actions/checkout@v2
