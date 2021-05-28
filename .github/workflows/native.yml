@@ -44,7 +44,7 @@ jobs:
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
       with:
-        path: ${{ env.ccache_dir }}
+        path: ${{ env.ccache.dir }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
@@ -137,7 +137,7 @@ jobs:
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
       with:
-        path: ${{ env.ccache_dir }}
+        path: ${{ env.ccache.dir }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
@@ -224,7 +224,7 @@ jobs:
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
       with:
-        path: ${{ env.ccache_dir }}
+        path: ${{ env.ccache.dir }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
@@ -310,7 +310,7 @@ jobs:
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
       with:
-        path: ${{ env.ccache_dir }}
+        path: ${{ env.ccache.dir }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
