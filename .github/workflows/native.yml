@@ -45,9 +45,9 @@ jobs:
         path: ${{ env.ccache_dir }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
-          ccache
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}
+          ccache-${{ github.job }}
     - name: ccache environment setup
       run: |-
         echo "CCACHE_COMPILER_CHECK=${{ env.cache_cmd }}" >> $GITHUB_ENV
@@ -188,9 +188,9 @@ jobs:
         path: ${{ env.ccache_dir }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
-          ccache
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}
+          ccache-${{ github.job }}
     - name: ccache environment setup
       run: |-
         echo "CCACHE_COMPILER_CHECK=${{ env.cache_cmd }}" >> $GITHUB_ENV
@@ -327,9 +327,9 @@ jobs:
         path: ${{ env.ccache_dir }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
-          ccache
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}
+          ccache-${{ github.job }}
     - name: ccache environment setup
       run: |-
         echo "CCACHE_COMPILER_CHECK=${{ env.cache_cmd }}" >> $GITHUB_ENV
@@ -459,9 +459,9 @@ jobs:
         path: ${{ env.ccache_dir }}
         key: ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
         restore-keys: |-
-          ccache
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
           ccache-${{ github.job }}-${{ steps.ccache_vars.outputs.hash }}
+          ccache-${{ github.job }}
     - name: ccache environment setup
       run: |-
         echo "CCACHE_COMPILER_CHECK=${{ env.cache_cmd }}" >> $GITHUB_ENV
