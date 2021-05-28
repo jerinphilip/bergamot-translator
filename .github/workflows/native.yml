@@ -77,7 +77,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'false'
+      if: ${{ env.unittests }} == 'true'
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -134,7 +134,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'false'
+      if: ${{ env.unittests }} == 'true'
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -221,7 +221,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'false'
+      if: ${{ env.unittests }} == 'true'
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -279,7 +279,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'false'
+      if: ${{ env.unittests }} == 'true'
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -360,7 +360,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'false'
+      if: ${{ env.unittests }} == 'true'
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -412,7 +412,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'false'
+      if: ${{ env.unittests }} == 'true'
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -493,7 +493,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'false'
+      if: ${{ env.unittests }} == 'true'
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -545,7 +545,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'false'
+      if: ${{ env.unittests }} == 'true'
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
