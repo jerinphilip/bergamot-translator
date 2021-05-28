@@ -77,7 +77,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'true'
+      if: ${{ env.unittests == 'true' }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -100,7 +100,7 @@ jobs:
       cmake: -DCOMPILE_TESTS=on
       unittests: ${{ true }}
     runs-on: ubuntu-18.04
-    if: ${{ needs.ubuntu_full.result }} == 'failure'
+    if: ${{ needs.ubuntu_full.result == 'failure' }}
     needs: ubuntu_full
     steps:
     - name: Checkout
@@ -134,7 +134,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'true'
+      if: ${{ env.unittests == 'true' }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -221,7 +221,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'true'
+      if: ${{ env.unittests == 'true' }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -245,7 +245,7 @@ jobs:
       brt_tags: "'#wasm'"
       unittests: ${{ false }}
     runs-on: ubuntu-18.04
-    if: ${{ needs.ubuntu_minimal.result }} == 'failure'
+    if: ${{ needs.ubuntu_minimal.result == 'failure' }}
     needs: ubuntu_minimal
     steps:
     - name: Checkout
@@ -279,7 +279,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'true'
+      if: ${{ env.unittests == 'true' }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -360,7 +360,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'true'
+      if: ${{ env.unittests == 'true' }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -383,7 +383,7 @@ jobs:
       brt_tags: "'#mac'"
       unittests: ${{ true }}
     runs-on: macos-10.15
-    if: ${{ needs.mac_full.result }} == 'failure'
+    if: ${{ needs.mac_full.result == 'failure' }}
     needs: mac_full
     steps:
     - name: Checkout
@@ -412,7 +412,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'true'
+      if: ${{ env.unittests == 'true' }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -493,7 +493,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'true'
+      if: ${{ env.unittests == 'true' }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
@@ -516,7 +516,7 @@ jobs:
       brt_tags: "'#wasm'"
       unittests: ${{ false }}
     runs-on: macos-10.15
-    if: ${{ needs.mac_minimal.result }} == 'failure'
+    if: ${{ needs.mac_minimal.result == 'failure' }}
     needs: mac_minimal
     steps:
     - name: Checkout
@@ -545,7 +545,7 @@ jobs:
     - name: Run unit tests
       working-directory: build
       run: make test
-      if: ${{ env.unittests }} == 'true'
+      if: ${{ env.unittests == 'true' }}
     - name: Install regression-test framework (BRT)
       working-directory: bergamot-translator-tests
       run: make install
