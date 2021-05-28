@@ -327,7 +327,7 @@ jobs:
     name: MacOS full
     env:
       cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
-      unittests: true
+      unittests: ${{ ${{ true }} }}
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
     runs-on: macos-10.15
@@ -407,7 +407,7 @@ jobs:
     name: MacOS full (fresh build)
     env:
       cmake: -DCOMPILE_TESTS=on
-      unittests: true
+      unittests: ${{ true }}
     runs-on: macos-10.15
     if: ${{ needs.mac_full.result == 'failure' }}
     needs: mac_full
@@ -473,7 +473,7 @@ jobs:
     env:
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       brt_tags: "'#wasm'"
-      unittests: false
+      unittests: ${{ ${{ true }} }}
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
     runs-on: macos-10.15
@@ -554,7 +554,7 @@ jobs:
     env:
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on
       brt_tags: "'#wasm'"
-      unittests: false
+      unittests: ${{ true }}
     runs-on: macos-10.15
     if: ${{ needs.mac_minimal.result == 'failure' }}
     needs: mac_minimal
