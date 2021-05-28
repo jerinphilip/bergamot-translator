@@ -12,7 +12,7 @@ jobs:
     env:
       gcc: 8
       cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
-      unittests: true
+      unittests: ${{ ${{ true }} }}
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
     runs-on: ubuntu-18.04
@@ -98,7 +98,7 @@ jobs:
     env:
       gcc: 8
       cmake: -DCOMPILE_TESTS=on
-      unittests: true
+      unittests: ${{ true }}
     runs-on: ubuntu-18.04
     if: ${{ needs.{jobid}.result }} == 'failure'
     needs: ubuntu_full
@@ -170,7 +170,7 @@ jobs:
       gcc: 8
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       brt_tags: "'#wasm'"
-      unittests: false
+      unittests: ${{ ${{ false }} }}
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
     runs-on: ubuntu-18.04
@@ -257,7 +257,7 @@ jobs:
       gcc: 8
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on
       brt_tags: "'#wasm'"
-      unittests: false
+      unittests: ${{ false }}
     runs-on: ubuntu-18.04
     if: ${{ needs.{jobid}.result }} == 'failure'
     needs: ubuntu_minimal
