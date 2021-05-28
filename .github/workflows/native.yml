@@ -83,10 +83,15 @@ jobs:
       run: make install
     - name: Run regression-tests (BRT)
       working-directory: bergamot-translator-tests
+      id: brt_run
       run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+      continue-on-error: true
+    - name: Print logs of unsuccessful BRTs
+      working-directory: bergamot-translator-tests
+      run: grep "test*.sh" previous.log | cut -f '-' -d 2 | xargs -I% tail -n100 -v %
+      if: ${{ steps.brt_run.outcome == 'failure' }}
     - name: Upload regression-tests artifacts
       uses: actions/upload-artifact@v2
-      if: ${{ always() }}
       with:
         name: brt-${{ github.job }}
         path: |-
@@ -170,10 +175,15 @@ jobs:
       run: make install
     - name: Run regression-tests (BRT)
       working-directory: bergamot-translator-tests
+      id: brt_run
       run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+      continue-on-error: true
+    - name: Print logs of unsuccessful BRTs
+      working-directory: bergamot-translator-tests
+      run: grep "test*.sh" previous.log | cut -f '-' -d 2 | xargs -I% tail -n100 -v %
+      if: ${{ steps.brt_run.outcome == 'failure' }}
     - name: Upload regression-tests artifacts
       uses: actions/upload-artifact@v2
-      if: ${{ always() }}
       with:
         name: brt-${{ github.job }}
         path: |-
@@ -250,10 +260,15 @@ jobs:
       run: make install
     - name: Run regression-tests (BRT)
       working-directory: bergamot-translator-tests
+      id: brt_run
       run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+      continue-on-error: true
+    - name: Print logs of unsuccessful BRTs
+      working-directory: bergamot-translator-tests
+      run: grep "test*.sh" previous.log | cut -f '-' -d 2 | xargs -I% tail -n100 -v %
+      if: ${{ steps.brt_run.outcome == 'failure' }}
     - name: Upload regression-tests artifacts
       uses: actions/upload-artifact@v2
-      if: ${{ always() }}
       with:
         name: brt-${{ github.job }}
         path: |-
@@ -330,10 +345,15 @@ jobs:
       run: make install
     - name: Run regression-tests (BRT)
       working-directory: bergamot-translator-tests
+      id: brt_run
       run: MARIAN=../build ./run_brt.sh ${{ env.brt_tags }}
+      continue-on-error: true
+    - name: Print logs of unsuccessful BRTs
+      working-directory: bergamot-translator-tests
+      run: grep "test*.sh" previous.log | cut -f '-' -d 2 | xargs -I% tail -n100 -v %
+      if: ${{ steps.brt_run.outcome == 'failure' }}
     - name: Upload regression-tests artifacts
       uses: actions/upload-artifact@v2
-      if: ${{ always() }}
       with:
         name: brt-${{ github.job }}
         path: |-
