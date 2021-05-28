@@ -12,6 +12,7 @@ jobs:
     env:
       gcc: 8
       cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      unittests: true
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
     runs-on: ubuntu-18.04
@@ -97,6 +98,7 @@ jobs:
     env:
       gcc: 8
       cmake: -DCOMPILE_TESTS=on
+      unittests: true
     runs-on: ubuntu-18.04
     if: ${{ needs.ubuntu_full.result == 'failure' }}
     needs: ubuntu_full
@@ -325,6 +327,7 @@ jobs:
     name: MacOS full
     env:
       cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      unittests: true
       ccache_dir: "${{ github.workspace }}/.ccache"
       cache_cmd: "bash ${GITHUB_WORKSPACE}/scripts/ci/compiler-hash.sh %compiler%"
     runs-on: macos-10.15
@@ -404,6 +407,7 @@ jobs:
     name: MacOS full (fresh build)
     env:
       cmake: -DCOMPILE_TESTS=on
+      unittests: true
     runs-on: macos-10.15
     if: ${{ needs.mac_full.result == 'failure' }}
     needs: mac_full
