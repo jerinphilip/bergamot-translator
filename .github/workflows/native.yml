@@ -10,7 +10,8 @@ jobs:
   ubuntu_1804_full:
     name: Ubuntu 18.04 full
     env:
-      gcc: 8
+      cc: gcc-8
+      cxx: g++-8
       cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       unittests: ${{ true }}
       ccache_dir: "${{ github.workspace }}/.ccache"
@@ -26,7 +27,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y \
           libgoogle-perftools-dev libprotobuf-dev protobuf-compiler \
-          libboost-all-dev g++-${{ env.gcc }} ccache
+          libboost-all-dev ${{ env.cc }} ${{ env.cxx }} ccache
     - name: Install MKL
       run: |-
         wget -qO- "https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB" | sudo apt-key add -
@@ -63,7 +64,7 @@ jobs:
       run: |-
         mkdir -p build
         cd build
-        CC=/usr/bin/gcc-${{ env.gcc }} CXX=/usr/bin/g++-${{ env.gcc }} CUDAHOSTCXX=/usr/bin/g++-${{ env.gcc }} \
+        CC=${{ env.cc }} CXX=${{ env.cxx }} CUDAHOSTCXX=${{ env.cxx }} \
         cmake -L .. ${{ env.cmake }}
     - name: Build from source
       working-directory: build
@@ -95,7 +96,8 @@ jobs:
   ubuntu_1804_minimal:
     name: Ubuntu 18.04 minimal
     env:
-      gcc: 8
+      cc: gcc-8
+      cxx: g++-8
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       brt_tags: "'#wasm'"
       unittests: ${{ false }}
@@ -112,7 +114,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y \
           libgoogle-perftools-dev libprotobuf-dev protobuf-compiler \
-          libboost-all-dev g++-${{ env.gcc }} ccache
+          libboost-all-dev ${{ env.cc }} ${{ env.cxx }} ccache
     - name: Install MKL
       run: |-
         wget -qO- "https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB" | sudo apt-key add -
@@ -149,7 +151,7 @@ jobs:
       run: |-
         mkdir -p build
         cd build
-        CC=/usr/bin/gcc-${{ env.gcc }} CXX=/usr/bin/g++-${{ env.gcc }} CUDAHOSTCXX=/usr/bin/g++-${{ env.gcc }} \
+        CC=${{ env.cc }} CXX=${{ env.cxx }} CUDAHOSTCXX=${{ env.cxx }} \
         cmake -L .. ${{ env.cmake }}
     - name: Build from source
       working-directory: build
