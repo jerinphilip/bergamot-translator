@@ -10,6 +10,7 @@ env:
   ccache_base_dir: ${{ github.workspace }}
   ccache_dir: "${{ github.workspace }}/.ccache"
   ccache_compilercheck: content
+  cache_compress: 'true'
   ccache_maxsize: 50M
 jobs:
   ubuntu_1804_full:
