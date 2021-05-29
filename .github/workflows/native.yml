@@ -16,8 +16,6 @@ jobs:
   ubuntu_1804_full:
     name: Ubuntu 18.04 full
     env:
-      cc: gcc-8
-      cxx: g++-8
       cmake: -DCOMPILE_TESTS=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       unittests: true
     runs-on: ubuntu-18.04
@@ -68,7 +66,6 @@ jobs:
       run: |-
         mkdir -p build
         cd build
-        CC=${{ env.cc }} CXX=${{ env.cxx }} CUDAHOSTCXX=${{ env.cxx }} \
         cmake -L .. ${{ env.cmake }}
     - name: Build from source
       working-directory: build
@@ -105,8 +102,6 @@ jobs:
   ubuntu_1804_minimal:
     name: Ubuntu 18.04 minimal
     env:
-      cc: gcc-8
-      cxx: g++-8
       cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
       brt_tags: "'#wasm'"
       unittests: false
@@ -158,7 +153,6 @@ jobs:
       run: |-
         mkdir -p build
         cd build
-        CC=${{ env.cc }} CXX=${{ env.cxx }} CUDAHOSTCXX=${{ env.cxx }} \
         cmake -L .. ${{ env.cmake }}
     - name: Build from source
       working-directory: build
