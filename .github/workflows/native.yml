@@ -41,7 +41,7 @@ jobs:
       shell: bash
       id: ccache_vars
       run: |-
-        echo "::set-output name=hash::$(echo ${{ env.ccache_check }})"
+        echo "::set-output name=hash::$(echo ${{ env.ccache_compilercheck }})"
         echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
@@ -54,7 +54,7 @@ jobs:
           ccache-${{ github.job }}
     - name: ccache environment setup
       run: |-
-        echo "CCACHE_COMPILER_CHECK=${{ env.ccache_check }}" >> $GITHUB_ENV
+        echo "CCACHE_COMPILER_CHECK=${{ env.ccache_compilercheck }}" >> $GITHUB_ENV
         echo "CCACHE_BASE_DIR=${{ env.ccache_base_dir }}" >> $GITHUB_ENV
         echo "CCACHE_COMPRESS=${{ env.ccache_compress }}" >> $GITHUB_ENV
         echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
@@ -131,7 +131,7 @@ jobs:
       shell: bash
       id: ccache_vars
       run: |-
-        echo "::set-output name=hash::$(echo ${{ env.ccache_check }})"
+        echo "::set-output name=hash::$(echo ${{ env.ccache_compilercheck }})"
         echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
@@ -144,7 +144,7 @@ jobs:
           ccache-${{ github.job }}
     - name: ccache environment setup
       run: |-
-        echo "CCACHE_COMPILER_CHECK=${{ env.ccache_check }}" >> $GITHUB_ENV
+        echo "CCACHE_COMPILER_CHECK=${{ env.ccache_compilercheck }}" >> $GITHUB_ENV
         echo "CCACHE_BASE_DIR=${{ env.ccache_base_dir }}" >> $GITHUB_ENV
         echo "CCACHE_COMPRESS=${{ env.ccache_compress }}" >> $GITHUB_ENV
         echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
@@ -215,7 +215,7 @@ jobs:
       shell: bash
       id: ccache_vars
       run: |-
-        echo "::set-output name=hash::$(echo ${{ env.ccache_check }})"
+        echo "::set-output name=hash::$(echo ${{ env.ccache_compilercheck }})"
         echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
@@ -228,7 +228,7 @@ jobs:
           ccache-${{ github.job }}
     - name: ccache environment setup
       run: |-
-        echo "CCACHE_COMPILER_CHECK=${{ env.ccache_check }}" >> $GITHUB_ENV
+        echo "CCACHE_COMPILER_CHECK=${{ env.ccache_compilercheck }}" >> $GITHUB_ENV
         echo "CCACHE_BASE_DIR=${{ env.ccache_base_dir }}" >> $GITHUB_ENV
         echo "CCACHE_COMPRESS=${{ env.ccache_compress }}" >> $GITHUB_ENV
         echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
@@ -298,7 +298,7 @@ jobs:
       shell: bash
       id: ccache_vars
       run: |-
-        echo "::set-output name=hash::$(echo ${{ env.ccache_check }})"
+        echo "::set-output name=hash::$(echo ${{ env.ccache_compilercheck }})"
         echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
     - name: Cache-op for build-cache through ccache
       uses: actions/cache@v2
@@ -311,7 +311,7 @@ jobs:
           ccache-${{ github.job }}
     - name: ccache environment setup
       run: |-
-        echo "CCACHE_COMPILER_CHECK=${{ env.ccache_check }}" >> $GITHUB_ENV
+        echo "CCACHE_COMPILER_CHECK=${{ env.ccache_compilercheck }}" >> $GITHUB_ENV
         echo "CCACHE_BASE_DIR=${{ env.ccache_base_dir }}" >> $GITHUB_ENV
         echo "CCACHE_COMPRESS=${{ env.ccache_compress }}" >> $GITHUB_ENV
         echo "CCACHE_DIR=${{ env.ccache_dir }}" >> $GITHUB_ENV
