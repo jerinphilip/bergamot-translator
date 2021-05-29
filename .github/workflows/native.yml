@@ -29,7 +29,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y \
           libgoogle-perftools-dev libprotobuf-dev protobuf-compiler \
-          libboost-all-dev ${{ env.cc }} ${{ env.cxx }} ccache
+          libboost-all-dev ccache
     - name: Install MKL
       run: |-
         wget -qO- "https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB" | sudo apt-key add -
@@ -116,7 +116,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y \
           libgoogle-perftools-dev libprotobuf-dev protobuf-compiler \
-          libboost-all-dev ${{ env.cc }} ${{ env.cxx }} ccache
+          libboost-all-dev ccache
     - name: Install MKL
       run: |-
         wget -qO- "https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB" | sudo apt-key add -
