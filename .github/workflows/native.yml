@@ -42,7 +42,7 @@ jobs:
           brt_tags: "'#wasm'"
           unittests: false
     name: ${{ matrix.name }}
-    runs_on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Install Dependencies
       run: |-
