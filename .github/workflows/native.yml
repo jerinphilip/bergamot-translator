@@ -23,6 +23,7 @@ jobs:
           os: ubuntu-18.04
           identifier: ubuntu_1804_full
           cmake: -DCOMPILE_TESTS=on
+          brt_tags: ''
           unittests: true
         - name: Ubuntu 18.04 minimal
           os: ubuntu-18.04
@@ -34,6 +35,7 @@ jobs:
           os: ubuntu-20.04
           identifier: ubuntu_2004_full
           cmake: -DCOMPILE_TESTS=on
+          brt_tags: ''
           unittests: true
         - name: Ubuntu 20.04 minimal
           os: ubuntu-20.04
