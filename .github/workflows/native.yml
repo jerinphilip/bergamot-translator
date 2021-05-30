@@ -44,6 +44,10 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Install Dependencies
       run: |-
         sudo apt-get update
@@ -122,11 +126,18 @@ jobs:
   mac_full:
     name: MacOS full
     env:
-      cmake: -DCOMPILE_TESTS=on -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=off
-      brt_tags: "'#mac'"
-      unittests: true
+      ccache_base_dir: ${{ github.workspace }}
+      ccache_dir: "${{ github.workspace }}/.ccache"
+      ccache_compilercheck: content
+      cache_compress: 'true'
+      ccache_maxsize: 50M
+      ccache_cmake: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
     runs-on: macos-10.15
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Install Dependencies
       run: |-
         brew update
@@ -201,11 +212,18 @@ jobs:
   mac_minimal:
     name: MacOS minimal
     env:
-      cmake: -DCOMPILE_TESTS=off -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=on -DUSE_WASM_COMPATIBLE_SOURCE=on
-      brt_tags: "'#wasm'"
-      unittests: false
+      ccache_base_dir: ${{ github.workspace }}
+      ccache_dir: "${{ github.workspace }}/.ccache"
+      ccache_compilercheck: content
+      cache_compress: 'true'
+      ccache_maxsize: 50M
+      ccache_cmake: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
     runs-on: macos-10.15
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Install Dependencies
       run: |-
         brew update
