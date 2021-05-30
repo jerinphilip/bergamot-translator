@@ -12,6 +12,7 @@ env:
   ccache_compilercheck: content
   cache_compress: 'true'
   ccache_maxsize: 50M
+  ccache_cmake: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
 jobs:
   ubuntu_all:
     strategy:
@@ -40,7 +41,6 @@ jobs:
           cmake: -DCOMPILE_TESTS=off -DUSE_WASM_COMPATIBLE_SOURCE=on
           brt_tags: "'#wasm'"
           unittests: false
-        cmake: ' -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache'
     name: ${{ matrix.name }}
     runs_on: ${{ matrix.os }}
     steps:
@@ -86,7 +86,7 @@ jobs:
       run: |-
         mkdir -p build
         cd build
-        cmake -L .. ${{ env.cmake }}
+        cmake -L .. ${{ env.cmake }} ${{ env.ccache_cmake }}
     - name: Build from source
       working-directory: build
       run: make -j2
@@ -122,7 +122,7 @@ jobs:
   mac_full:
     name: MacOS full
     env:
-      cmake: -DCOMPILE_TESTS=on -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=off -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      cmake: -DCOMPILE_TESTS=on -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=off
       brt_tags: "'#mac'"
       unittests: true
     runs-on: macos-10.15
@@ -201,7 +201,7 @@ jobs:
   mac_minimal:
     name: MacOS minimal
     env:
-      cmake: -DCOMPILE_TESTS=off -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=on -DUSE_WASM_COMPATIBLE_SOURCE=on -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+      cmake: -DCOMPILE_TESTS=off -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=on -DUSE_WASM_COMPATIBLE_SOURCE=on
       brt_tags: "'#wasm'"
       unittests: false
     runs-on: macos-10.15
