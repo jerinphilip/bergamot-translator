@@ -92,7 +92,7 @@ jobs:
       run: |-
         mkdir -p build
         cd build
-        cmake -L .. ${{ env.cmake }} ${{ env.ccache_cmake }}
+        cmake -L .. ${{ matrix.cmake }} ${{ env.ccache_cmake }}
     - name: Build from source
       working-directory: build
       run: make -j2
@@ -187,7 +187,7 @@ jobs:
       run: |-
         mkdir -p build
         cd build
-        cmake -L .. ${{ env.cmake }} ${{ env.ccache_cmake }}
+        cmake -L .. ${{ matrix.cmake }} ${{ env.ccache_cmake }}
     - name: Build from source
       working-directory: build
       run: make -j2
