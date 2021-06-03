@@ -154,7 +154,7 @@ jobs:
     - name: Install Dependencies
       run: |-
         brew update
-        brew install openblas protobuf  ccache
+        brew install openblas protobuf ccache
         brew install coreutils findutils
     - name: Setup path with gnu
       run: |-
