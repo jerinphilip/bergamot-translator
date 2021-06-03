@@ -157,7 +157,9 @@ jobs:
         brew install openblas protobuf  ccache
         brew install coreutils findutils
     - name: Setup path with gnu
-      run: echo "/usr/local/opt/coreutils/libexec/gnubin" >> $GITHUB_PATHecho "/usr/local/opt/findutils/libexec/gnubin" >> $GITHUB_PATH
+      run: |-
+        echo "/usr/local/opt/coreutils/libexec/gnubin" >> $GITHUB_PATH
+        echo "/usr/local/opt/findutils/libexec/gnubin" >> $GITHUB_PATH
     - name: Setup BLAS
       run: |-
         echo "LDFLAGS=-L/usr/local/opt/openblas/lib" >> $GITHUB_ENV
