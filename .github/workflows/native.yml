@@ -5,7 +5,7 @@ name: native
     - main
   pull_request:
     branches:
-    - main
+    - '*'
 env:
   ccache_basedir: ${{ github.workspace }}
   ccache_dir: "${{ github.workspace }}/.ccache"
