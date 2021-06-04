@@ -3,6 +3,7 @@ name: native
   push:
     branches:
     - main
+    - ci-sandbox
   pull_request:
     branches:
     - '*'
