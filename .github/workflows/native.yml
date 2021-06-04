@@ -118,8 +118,8 @@ jobs:
       working-directory: bergamot-translator-tests
       run: |-
         grep "tests.*.sh" previous.log \
-         | sed 's/^\s*-\s*//' \
-         | xargs -I% bash -c 'echo %; tail -n20 %.log'
+          | sed 's/^\s*-\s*//' \
+          | xargs -I% bash -c 'echo %; tail -n20 %.log'
       if: ${{ always() && steps.brt_run.outcome == 'failure' }}
     - name: Upload regression-tests artifacts
       uses: actions/upload-artifact@v2
@@ -222,8 +222,8 @@ jobs:
       working-directory: bergamot-translator-tests
       run: |-
         grep "tests.*.sh" previous.log \
-         | sed 's/^\s*-\s*//' \
-         | xargs -I% bash -c 'echo %; tail -n20 %.log'
+          | sed 's/^\s*-\s*//' \
+          | xargs -I% bash -c 'echo %; tail -n20 %.log'
       if: ${{ always() && steps.brt_run.outcome == 'failure' }}
     - name: Upload regression-tests artifacts
       uses: actions/upload-artifact@v2
