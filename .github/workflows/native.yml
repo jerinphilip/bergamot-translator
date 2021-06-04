@@ -140,7 +140,7 @@ jobs:
           os: macos-10.15
           identifier: mac_1015_full
           cmake: -DUSE_APPLE_ACCELERATE=off -DUSE_FBGEMM=off -DUSE_STATIC_LIBS=off
-          brt_tags: "'#mac'"
+          brt_tags: ""
           unittests: 'true'
         - name: MacOS 10.15 minimal
           os: macos-10.15
