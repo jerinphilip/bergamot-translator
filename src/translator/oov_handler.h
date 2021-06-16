@@ -26,6 +26,7 @@
 /// for example, language-detection.
 
 #include <algorithm>
+#include <numeric>
 #include <random>
 
 #include "data/types.h"
