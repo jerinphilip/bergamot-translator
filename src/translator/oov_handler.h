@@ -28,6 +28,8 @@
 #include <algorithm>
 #include <random>
 
+#include "data/types.h"
+
 namespace marian {
 namespace bergamot {
 
@@ -42,11 +44,30 @@ struct Datum {
 /// HardAlignmentInfo stores (s, t) pairs which 1:1 maps with each other. This can come from `fast_align` during
 /// training or by reducing soft alignments obtained by using "attention" in an NMT model.
 /// HardAlignmentInfo align; align[tIdx] = sIdx;
-typedef vector<size_t> HardAlignmentInfo;
+typedef std::vector<size_t> HardAlignmentInfo;
+
+/// Allocates control tokens to unknowns for better matching.
+class RegisterAllocator {
+ public:
+  RegisterAllocator(size_t numControlTokens, int seed = 42) : numControlTokens_(numControlTokens) {
+    assert(numControlTokens_ > 0);
+    registers_.resize(numControlTokens_);
+    std::iota(registers_.begin(), registers_.end(), 0);
+    randomGen_.seed(seed);
+  }
+
+  void allocate(size_t numTokens, std::vector<size_t> &allocatedRegisters, bool withReplacement = true);
+
+ private:
+  size_t numControlTokens_;
+  std::vector<size_t> registers_;
+  std::mt19937 randomGen_;
+};
 
 class OOVHandler {
  public:
-  OOVHandler(std::vector<Word> controlTokenIdxs, Word unkId) : controlTokenIdxs_(controlTokenIdxs), unkId_(unkId) {}
+  OOVHandler(std::vector<Word> controlTokenIdxs, Word unkId)
+      : controlTokenIdxs_(controlTokenIdxs), unkId_(unkId), allocator_(controlTokenIdxs.size()) {}
 
   /// Transforms the source <unk> in source.words assigned with e_i and corresponding target.words <unk> assigned with
   /// e_i, using align. Will use source.views and target.views to check which <unk> are different from each other.
@@ -60,40 +81,12 @@ class OOVHandler {
   void postprocess_inference(const Datum &source, Datum &target, const HardAlignmentInfo &align);
 
  private:
-  size_t countUnknowns(const std::vector<Words> &words) const;
-  size_t allocateIndividual(Words &words, size_t startRegister);
+  size_t countUnknowns(const Words &words) const;
+  size_t allocateIndividual(Words &words, const std::vector<size_t> &registers, size_t startRegister);
 
   RegisterAllocator allocator_;
   const Word unkId_;
   std::vector<Word> controlTokenIdxs_;
-};
-
-class RegisterAllocator {
- public:
-  RegisterAllocator(size_t numControlTokens, int seed = 42) : numControlTokens_(numControlTokens) {
-    assert(numControlTokens_ > 0);
-    registers_.resize(numControlTokens_);
-    std::iota(registers_.begin(), registers_.end(), 1);
-
-    randomGen_.seed(seed);
-  }
-
-  void allocate(size_t numTokens, std::vector<size_t> &allocatedRegisters, bool withReplacement = true) {
-    if (withReplacement) {
-      // This is efficient enough for small values of numControlTokens_(?).
-      std::shuffle(registers_.begin(), registers_.end(), randomGen_);
-      for (size_t i = 0; i < numTokens; i++) {
-        allocatedRegisters.push_back(registers_[i]);
-      }
-    } else {
-      std::sample(registers_.begin(), registers_.end(), std::back_inserter(allocatedRegisters), numTokens, randomGen_);
-    }
-  }
-
- private:
-  size_t numControlTokens_;
-  std::vector<size_t> registers_;
-  std::mt19937 randomGen_;
 };
 
 }  // namespace bergamot
