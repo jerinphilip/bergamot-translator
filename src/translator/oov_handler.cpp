@@ -4,12 +4,10 @@ namespace marian {
 namespace bergamot {
 
 void ControlTokenAllocator::allocate(size_t numTokens, std::vector<size_t> &allocatedRegisters, bool withReplacement) {
+  assert(numTokens < registers_.size());
   if (withReplacement) {
-    // This is efficient enough for small values of numControlTokens_(?).
-    std::shuffle(registers_.begin(), registers_.end(), randomGen_);
-    for (size_t i = 0; i < numTokens; i++) {
-      allocatedRegisters.push_back(registers_[i]);
-    }
+    std::cerr << "Not implemented yet.\n";
+    std::abort();
   } else {
     std::sample(registers_.begin(), registers_.end(), std::back_inserter(allocatedRegisters), numTokens, randomGen_);
   }
@@ -24,7 +22,7 @@ void OOVHandler::preprocess_training(Datum &source, Datum &target, const HardAli
   commonUnks = 0;
   for (size_t t = 0; t < target.words.size(); t++) {
     size_t s = align[t];
-    if (source.words[s] == unkId_ && target.words[t] == unkId_) {
+    if (source.words[s] == unkWord_ && target.words[t] == unkWord_) {
       ++commonUnks;
     }
   }
@@ -36,11 +34,11 @@ void OOVHandler::preprocess_training(Datum &source, Datum &target, const HardAli
   std::vector<size_t> registers;
   allocator_.allocate(numUnks, registers);
 
-  // All aligned (s, t) have matching control tokens.
+  // All aligned (s, t) have matching control tokens. This guides the NMT attention properly.
   size_t registerIdx = 0;
   for (size_t t = 0; t < target.words.size(); t++) {
     size_t s = align[t];
-    if (source.words[s] == unkId_ && target.words[t] == unkId_) {
+    if (source.words[s] == unkWord_ && target.words[t] == unkWord_) {
       Word controlTokenIdx = controlTokenIdxs_[registers[registerIdx++]];
       source.words[s] = controlTokenIdx;
       target.words[t] = controlTokenIdx;
@@ -63,7 +61,7 @@ void OOVHandler::preprocess_inference(Datum &source) {
 
 size_t OOVHandler::allocateIndividual(Words &words, const std::vector<size_t> &registers, size_t startRegister) {
   for (size_t i = 0; i < words.size(); i++) {
-    if (words[i] == unkId_) {
+    if (words[i] == unkWord_) {
       Word controlTokenIdx = controlTokenIdxs_[registers[startRegister++]];
       words[i] = controlTokenIdx;
     }
@@ -74,7 +72,7 @@ size_t OOVHandler::allocateIndividual(Words &words, const std::vector<size_t> &r
 size_t OOVHandler::countUnknowns(const Words &words) const {
   size_t numUnks = 0;
   for (auto &word : words) {
-    if (word == unkId_) {
+    if (word == unkWord_) {
       numUnks++;
     }
   }

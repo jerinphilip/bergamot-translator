@@ -57,7 +57,7 @@ class ControlTokenAllocator {
     randomGen_.seed(seed);
   }
 
-  void allocate(size_t numTokens, std::vector<size_t> &allocatedRegisters, bool withReplacement = true);
+  void allocate(size_t numTokens, std::vector<size_t> &allocatedRegisters, bool withReplacement = false);
 
  private:
   size_t numControlTokens_;
@@ -67,8 +67,8 @@ class ControlTokenAllocator {
 
 class OOVHandler {
  public:
-  OOVHandler(std::vector<Word> controlTokenIdxs, Word unkId)
-      : controlTokenIdxs_(controlTokenIdxs), unkId_(unkId), allocator_(controlTokenIdxs.size()) {}
+  OOVHandler(Words controlTokenIdxs, Word unkWord)
+      : controlTokenIdxs_(controlTokenIdxs), unkWord_(unkWord), allocator_(controlTokenIdxs.size()) {}
 
   /// Transforms the source <unk> in source.words assigned with <e_i> and corresponding target.words <unk> assigned with
   /// <e_i>, using align. Will use source.views and target.views to check which <unk> are different from each other.
@@ -86,8 +86,8 @@ class OOVHandler {
   size_t allocateIndividual(Words &words, const std::vector<size_t> &registers, size_t startRegister);
 
   ControlTokenAllocator allocator_;
-  const Word unkId_;
-  std::vector<Word> controlTokenIdxs_;
+  const Word unkWord_;
+  Words controlTokenIdxs_;
 };
 
 }  // namespace bergamot

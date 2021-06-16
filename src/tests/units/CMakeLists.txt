@@ -1,6 +1,7 @@
 # Unit tests
 set(UNIT_TESTS
     annotation_tests
+    oov_handler_tests
 )
 
 foreach(test ${UNIT_TESTS})
