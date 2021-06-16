@@ -108,9 +108,9 @@ TEST_CASE("OOVHandler class") {
   Datum sourceDatum = {sourceWords, sourceViews, source};
 
   marian::Words controlTokens;
-  size_t numWords = 20, offset = 32000;
+  size_t numControlTokens = 20, offset = 32000;
   size_t unkId = 1;
-  for (size_t w = offset; w < offset + numWords; w++) {
+  for (size_t w = offset; w < offset + numControlTokens; w++) {
     Word controlToken = Word::fromWordIndex(w);
     controlTokens.push_back(controlToken);
   }
@@ -118,8 +118,12 @@ TEST_CASE("OOVHandler class") {
   Word unkWord = Word::fromWordIndex(unkId);
   OOVHandler oovHandler(controlTokens, unkWord);
   oovHandler.preprocess_inference(sourceDatum);
-  for (auto &word : sourceDatum.words) {
-    std::cout << word.toWordIndex() << " ";
+  for (size_t i = 0; i < wordIdxs.size(); i++) {
+    if (wordIdxs[i] == unkId) {
+      auto transformed = sourceDatum.words[i].toWordIndex();
+      CHECK(transformed != unkId);
+      CHECK(transformed > offset);
+      CHECK(transformed < offset + numControlTokens);
+    }
   }
-  std::cout << "\n";
 }
