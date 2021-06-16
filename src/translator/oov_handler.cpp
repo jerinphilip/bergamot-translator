@@ -3,7 +3,7 @@
 namespace marian {
 namespace bergamot {
 
-void RegisterAllocator::allocate(size_t numTokens, std::vector<size_t> &allocatedRegisters, bool withReplacement) {
+void ControlTokenAllocator::allocate(size_t numTokens, std::vector<size_t> &allocatedRegisters, bool withReplacement) {
   if (withReplacement) {
     // This is efficient enough for small values of numControlTokens_(?).
     std::shuffle(registers_.begin(), registers_.end(), randomGen_);
@@ -29,7 +29,8 @@ void OOVHandler::preprocess_training(Datum &source, Datum &target, const HardAli
     }
   }
 
-  size_t numUnks = sourceUnks + targetUnks - 2 * commonUnks;
+  // #(A U B) = #A + #B - #(A^B)
+  size_t numUnks = sourceUnks + targetUnks - commonUnks;
 
   // Allocate registers, balancing out sampling.
   std::vector<size_t> registers;
