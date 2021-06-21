@@ -1,6 +1,7 @@
+#include "common/unk_utils.h"
 #include "response_builder.h"
-
 #include "response_options.h"
+
 
 namespace marian {
 namespace bergamot {
@@ -62,15 +63,26 @@ void ResponseBuilder::buildTranslatedText(Histories &histories, Response &respon
     Words words = std::get<0>(result);
 
     std::string decoded;
-    std::vector<string_view> targetSentenceMappings;
-    vocabs_.target()->decodeWithByteRanges(words, decoded, targetSentenceMappings, /*ignoreEOS=*/false);
+    std::vector<string_view> targetByteRanges;
+    vocabs_.target()->decodeWithByteRanges(words, decoded, targetByteRanges, /*ignoreEOS=*/false);
+
+    // Obtain alignments
+    auto hyp = std::get<1>(result);
+    auto softAlignment = hyp->tracebackAlignment();
+    auto hardAlignment = data::ConvertSoftAlignToHardAlign(softAlignment, /*threshold=*/1.0f, /*sortByTarget=*/ true);
+
+    std::vector<size_t> sourceUnknowns; // TODO(jerinphilip) Store in Annotation, during construction?
+    std::vector<string_view> sourceByteRanges;  // Can be loaded from Annotation
+    // sourceUnknowns =  ...
+    // sourceByteRanges =  ...
+    utils::replaceUnknownsFromSource(words, sourceUnknowns, sourceByteRanges, hardAlignment, decoded, targetByteRanges);
 
     switch (responseOptions_.concatStrategy) {
       case ConcatStrategy::FAITHFUL: {
         // For each sentence, prepend the filler text between the corresponding
         // source-sentence and the source-sentence before.
         string_view pre = response.source.gap(sentenceIdx);
-        response.target.appendSentence(pre, targetSentenceMappings.begin(), targetSentenceMappings.end());
+        response.target.appendSentence(pre, targetByteRanges.begin(), targetByteRanges.end());
 
         // If this is the last history to be decoded and translated-text
         // constructed, append the text till the end, which could be spaces or
@@ -82,7 +94,7 @@ void ResponseBuilder::buildTranslatedText(Histories &histories, Response &respon
       }
       case ConcatStrategy::SPACE: {
         string_view delimiter = (sentenceIdx == 0) ? "" : " ";
-        response.target.appendSentence(delimiter, targetSentenceMappings.begin(), targetSentenceMappings.end());
+        response.target.appendSentence(delimiter, targetByteRanges.begin(), targetByteRanges.end());
         break;
       }
 
