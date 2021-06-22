@@ -8,6 +8,7 @@ from pybergamot import Service, Response, ResponseOptions
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', help="Path to en->de bundle", required=True)
+    parser.add_argument('--input', help='Path to input', required=True)
     args = parser.parse_args()
     BERGAMOT_ARCHIVE = args.path
 
@@ -27,6 +28,7 @@ if __name__ == '__main__':
        "quiet": True,
        "quiet-translation": True,
        "gemm-precision": "int8shiftAlphaAll",
+       "alignment": True
     }
 
     configStr = yaml.dump(config, sort_keys=False)
@@ -34,12 +36,22 @@ if __name__ == '__main__':
     service = Service(configStr)
     options = ResponseOptions();
     options.alignment = True
+    options.qualityScores = True
     options.alignmentThreshold = 1.0
 
-    response = service.translate("Hello World, what can I interest you with?", options)
-    print(response.source.text)
-    print(response.target.text)
-    print(response.alignments)
+    with open(args.input) as fp:
+        for line in fp:
+            line = line.strip()
+            response = service.translate(line, options)
+            print(response.source.text)
+            print(response.target.text)
+            for s, alignment in enumerate(response.alignments):
+                for point in alignment:
+                    srange = response.source.word(s, point.src)
+                    trange = response.target.word(s, point.tgt)
+                    source_word = response.source.text[srange.begin:srange.end]
+                    target_word = response.target.text[trange.begin:trange.end]
+                    print(source_word, target_word, point)
 
 
 
