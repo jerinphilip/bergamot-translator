@@ -23,6 +23,7 @@ using marian::bergamot::Service;
 PYBIND11_MAKE_OPAQUE(std::vector<Response>);
 PYBIND11_MAKE_OPAQUE(std::vector<std::string>);
 PYBIND11_MAKE_OPAQUE(std::vector<Point>);
+PYBIND11_MAKE_OPAQUE(std::vector<Alignment>);
 
 // Nothing fancy; Super wasteful.  It is simply easier to do analysis in a
 // Jupyter notebook, @jerinphilip is not doing efficiency here.
@@ -95,5 +96,8 @@ PYBIND11_MODULE(pybergamot, m) {
   py::class_<Point>(m, "Point")
       .def_readonly("src", &Point::src)
       .def_readonly("tgt", &Point::tgt)
-      .def_readonly("prob", &Point::prob);
+      .def_readonly("prob", &Point::prob)
+      .def("__repr__", [](const Point &p) {
+        return "{(" + std::to_string(p.src) + ", " + std::to_string(p.tgt) + ") = " + std::to_string(p.prob) + "}";
+      });
 }

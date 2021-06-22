@@ -34,10 +34,12 @@ if __name__ == '__main__':
     service = Service(configStr)
     options = ResponseOptions();
     options.alignment = True
+    options.alignmentThreshold = 1.0
 
     response = service.translate("Hello World, what can I interest you with?", options)
     print(response.source.text)
     print(response.target.text)
+    print(response.alignments)
 
 
 
