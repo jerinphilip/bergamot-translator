@@ -37,21 +37,22 @@ if __name__ == '__main__':
     options = ResponseOptions();
     options.alignment = True
     options.qualityScores = True
-    options.alignmentThreshold = 1.0
+    options.alignmentThreshold = 0.2
 
     with open(args.input) as fp:
-        for line in fp:
+        for idx, line in enumerate(fp, 1):
             line = line.strip()
             response = service.translate(line, options)
-            print(response.source.text)
-            print(response.target.text)
+            print("--- Line ", idx)
+            print(">", response.source.text)
+            print("<", response.target.text)
             for s, alignment in enumerate(response.alignments):
                 for point in alignment:
                     srange = response.source.word(s, point.src)
                     trange = response.target.word(s, point.tgt)
                     source_word = response.source.text[srange.begin:srange.end]
                     target_word = response.target.text[trange.begin:trange.end]
-                    print(source_word, target_word, point)
+                    print(f"string: {source_word} -> {target_word}; ByteRanges: {srange} -> {trange}; Indices = {point}")
 
 
 
