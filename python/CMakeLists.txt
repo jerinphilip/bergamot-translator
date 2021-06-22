@@ -1,5 +1,14 @@
 
-set_target_properties(bergamot-translator PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-add_library(pybergamot MODULE bergamot.cpp)
+find_package(Python COMPONENTS Interpreter Development)
+find_package(pybind11 CONFIG)
+
+# pybind11 method:
+pybind11_add_module(pybergamot bergamot.cpp)
 target_link_libraries(pybergamot PUBLIC pybind11::module bergamot-translator)
 target_include_directories(pybergamot PUBLIC ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src)
+set_target_properties(pybergamot PROPERTIES 
+    ARCHIVE_OUTPUT_DIRECTORY  "${CMAKE_BINARY_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY  "${CMAKE_BINARY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY  "${CMAKE_BINARY_DIR}"
+)
+
