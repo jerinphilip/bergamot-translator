@@ -54,6 +54,7 @@ PYBIND11_MODULE(pybergamot, m) {
       .def(py::init<>())
       .def("numWords", &AnnotatedText::numWords)
       .def("numSentences", &AnnotatedText::numSentences)
+      .def("isUnknown", &AnnotatedText::isUnknown)
       .def("word", &AnnotatedText::wordAsByteRange)
       .def("sentence", &AnnotatedText::sentenceAsByteRange)
       .def_readonly("text", &AnnotatedText::text);

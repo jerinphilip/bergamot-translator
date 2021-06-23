@@ -53,8 +53,8 @@ if __name__ == '__main__':
                     trange = response.target.word(s, point.tgt)
                     source_word = response.source.text[srange.begin:srange.end]
                     target_word = response.target.text[trange.begin:trange.end]
-                    print(f"string: {source_word} -> {target_word}; ByteRanges: {srange} -> {trange}; Indices = {point}")
-
+                    sourceUnk = response.source.isUnknown(s, point.src)
+                    print(f"string: {source_word} -> {target_word}; ByteRanges: {srange} -> {trange}; Indices = {point}; SourceIdx: ({s}, {point.src}); TargetIdx: ({s}, {point.tgt}); Source Unk: {sourceUnk}")
 
 
 
