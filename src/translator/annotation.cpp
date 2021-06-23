@@ -66,5 +66,9 @@ void AnnotatedText::recordExistingSentence(std::vector<string_view>::iterator be
   annotation.token_begin_.push_back(text.size());
 }
 
+void AnnotatedText::markUnknownsInLastSentence(std::vector<size_t> &unkIds) {
+  annotation.markUnknownsInLastSentence(unkIds);
+}
+
 }  // namespace bergamot
 }  // namespace marian
