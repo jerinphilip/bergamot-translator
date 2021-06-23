@@ -28,7 +28,8 @@ if __name__ == '__main__':
        "quiet": True,
        "quiet-translation": True,
        "gemm-precision": "int8shiftAlphaAll",
-       "alignment": True
+       "alignment": True,
+       "allow-unk": True
     }
 
     configStr = yaml.dump(config, sort_keys=False)
