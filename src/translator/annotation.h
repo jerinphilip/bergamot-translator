@@ -2,6 +2,7 @@
 #define BERGAMOT_SENTENCE_RANGES_H_
 
 #include <cassert>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -74,6 +75,22 @@ class Annotation {
     return ByteRange{token_begin_[tokenIdx], token_begin_[tokenIdx + 1]};
   }
 
+  // Let's know if a unit/piece is foreign to the vocabulary (<unk>) to enable replacements
+  bool isUnknown(size_t sentenceIdx, size_t wordIdx) const {
+    std::pair<size_t, size_t> query = std::make_pair(sentenceIdx, wordIdx);
+    return unks_.find(query) != unks_.end();
+  }
+
+  // Marks a (sentenceIdx, wordIdx) as foreign to vocabulary <unk>
+  void markUnknown(size_t sentenceIdx, size_t wordIdx) { unks_.insert(std::make_pair(sentenceIdx, wordIdx)); }
+
+  void markUnknownsInLastSentence(std::vector<size_t> &unkIds) {
+    size_t sentenceIdx = numSentences() - 1;
+    for (auto &wordIdx : unkIds) {
+      markUnknown(sentenceIdx, wordIdx);
+    }
+  }
+
  private:
   friend class AnnotatedText;
   /// Map from token index to byte offset at which it begins.  Token i is:
@@ -104,6 +121,9 @@ class Annotation {
   /// token_begin_ = {0, 0, 2, 2};
   /// gap_ = {0, 2};
   std::vector<size_t> gap_;
+
+  /// Sparse storage of unknowns in the text. Used to enable isUnknown(sentenceIdx, wordIdx)
+  std::set<std::pair<size_t, size_t>> unks_;
 };
 
 /// AnnotatedText is effectively std::string text + Annotation, providing the
@@ -139,6 +159,9 @@ struct AnnotatedText {
   /// The string_views must not already be in text.
   void appendSentence(string_view prefix, std::vector<string_view>::iterator tokens_begin,
                       std::vector<string_view>::iterator tokens_end);
+
+  /// Mark unkIdxs supplied in the last sentence to be unknowns.
+  void markUnknownsInLastSentence(std::vector<size_t> &unkIdxs);
 
   /// Append the whitespace at the end of input. string_view must not be in
   /// text.
@@ -184,6 +207,9 @@ struct AnnotatedText {
 
   /// Returns a ByteRange representing sentence corresponding to sentenceIdx.
   ByteRange sentenceAsByteRange(size_t sentenceIdx) const { return annotation.sentence(sentenceIdx); }
+
+  // Let's know if a unit/piece is foreign to the vocabulary (<unk>) to enable replacements
+  bool isUnknown(size_t sentenceIdx, size_t wordIdx) const { return annotation.isUnknown(sentenceIdx, wordIdx); }
 
  private:
   string_view asStringView(const ByteRange &byteRange) const {

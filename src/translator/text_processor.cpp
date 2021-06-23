@@ -113,6 +113,7 @@ void TextProcessor::wrap(Segment &segment, std::vector<string_view> &wordRanges,
   // requires EOS to be at the end as a marker to start translating. So while we're supplied maxLengthBreak_ from
   // outside, we need to ensure there's space for EOS in each wrapped segment.
   Word sourceEosId = vocabs_.sources().front()->getEosId();
+  Word sourceUnkId = vocabs_.sources().front()->getUnkId();
   size_t wrapStep = maxLengthBreak_ - 1;
 
   for (size_t offset = 0; offset < segment.size(); offset += wrapStep) {
@@ -123,7 +124,9 @@ void TextProcessor::wrap(Segment &segment, std::vector<string_view> &wordRanges,
     size_t diff = std::min(wrapStep, left);
 
     segments.emplace_back(start, start + diff);
-    segments.back().push_back(sourceEosId);
+
+    auto &thisSegment = segments.back();
+    thisSegment.push_back(sourceEosId);
 
     auto astart = wordRanges.begin() + offset;
 
@@ -135,6 +138,16 @@ void TextProcessor::wrap(Segment &segment, std::vector<string_view> &wordRanges,
     partWordRanges.emplace_back(end, 0);
     // diff > 0
     source.recordExistingSentence(partWordRanges.begin(), partWordRanges.end(), astart->data());
+
+    // Tell AnnotatedText about unknowns
+    std::vector<size_t> unkIdxs;
+    for (size_t wordIdx = 0; wordIdx < thisSegment.size(); wordIdx++) {
+      if (thisSegment[wordIdx] == sourceUnkId) {
+        unkIdxs.push_back(wordIdx);
+      }
+    }
+
+    source.markUnknownsInLastSentence(unkIdxs);
   }
 }
 
