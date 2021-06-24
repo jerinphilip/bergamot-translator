@@ -30,15 +30,19 @@ PYBIND11_MAKE_OPAQUE(std::vector<Alignment>);
 
 class ServicePyAdapter {
  public:
-  ServicePyAdapter(const std::string &config) : service_(config) {}
+  ServicePyAdapter(const std::string &config) {
+    py::call_guard<py::gil_scoped_release> gil_guard();
+    service_.reset(std::move(new Service(config)));
+  }
   Response translate(std::string input, const ResponseOptions options) {
-    std::future<Response> future = service_.translate(std::move(input), options);
+    py::call_guard<py::gil_scoped_release> gil_guard();
+    std::future<Response> future = service_->translate(std::move(input), options);
     future.wait();
     return future.get();
   }
 
  private:
-  Service service_;
+  std::unique_ptr<Service> service_{nullptr};
 };
 
 PYBIND11_MODULE(pybergamot, m) {
