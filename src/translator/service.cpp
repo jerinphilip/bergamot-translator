@@ -3,6 +3,7 @@
 #include <string>
 #include <utility>
 
+#include "3rd_party/spdlog/spdlog.h"
 #include "batch.h"
 #include "definitions.h"
 
@@ -99,6 +100,12 @@ std::future<Response> Service::translate(std::string &&input, ResponseOptions re
 }
 
 Service::~Service() {
+  // We need to manually destroy the loggers, as marian doesn't do
+  // that but will complain when a new marian::Config tries to
+  // initialise loggers with the same name.
+  spdlog::drop("general");
+  spdlog::drop("valid");
+
   batcher_.shutdown();
 #ifndef WASM_COMPATIBLE_SOURCE
   for (std::thread &worker : workers_) {
