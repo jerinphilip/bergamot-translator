@@ -28,7 +28,9 @@ def build_config(BERGAMOT_ARCHIVE):
        "quiet-translation": True,
        "gemm-precision": "int8shiftAlphaAll",
        "alignment": True,
-       "allow-unk": True
+       "allow-unk": True,
+       "log": "marian-log.txt",
+       "log-level": "debug"
     }
     return config
 
