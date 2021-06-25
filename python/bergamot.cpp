@@ -1,3 +1,4 @@
+#include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
 #include <translator/annotation.h>
@@ -5,6 +6,7 @@
 #include <translator/response_options.h>
 #include <translator/service.h>
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -31,10 +33,23 @@ PYBIND11_MAKE_OPAQUE(std::vector<Alignment>);
 class ServicePyAdapter {
  public:
   ServicePyAdapter(const std::string &config) {
+    py::scoped_ostream_redirect outstream(std::cout,                                 // std::ostream&
+                                          py::module_::import("sys").attr("stdout")  // Python output
+    );
+    py::scoped_ostream_redirect errstream(std::cerr,                                 // std::ostream&
+                                          py::module_::import("sys").attr("stderr")  // Python output
+    );
+
     py::call_guard<py::gil_scoped_release> gil_guard();
     service_.reset(std::move(new Service(config)));
   }
   Response translate(std::string input, const ResponseOptions options) {
+    py::scoped_ostream_redirect outstream(std::cout,                                 // std::ostream&
+                                          py::module_::import("sys").attr("stdout")  // Python output
+    );
+    py::scoped_ostream_redirect errstream(std::cerr,                                 // std::ostream&
+                                          py::module_::import("sys").attr("stderr")  // Python output
+    );
     py::call_guard<py::gil_scoped_release> gil_guard();
     std::future<Response> future = service_->translate(std::move(input), options);
     future.wait();
