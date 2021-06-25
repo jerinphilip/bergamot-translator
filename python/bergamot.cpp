@@ -59,8 +59,18 @@ PYBIND11_MODULE(pybergamot, m) {
       .def("numWords", &AnnotatedText::numWords)
       .def("numSentences", &AnnotatedText::numSentences)
       .def("isUnknown", &AnnotatedText::isUnknown)
-      .def("word", &AnnotatedText::wordAsByteRange)
-      .def("sentence", &AnnotatedText::sentenceAsByteRange)
+      .def("word",
+           [](const AnnotatedText &annotatedText, size_t sentenceIdx, size_t wordIdx) -> std::string {
+             auto view = annotatedText.word(sentenceIdx, wordIdx);
+             return std::string(view.data(), view.size());
+           })
+      .def("sentence",
+           [](const AnnotatedText &annotatedText, size_t sentenceIdx) -> std::string {
+             auto view = annotatedText.sentence(sentenceIdx);
+             return std::string(view.data(), view.size());
+           })
+      .def("wordAsByteRange", &AnnotatedText::wordAsByteRange)
+      .def("sentenceAsByteRange", &AnnotatedText::sentenceAsByteRange)
       .def_readonly("text", &AnnotatedText::text);
 
   py::bind_vector<std::vector<Point>>(m, "Alignment");
