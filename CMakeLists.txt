@@ -46,6 +46,8 @@ cmake_dependent_option(USE_WASM_COMPATIBLE_SOURCE "Use wasm compatible sources" 
 cmake_dependent_option(COMPILE_UNIT_TESTS "Compile unit tests" OFF "USE_WASM_COMPATIBLE_SOURCE" ON)
 option(COMPILE_TESTS "Compile bergamot-tests" OFF)
 
+option(COMPILE_PYTHON "Compile python bindings" OFF)
+
 # Set 3rd party submodule specific cmake options for this project
 SET(COMPILE_CUDA OFF CACHE BOOL "Compile GPU version")
 SET(USE_SENTENCEPIECE ON CACHE BOOL "Download and compile SentencePiece")
@@ -105,4 +107,8 @@ if(COMPILE_WASM)
 else()
   add_subdirectory(app)
 endif(COMPILE_WASM)
+
+if(COMPILE_PYTHON)
+  add_subdirectory(python)
+endif(COMPILE_PYTHON)
 
