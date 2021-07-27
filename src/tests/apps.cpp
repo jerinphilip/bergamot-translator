@@ -1,6 +1,8 @@
 #include "apps.h"
 
-#include "random"
+#include <random>
+
+#include "common/timer.h"
 
 namespace marian {
 namespace bergamot {
@@ -125,6 +127,7 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
   std::string buffer;
   Response editResponse;
 
+  marian::timer::Timer taskTimer;
   for (size_t s = 0; s < response.source.numSentences(); s++) {
     for (size_t w = 0; w < response.source.numWords(s); w++) {
       ByteRange currentWord = response.source.wordAsByteRange(s, w);
@@ -167,6 +170,7 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
 
   auto cacheStats = service.cacheStats();
   std::cout << "Hits / Misses = " << cacheStats.hits << "/ " << cacheStats.misses << std::endl;
+  LOG(info, "Total time: {:.5f}s wall", taskTimer.elapsed());
 }
 
 }  // namespace testapp
