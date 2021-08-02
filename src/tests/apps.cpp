@@ -126,6 +126,7 @@ void translationCache(Ptr<Options> options) {
 }
 
 void benchmarkCacheEditWorkflow(Ptr<Options> options) {
+  std::cout << "Starting cache-warmup" << std::endl;
   Response response;
 
   {
@@ -136,6 +137,8 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
     // Running this once lets the tokenizer work it's magic in response.source (annotation).
     response = translateForResponse(service, responseOptions, std::move(input));
   }
+
+  std::cout << "Completed first round of translations!" << std::endl;
 
   Service service(options);
   ResponseOptions responseOptions;
@@ -153,8 +156,13 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
   std::string buffer;
   Response editResponse;
 
+  std::cerr << "Starting translation edit workflow" << std::endl;
   marian::timer::Timer taskTimer;
   for (size_t s = 0; s < response.source.numSentences(); s++) {
+    if (s % 10 == 0) {
+      LOG(info, "Editing sentence {} / {}", s + 1, response.source.numSentences());
+      std::cerr << std::endl;
+    }
     for (size_t w = 0; w < response.source.numWords(s); w++) {
       ByteRange currentWord = response.source.wordAsByteRange(s, w);
       int index = actionSampler(generator);
