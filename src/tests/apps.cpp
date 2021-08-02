@@ -162,7 +162,7 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
       switch (action) {
         case Action::ERROR_THEN_CORRECT_STOP: {
           // Error once
-          buffer = input.substr(0, previousWordEnd) + "0xdeadbeef" /* highly unlikely error token */;
+          buffer = input.substr(0, previousWordEnd) + " 0xdeadbeef" /* highly unlikely error token */;
           editResponse = translateForResponse(service, responseOptions, std::move(buffer));
 
           // Backspace a token
