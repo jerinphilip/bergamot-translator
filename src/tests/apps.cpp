@@ -10,6 +10,7 @@ namespace testapp {
 
 // This is a curiously recurring pattern among the apps below
 Response translateForResponse(Service &service, ResponseOptions &responseOptions, std::string &&input) {
+#ifndef WASM_COMPATIBLE_SOURCE
   std::promise<Response> responsePromise;
   std::future<Response> responseFuture = responsePromise.get_future();
   auto callback = [&responsePromise](Response &&response) { responsePromise.set_value(std::move(response)); };
@@ -19,6 +20,10 @@ Response translateForResponse(Service &service, ResponseOptions &responseOptions
   responseFuture.wait();
   Response response = responseFuture.get();
   return response;
+#else   // WASM_COMPATIBLE_SOURCE
+  std::vector<Response> responses = service.translateMultiple({input}, responseOptions);
+  return responses.front();
+#endif  // WASM_COMPATIBLE_SOURCE
 }
 
 std::string readFromStdin() {
@@ -149,6 +154,8 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
   enum class Action { ERROR_THEN_CORRECT_STOP, CORRECT_STOP, TYPE_THROUGH };
   std::discrete_distribution<> actionSampler({0.05, 0.15, 0.8});
 
+  std::vector<size_t> counts(/*numActions=*/3, /*init-value=*/0);
+
   // A simple state machine which advances each step and ends after a finite number of steps. The choice of a bunch of
   // mistakes are probabilistic.
   size_t previousWordEnd = 0;
@@ -156,16 +163,13 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
   std::string buffer;
   Response editResponse;
 
-  std::cerr << "Starting translation edit workflow" << std::endl;
   marian::timer::Timer taskTimer;
   for (size_t s = 0; s < response.source.numSentences(); s++) {
-    if (s % 10 == 0) {
-      LOG(info, "Editing sentence {} / {}", s + 1, response.source.numSentences());
-      std::cerr << std::endl;
-    }
     for (size_t w = 0; w < response.source.numWords(s); w++) {
       ByteRange currentWord = response.source.wordAsByteRange(s, w);
       int index = actionSampler(generator);
+      ++counts[index];
+
       Action action = static_cast<Action>(index);
       switch (action) {
         case Action::ERROR_THEN_CORRECT_STOP: {
@@ -204,6 +208,10 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
 
   auto cacheStats = service.cacheStats();
   std::cout << "Hits / Misses = " << cacheStats.hits << "/ " << cacheStats.misses << std::endl;
+  std::cout << "Action samples: ";
+  for (size_t index = 0; index < counts.size(); index++) {
+    std::cout << "{" << index << ":" << counts[index] << "} ";
+  }
   LOG(info, "Total time: {:.5f}s wall", taskTimer.elapsed());
 }
 
