@@ -5,16 +5,16 @@
 namespace marian {
 namespace bergamot {
 
-void ResponseBuilder::buildQualityScores(ProcessedRequestSentences &processedRequestSentences, Response &response) {
+void ResponseBuilder::buildQualityScores(const ProcessedRequestSentences &processedRequestSentences,
+                                         Response &response) {
   std::vector<Quality> qualityScores;
   for (auto &processedRequestSentence : processedRequestSentences) {
-    // TODO(jerin): Change hardcode of nBest = 1
     response.qualityScores.push_back(
         Quality{processedRequestSentence.sentenceScore(), processedRequestSentence.wordScores()});
   }
 }
 
-void ResponseBuilder::buildAlignments(ProcessedRequestSentences &processedRequestSentences, Response &response) {
+void ResponseBuilder::buildAlignments(const ProcessedRequestSentences &processedRequestSentences, Response &response) {
   for (auto &processedRequestSentence : processedRequestSentences) {
     auto softAlignment = processedRequestSentence.softAlignment();
     auto threshold = responseOptions_.alignmentThreshold;
@@ -28,14 +28,13 @@ void ResponseBuilder::buildAlignments(ProcessedRequestSentences &processedReques
   }
 }
 
-void ResponseBuilder::buildTranslatedText(ProcessedRequestSentences &processedRequestSentences, Response &response) {
+void ResponseBuilder::buildTranslatedText(const ProcessedRequestSentences &processedRequestSentences,
+                                          Response &response) {
   // Reserving length at least as much as source_ seems like a reasonable
   // thing to do to avoid reallocations.
   response.target.text.reserve(response.source.text.size());
 
   for (size_t sentenceIdx = 0; sentenceIdx < processedRequestSentences.size(); sentenceIdx++) {
-    // TODO(jerin): Change hardcode of nBest = 1
-
     const Words &words = processedRequestSentences[sentenceIdx].words();
     std::string decoded;
     std::vector<string_view> targetSentenceMappings;
