@@ -162,6 +162,7 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
   const std::string &input = response.source.text;
   std::string buffer;
   Response editResponse;
+  std::cout << "Number of sentences: " << response.source.numSentences() << std::endl;
 
   marian::timer::Timer taskTimer;
   for (size_t s = 0; s < response.source.numSentences(); s++) {
@@ -212,6 +213,7 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
   for (size_t index = 0; index < counts.size(); index++) {
     std::cout << "{" << index << ":" << counts[index] << "} ";
   }
+  std::cout << std::endl;
   LOG(info, "Total time: {:.5f}s wall", taskTimer.elapsed());
 }
 
