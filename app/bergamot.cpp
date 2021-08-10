@@ -1,8 +1,9 @@
 #include "cli.h"
 
 int main(int argc, char *argv[]) {
-  auto cp = marian::bergamot::createConfigParser();
-  auto options = cp.parseOptions(argc, argv, true);
+  auto configParser = marian::bergamot::ConfigParser();
+  marian::bergamot::addBaseOptions(configParser);
+  auto options = configParser.parseOptions(argc, argv, true);
   const std::string mode = options->get<std::string>("bergamot-mode");
   using namespace marian::bergamot;
   if (mode == "wasm") {

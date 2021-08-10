@@ -10,29 +10,63 @@
 namespace marian {
 namespace bergamot {
 
-inline marian::ConfigParser createConfigParser() {
-  marian::ConfigParser cp(marian::cli::mode::translation);
-  cp.addOption<std::string>("--ssplit-prefix-file", "Bergamot Options",
-                            "File with nonbreaking prefixes for sentence splitting.");
+/// Equivalent to something offered by marian. Comes with free YAML parsing and a decent structure. Creates a space
+/// different from marian configparser to avoid conflicts. Individual marian-config settings are either relayed
+/// explicitly or loaded from a model config file. Unlike marian's way, we allow an empty ConfigParser to be created.
+class ConfigParser {
+ public:
+  ConfigParser() : cli_(config_, "Marian: Fast Neural Machine Translation in C++", "General options", "", 40) {}
+  ConfigParser(int argc, char** argv, bool validate = false) : ConfigParser() { parseOptions(argc, argv, validate); }
 
-  cp.addOption<std::string>("--ssplit-mode", "Server Options", "[paragraph, sentence, wrapped_text]", "paragraph");
+  template <typename T>
+  ConfigParser& addOption(const std::string& args, const std::string& group, const std::string& help, const T val) {
+    std::string previous_group = cli_.switchGroup(group);
+    cli_.add<T>(args, help, val);
+    cli_.switchGroup(previous_group);
+    return *this;
+  }
 
-  cp.addOption<int>("--max-length-break", "Bergamot Options",
-                    "Maximum input tokens to be processed in a single sentence.", 128);
+  template <typename T>
+  ConfigParser& addOption(const std::string& args, const std::string& group, const std::string& help, const T val,
+                          const T implicit_val) {
+    std::string previous_group = cli_.switchGroup(group);
+    cli_.add<T>(args, help, val)->implicit_val(implicit_val);
+    cli_.switchGroup(previous_group);
+    return *this;
+  }
 
-  cp.addOption<bool>("--bytearray", "Bergamot Options",
-                     "Flag holds whether to construct service from bytearrays, only for testing purpose", false);
+  template <typename T>
+  ConfigParser& addOption(const std::string& args, const std::string& group, const std::string& help) {
+    std::string previous_group = cli_.switchGroup(group);
+    cli_.add<T>(args, help);
+    cli_.switchGroup(previous_group);
+    return *this;
+  }
 
-  cp.addOption<bool>("--check-bytearray", "Bergamot Options",
-                     "Flag holds whether to check the content of the bytearrays (true by default)", true);
+  Ptr<Options> parseOptions(int argc, char** argv, bool validate);
+  std::string const& cmdLine() const { return cmdLine_; };
 
-  cp.addOption<std::string>("--bergamot-mode", "Bergamot Options",
-                            "Operating mode for bergamot: [wasm, native, decoder]", "native");
+ private:
+  cli::CLIWrapper cli_;
+  YAML::Node config_;
+  std::string cmdLine_;
 
-  return cp;
-}
+  // Check if the config contains value for option key
+  bool has(const std::string& key) const { return (bool)config_[key]; }
 
-inline std::shared_ptr<marian::Options> parseOptions(const std::string &config, bool validate = true) {
+  // Return value for given option key cast to given type.
+  // Abort if not set.
+  template <typename T>
+  T get(const std::string& key) const {
+    ABORT_IF(!has(key), "CLI object has no key '{}'", key);
+    return config_[key].as<T>();
+  }
+};
+
+void addBaseOptions(ConfigParser& configParser);
+std::string loadConfigFile(const std::string& configPath);
+
+inline std::shared_ptr<marian::Options> parseOptions(const std::string& config, bool validate = true) {
   marian::Options options;
 
   // @TODO(jerinphilip) There's something off here, @XapaJIaMnu suggests
@@ -50,8 +84,8 @@ inline std::shared_ptr<marian::Options> parseOptions(const std::string &config, 
   // Error: Aborted from void unhandledException() in
   // 3rd_party/marian-dev/src/common/logging.cpp:113
 
-  marian::ConfigParser configParser = createConfigParser();
-  const YAML::Node &defaultConfig = configParser.getConfig();
+  marian::ConfigParser configParser = marian::ConfigParser(marian::cli::mode::translation);
+  const YAML::Node& defaultConfig = configParser.getConfig();
 
   options.merge(defaultConfig);
 
