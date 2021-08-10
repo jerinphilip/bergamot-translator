@@ -33,7 +33,8 @@ class BlockingService {
   BlockingService(const std::shared_ptr<Options> &options);
 
   /// Delegation to options based constructor, for use with WASM.
-  BlockingService(const std::string &config) : BlockingService(parseOptions(config, /*validate=*/false)){};
+  BlockingService(const std::string &config)
+      : BlockingService(parseOptionsFromConfigString(config, /*validate=*/false)){};
 
   /// Translate multiple text-blobs in a single *blocking* API call, providing ResponseOptions which applies across all
   /// text-blobs dictating how to construct Response. ResponseOptions can be used to enable/disable additional
@@ -70,7 +71,7 @@ class AsyncService {
   AsyncService(const std::shared_ptr<Options> &options);
 
   /// Delegation to options based constructor, for use with WASM.
-  AsyncService(const std::string &config) : AsyncService(parseOptions(config, /*validate=*/false)){};
+  AsyncService(const std::string &config) : AsyncService(parseOptionsFromConfigString(config, /*validate=*/false)){};
 
   /// With the supplied TranslationModel, translate an input. A Response is constructed with optional items set/unset
   /// indicated via ResponseOptions. Upon completion translation of the input, the client supplied callback is triggered
