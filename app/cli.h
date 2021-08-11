@@ -52,7 +52,7 @@ void wasm(const CLIConfig &config) {
   Ptr<TranslationModel> translationModel =
       New<TranslationModel>(options->asYamlString(), /*replicas=*/1, std::move(memoryBundle));
 
-  BlockingService service(config);
+  BlockingService service;
 
   ResponseOptions responseOptions;
   std::vector<std::string> texts;
@@ -89,7 +89,7 @@ void wasm(const CLIConfig &config) {
 /// @param [in] options: constructed from command-line supplied arguments
 void decoder(const CLIConfig &config) {
   marian::timer::Timer decoderTimer;
-  AsyncService service(config);
+  AsyncService service(config.numWorkers);
   size_t numWorkers = config.numWorkers;
   auto options = parseOptionsFromFilePath(config.modelConfigPaths.front());
   MemoryBundle memoryBundle;
@@ -141,7 +141,7 @@ void native(const CLIConfig &config) {
   Ptr<TranslationModel> translationModel =
       New<TranslationModel>(options, /*replicas=*/numWorkers, std::move(memoryBundle));
 
-  AsyncService service(config);
+  AsyncService service(config.numWorkers);
 
   // Read a large input text blob from stdin
   std::ostringstream std_input;

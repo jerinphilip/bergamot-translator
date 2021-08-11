@@ -5,7 +5,7 @@ int main(int argc, char *argv[]) {
   marian::bergamot::ConfigParser configParser;
   configParser.parseArgs(argc, argv);
   auto &config = configParser.getConfig();
-  AsyncService service(config);
+  AsyncService service(config.numWorkers);
   auto modelConfig = parseOptionsFromFilePath(config.modelConfigPaths.front());
 
   switch (config.opMode) {
