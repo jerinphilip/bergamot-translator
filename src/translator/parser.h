@@ -39,12 +39,13 @@ class ConfigParser {
  public:
   ConfigParser();
   void parseArgs(int argc, char *argv[]);
-  void addOptionsBoundToConfig(CLI::App &app, CLIConfig &config);
-  void addSpecialOptions(CLI::App &app);
-  void handleSpecialOptions();
   const CLIConfig &getConfig() { return config_; }
 
  private:
+  void addOptionsBoundToConfig(CLI::App &app, CLIConfig &config);
+  void addSpecialOptions(CLI::App &app);
+  void handleSpecialOptions();
+
   CLIConfig config_;
   CLI::App app_;
 
