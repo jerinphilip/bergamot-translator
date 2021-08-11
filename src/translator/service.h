@@ -82,6 +82,8 @@ class AsyncService {
   /// Thread joins and proper shutdown are required to be handled explicitly.
   ~AsyncService();
 
+  const size_t numWorkers() { return numWorkers_; }
+
  private:
   /// Count of workers used for to run translation.
   size_t numWorkers_;

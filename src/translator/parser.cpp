@@ -17,10 +17,10 @@ std::istringstream &operator>>(std::istringstream &in, OpMode &mode) {
       {"wasm", OpMode::WASM},
       {"native", OpMode::NATIVE},
       {"decoder", OpMode::DECODER},
-      {"test-source-sentences", OpMode::TEST_SOURCE_SENTENCES},
-      {"test-target-sentences", OpMode::TEST_TARGET_SENTENCES},
-      {"test-source-words", OpMode::TEST_SOURCE_WORDS},
-      {"test-target-words", OpMode::TEST_TARGET_WORDS},
+      {"test-response-source-sentences", OpMode::TEST_SOURCE_SENTENCES},
+      {"test-response-target-sentences", OpMode::TEST_TARGET_SENTENCES},
+      {"test-response-source-words", OpMode::TEST_SOURCE_WORDS},
+      {"test-response-target-words", OpMode::TEST_TARGET_WORDS},
   };
 
   auto query = table.find(modeString);
@@ -29,6 +29,8 @@ std::istringstream &operator>>(std::istringstream &in, OpMode &mode) {
   } else {
     ABORT("Unknown mode {}", modeString);
   }
+
+  return in;
 }
 
 ConfigParser::ConfigParser() : app_{"Bergamot Options"} {

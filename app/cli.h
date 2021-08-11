@@ -49,7 +49,8 @@ void wasm(const CLIConfig &config) {
   Ptr<Options> options = parseOptionsFromFilePath(modelConfigPath);
   MemoryBundle memoryBundle = getMemoryBundleFromConfig(options);
 
-  Ptr<TranslationModel> translationModel = New<TranslationModel>(options->asYamlString(), std::move(memoryBundle));
+  Ptr<TranslationModel> translationModel =
+      New<TranslationModel>(options->asYamlString(), /*replicas=*/1, std::move(memoryBundle));
 
   BlockingService service(config);
 
@@ -93,7 +94,7 @@ void decoder(const CLIConfig &config) {
   auto options = parseOptionsFromFilePath(config.modelConfigPaths.front());
   MemoryBundle memoryBundle;
   Ptr<TranslationModel> translationModel =
-      New<TranslationModel>(options, std::move(memoryBundle), /*replicas=*/numWorkers);
+      New<TranslationModel>(options, /*replicas=*/numWorkers, std::move(memoryBundle));
   // Read a large input text blob from stdin
   std::ostringstream std_input;
   std_input << std::cin.rdbuf();
@@ -136,7 +137,7 @@ void native(const CLIConfig &config) {
 
   size_t numWorkers = config.numWorkers;
   Ptr<TranslationModel> translationModel =
-      New<TranslationModel>(options, std::move(memoryBundle), /*replicas=*/numWorkers);
+      New<TranslationModel>(options, /*replicas=*/numWorkers, std::move(memoryBundle));
 
   AsyncService service(config);
 
