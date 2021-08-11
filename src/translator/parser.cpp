@@ -8,6 +8,27 @@
 namespace marian {
 namespace bergamot {
 
+std::istringstream &operator>>(std::istringstream &in, OpMode &mode) {
+  std::string modeString;
+  in >> modeString;
+  std::unordered_map<std::string, OpMode> table = {
+      {"wasm", OpMode::WASM},
+      {"native", OpMode::NATIVE},
+      {"decoder", OpMode::DECODER},
+      {"test-source-sentences", OpMode::TEST_SOURCE_SENTENCES},
+      {"test-target-sentences", OpMode::TEST_TARGET_SENTENCES},
+      {"test-source-words", OpMode::TEST_SOURCE_WORDS},
+      {"test-target-words", OpMode::TEST_TARGET_WORDS},
+  };
+
+  auto query = table.find(modeString);
+  if (query != table.end()) {
+    mode = query->second;
+  } else {
+    ABORT("Unknown mode {}", modeString);
+  }
+}
+
 ConfigParser::ConfigParser() : app_{"Bergamot Options"} {
   addSpecialOptions(app_);
   addOptionsBoundToConfig(app_, config_);
@@ -44,7 +65,7 @@ void ConfigParser::handleSpecialOptions() {
 }
 
 void ConfigParser::addOptionsBoundToConfig(CLI::App &app, CLIConfig &config) {
-  app.add_option("--model-configs", config.modelConfigs,
+  app.add_option("--model-config-paths", config.modelConfigPaths,
                  "Configuration files list, can be used for pivoting multiple models or multiple model workflows");
 
   app.add_option("--ssplit-prefix-file", config.ssplitPrefixFilePath,
@@ -52,15 +73,15 @@ void ConfigParser::addOptionsBoundToConfig(CLI::App &app, CLIConfig &config) {
 
   app.add_option("--ssplit-mode", config.ssplitMode, "[paragraph, sentence, wrapped_text]");
 
-  app.add_option("--bytearray", config.byteArray,
-                 "Flag holds whether to construct service from bytearrays, only for testing purpose");
+  app.add_flag("--bytearray", config.byteArray,
+               "Flag holds whether to construct service from bytearrays, only for testing purpose");
 
-  app.add_option("--check-bytearray", config.validateByteArray,
-                 "Flag holds whether to check the content of the bytearrays (true by default)");
+  app.add_flag("--check-bytearray", config.validateByteArray,
+               "Flag holds whether to check the content of the bytearrays (true by default)");
 
   app.add_option("--cpu-threads", config.numWorkers, "Number of worker threads to use for translation");
 
-  // app_.add_option("--bergamot-mode", config.opMode, "Operating mode for bergamot: [wasm, native, decoder]");
+  app_.add_option("--bergamot-mode", config.opMode, "Operating mode for bergamot: [wasm, native, decoder]");
 }
 
 std::shared_ptr<marian::Options> parseOptionsFromFilePath(const std::string &configPath, bool validate /*= true*/) {

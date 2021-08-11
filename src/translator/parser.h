@@ -24,9 +24,11 @@ enum OpMode {
   TEST_TARGET_WORDS,
 };
 
+std::istringstream &operator>>(std::istringstream &in, OpMode &mode);
+
 struct CLIConfig {
-  using ModelConfigs = std::vector<std::string>;
-  ModelConfigs modelConfigs;
+  using ModelConfigPaths = std::vector<std::string>;
+  ModelConfigPaths modelConfigPaths;
   std::string ssplitPrefixFilePath;
   std::string ssplitMode;
   size_t maxLengthBreak;
@@ -56,9 +58,8 @@ class ConfigParser {
   bool version_{false};
 };
 
-std::shared_ptr<marian::Options> parseOptionsFromFilePath(const std::string &configPath, bool validate = true);
-
 std::shared_ptr<marian::Options> parseOptionsFromString(const std::string &config, bool validate = true);
+std::shared_ptr<marian::Options> parseOptionsFromFilePath(const std::string &config, bool validate = true);
 
 }  //  namespace bergamot
 }  //  namespace marian

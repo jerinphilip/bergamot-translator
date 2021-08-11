@@ -44,7 +44,7 @@ void wasm(const CLIConfig &config) {
   //
   // Overkill, yes.
 
-  const std::string &modelConfigPath = config.modelConfigs.front();
+  const std::string &modelConfigPath = config.modelConfigPaths.front();
 
   Ptr<Options> options = parseOptionsFromFilePath(modelConfigPath);
   MemoryBundle memoryBundle = getMemoryBundleFromConfig(options);
@@ -90,7 +90,7 @@ void decoder(const CLIConfig &config) {
   marian::timer::Timer decoderTimer;
   AsyncService service(config);
   size_t numWorkers = config.numWorkers;
-  auto options = parseOptionsFromFilePath(config.modelConfigs.front());
+  auto options = parseOptionsFromFilePath(config.modelConfigPaths.front());
   MemoryBundle memoryBundle;
   Ptr<TranslationModel> translationModel =
       New<TranslationModel>(options, std::move(memoryBundle), /*replicas=*/numWorkers);
@@ -127,7 +127,7 @@ void native(const CLIConfig &config) {
   // Prepare memories for bytearrays (including model, shortlist and vocabs)
   MemoryBundle memoryBundle;
 
-  auto options = parseOptionsFromFilePath(config.modelConfigs.front());
+  auto options = parseOptionsFromFilePath(config.modelConfigPaths.front());
 
   if (config.byteArray) {
     // Load legit values into bytearrays.

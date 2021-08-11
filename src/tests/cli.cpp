@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
   configParser.parseArgs(argc, argv);
   auto &config = configParser.getConfig();
   AsyncService service(config);
-  auto modelConfig = parseOptionsFromFilePath(config.modelConfigs.front());
+  auto modelConfig = parseOptionsFromFilePath(config.modelConfigPaths.front());
 
   switch (config.opMode) {
     case OpMode::TEST_SOURCE_SENTENCES:
