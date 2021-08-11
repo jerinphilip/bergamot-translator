@@ -133,8 +133,6 @@ void native(const CLIConfig &config) {
   if (config.byteArray) {
     // Load legit values into bytearrays.
     memoryBundle = getMemoryBundleFromConfig(options);
-    options->set<bool>("bytearray", config.byteArray);
-    options->set<bool>("check-bytearray", config.validateByteArray);
   }
 
   size_t numWorkers = config.numWorkers;
