@@ -1,5 +1,7 @@
 #include "parser.h"
 
+#include <unordered_map>
+
 #include "common/build_info.h"
 #include "common/config.h"
 #include "common/regex.h"
@@ -68,11 +70,6 @@ void ConfigParser::addOptionsBoundToConfig(CLI::App &app, CLIConfig &config) {
   app.add_option("--model-config-paths", config.modelConfigPaths,
                  "Configuration files list, can be used for pivoting multiple models or multiple model workflows");
 
-  app.add_option("--ssplit-prefix-file", config.ssplitPrefixFilePath,
-                 "File with nonbreaking prefixes for sentence splitting.");
-
-  app.add_option("--ssplit-mode", config.ssplitMode, "[paragraph, sentence, wrapped_text]");
-
   app.add_flag("--bytearray", config.byteArray,
                "Flag holds whether to construct service from bytearrays, only for testing purpose");
 
@@ -89,10 +86,11 @@ std::shared_ptr<marian::Options> parseOptionsFromFilePath(const std::string &con
   std::ifstream readStream(configPath);
   std::stringstream buffer;
   buffer << readStream.rdbuf();
-  return parseOptionsFromString(buffer.str(), validate);
+  return parseOptionsFromString(buffer.str(), validate, /*pathsInSameDirAs=*/configPath);
 };
 
-std::shared_ptr<marian::Options> parseOptionsFromString(const std::string &config, bool validate /*= true*/) {
+std::shared_ptr<marian::Options> parseOptionsFromString(const std::string &config, bool validate /*= true*/,
+                                                        std::string pathsInSameDirAs /*=""*/) {
   marian::Options options;
 
   marian::ConfigParser configParser(cli::mode::translation);
@@ -106,6 +104,11 @@ std::shared_ptr<marian::Options> parseOptionsFromString(const std::string &confi
   // configParser.addOption<size_t>("--mini-batch-words", "Bergamot Options",
   //                                "Maximum input tokens to be processed in a single sentence.", 1024);
 
+  configParser.addOption<std::string>("--ssplit-prefix-file", "Bergamot Options",
+                                      "File with nonbreaking prefixes for sentence splitting.");
+
+  configParser.addOption<std::string>("--ssplit-mode", "Bergamot Options", "[paragraph, sentence, wrapped_text]");
+
   const YAML::Node &defaultConfig = configParser.getConfig();
 
   options.merge(defaultConfig);
@@ -113,6 +116,33 @@ std::shared_ptr<marian::Options> parseOptionsFromString(const std::string &confi
   // Parse configs onto defaultConfig.
   options.parse(config);
   YAML::Node configCopy = options.cloneToYamlNode();
+
+  // This is in a marian cpp
+  const std::set<std::string> PATHS = {
+      "model",
+      "models",
+      "train-sets",
+      "vocabs",
+      "embedding-vectors",
+      "valid-sets",
+      "valid-script-path",
+      "valid-script-args",
+      "valid-log",
+      "valid-translation-output",
+      "input",   // except: 'stdin', handled in makeAbsolutePaths and interpolateEnvVars
+      "output",  // except: 'stdout', handled in makeAbsolutePaths and interpolateEnvVars
+      "pretrained-model",
+      "data-weighting",
+      "log",
+      "sqlite",     // except: 'temporary', handled in the processPaths function
+      "shortlist",  // except: only the first element in the sequence is a path, handled in the
+                    //  processPaths function
+  };
+
+  marian::cli::makeAbsolutePaths(configCopy, pathsInSameDirAs, PATHS);
+  options.merge(configCopy, /*overwrite=*/true);
+
+  configCopy = options.cloneToYamlNode();
 
   if (validate) {
     // Perform validation on parsed options only when requested

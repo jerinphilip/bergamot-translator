@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
       testapp::annotatedTextWords(service, modelConfig, /*source=*/false);
       break;
     default:
-      ABORT("Incompatible op-mode. Choose one of the test modes");
+      ABORT("Incompatible op-mode. Choose one of the test modes.");
       break;
   }
   return 0;
