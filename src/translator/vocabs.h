@@ -25,6 +25,9 @@ class Vocabs {
   /// Get the target vocabulary
   const Ptr<Vocab const>& target() const { return trgVocab_; }
 
+  /// Returns if the vocabs are shared among source and target
+  bool isShared() const { return srcVocabs_.front() == trgVocab_; }
+
  private:
   std::vector<Ptr<Vocab const>> srcVocabs_;  // source vocabularies
   Ptr<Vocab const> trgVocab_;                // target vocabulary

@@ -11,6 +11,38 @@
 namespace marian {
 namespace bergamot {
 
+ReusableMarianBackend::ReusableMarianBackend(const Ptr<Options> &options, size_t deviceId)
+    : device_(deviceId, DeviceType::cpu) {
+  graph_ = New<ExpressionGraph>(true);  // set the graph to be inference only
+  auto prec = options->get<std::vector<std::string>>("precision", {"float32"});
+  graph_->setDefaultElementType(typeFromString(prec[0]));
+
+  graph_->setDevice(device_);
+  graph_->getBackend()->configureDevice(options);
+
+  size_t workspaceSize = options->get<size_t>("workspace");
+  graph_->reserveWorkspaceMB(workspaceSize);
+}
+
+void ReusableMarianBackend::translateBatch(Ptr<TranslationModel> model, Batch &batch) {
+  /// TODO(jerinphilip): Optimize swaps properly.
+  for (auto &scorer : model->scorerEnsemble_) {
+    scorer->init(graph_);
+    if (model->shortlistGenerator_) {
+      scorer->setShortlistGenerator(model->shortListGenerator_);
+    }
+  }
+
+  graph_->forward();
+
+  // Swap stuff onto graph from model.
+
+  auto search = New<BeamSearch>(model->options_, model->scorerEnsemble_, (model->vocabs_).target());
+  auto histories = search->search(graph_, convertToMarianBatch(batch, model->vocabs_));
+
+  batch.completeBatch(histories);
+}
+
 TranslationModel::TranslationModel(const Config &options, size_t replicas, MemoryBundle &&memory /*=MemoryBundle{}*/)
     : options_(options),
       memory_(std::move(memory)),
@@ -18,72 +50,41 @@ TranslationModel::TranslationModel(const Config &options, size_t replicas, Memor
       textProcessor_(options, vocabs_, std::move(memory_.ssplitPrefixFile)),
       batchingPool_(options) {
   ABORT_IF(replicas == 0, "At least one replica needs to be created.");
-  backend_.resize(replicas);
-  // ShortList: Load from memoryBundle or options
-  for (size_t idx = 0; idx < replicas; idx++) {
-    loadBackend(idx);
-  }
-}
 
-void TranslationModel::loadBackend(size_t idx) {
-  // Aliasing to reuse old code.
-  auto &slgen_ = backend_[idx].shortlistGenerator;
-  auto &graph_ = backend_[idx].graph;
-  auto &scorers_ = backend_[idx].scorerEnsemble;
+  auto notEmpty = [](const AlignedMemory &memory) { return memory.size() > 0 && memory.begin() != nullptr; };
 
-  marian::DeviceId device_(idx, DeviceType::cpu);
-
-  // Old code.
-  if (options_->hasAndNotEmpty("shortlist")) {
-    int srcIdx = 0, trgIdx = 1;
-    bool shared_vcb =
-        vocabs_.sources().front() ==
-        vocabs_.target();  // vocabs_->sources().front() is invoked as we currently only support one source vocab
-    if (memory_.shortlist.size() > 0 && memory_.shortlist.begin() != nullptr) {
-      bool check = options_->get<bool>("check-bytearray", false);
-      slgen_ = New<data::BinaryShortlistGenerator>(memory_.shortlist.begin(), memory_.shortlist.size(),
-                                                   vocabs_.sources().front(), vocabs_.target(), srcIdx, trgIdx,
-                                                   shared_vcb, check);
-    } else {
-      // Changed to BinaryShortlistGenerator to enable loading binary shortlist file
-      // This class also supports text shortlist file
-      slgen_ = New<data::BinaryShortlistGenerator>(options_, vocabs_.sources().front(), vocabs_.target(), srcIdx,
-                                                   trgIdx, shared_vcb);
-    }
+  // Load and retain shortlist
+  int srcIdx = 0, trgIdx = 1;
+  bool check = options_->get<bool>("check-bytearray", false);
+  if (notEmpty(memory_.shortlist)) {
+    shortlistGenerator_ = New<data::BinaryShortlistGenerator>(memory_.shortlist.begin(), memory_.shortlist.size(),
+                                                              vocabs_.sources().front(), vocabs_.target(), srcIdx,
+                                                              trgIdx, vocabs.isShared(), check);
+  } else {
+    ABORT_IF(!options_->hasAndNotEmpty("shortlist"), "Require at least a shortlist provided from command-line");
+    shortlistGenerator_ = New<data::BinaryShortlistGenerator>(options_, vocabs_.sources().front(), vocabs_.target(),
+                                                              srcIdx, trgIdx, vocabs_.isShared());
   }
 
-  graph_ = New<ExpressionGraph>(true);  // set the graph to be inference only
-  auto prec = options_->get<std::vector<std::string>>("precision", {"float32"});
-  graph_->setDefaultElementType(typeFromString(prec[0]));
-  graph_->setDevice(device_);
-  graph_->getBackend()->configureDevice(options_);
-  graph_->reserveWorkspaceMB(options_->get<size_t>("workspace"));
-
-  // Marian Model: Load from memoryBundle or shortList
-  if (memory_.model.size() > 0 &&
-      memory_.model.begin() !=
-          nullptr) {  // If we have provided a byte array that contains the model memory, we can initialise the
-                      // model from there, as opposed to from reading in the config file
+  // Load and keep scorer(s).
+  if (notEmpty(memory_.model)) {
+    // If we have provided a byte array that contains the model memory, we can initialise the
+    // model from there, as opposed to from reading in the config file
     ABORT_IF((uintptr_t)memory_.model.begin() % 256 != 0,
-             "The provided memory is not aligned to 256 bytes and will crash when vector instructions are used on it.");
+             "The provided memory_.model is not aligned to 256 bytes and will crash when vector instructions are used "
+             "on it.");
     if (options_->get<bool>("check-bytearray", false)) {
       ABORT_IF(!validateBinaryModel(memory_.model, memory_.model.size()),
                "The binary file is invalid. Incomplete or corrupted download?");
     }
-    const std::vector<const void *> container = {
-        memory_.model.begin()};  // Marian supports multiple models initialised in this manner hence std::vector.
-                                 // However we will only ever use 1 during decoding.
-    scorers_ = createScorers(options_, container);
+
+    // Marian supports multiple models initialised in this manner hence std::vector.
+    // However we will only ever use 1 during decoding.
+    const std::vector<const void *> container = {memory_.model.begin()};
+    scorerEnsemble_ = createScorers(options_, container);
   } else {
-    scorers_ = createScorers(options_);
+    scorerEnsemble_ = createScorers(options_);
   }
-  for (auto scorer : scorers_) {
-    scorer->init(graph_);
-    if (slgen_) {
-      scorer->setShortlistGenerator(slgen_);
-    }
-  }
-  graph_->forward();
 }
 
 // Make request process is shared between Async and Blocking workflow of translating.
@@ -99,7 +100,7 @@ Ptr<Request> TranslationModel::makeRequest(size_t requestId, std::string &&sourc
   return request;
 }
 
-Ptr<marian::data::CorpusBatch> TranslationModel::convertToMarianBatch(Batch &batch) {
+Ptr<marian::data::CorpusBatch> convertToMarianBatch(Batch &batch, const Vocabs &vocabs) {
   std::vector<data::SentenceTuple> batchVector;
   auto &sentences = batch.sentences();
 
@@ -140,7 +141,7 @@ Ptr<marian::data::CorpusBatch> TranslationModel::convertToMarianBatch(Batch &bat
   using SubBatch = marian::data::SubBatch;
   std::vector<Ptr<SubBatch>> subBatches;
   for (size_t j = 0; j < maxDims.size(); ++j) {
-    subBatches.emplace_back(New<SubBatch>(batchSize, maxDims[j], vocabs_.sources().at(j)));
+    subBatches.emplace_back(New<SubBatch>(batchSize, maxDims[j], vocabs.sources().at(j)));
   }
 
   std::vector<size_t> words(maxDims.size(), 0);
@@ -162,13 +163,6 @@ Ptr<marian::data::CorpusBatch> TranslationModel::convertToMarianBatch(Batch &bat
   Ptr<CorpusBatch> corpusBatch = New<CorpusBatch>(subBatches);
   corpusBatch->setSentenceIds(sentenceIds);
   return corpusBatch;
-}
-
-void TranslationModel::translateBatch(size_t deviceId, Batch &batch) {
-  auto &backend = backend_[deviceId];
-  auto search = New<BeamSearch>(options_, backend.scorerEnsemble, vocabs_.target());
-  auto histories = search->search(backend.graph, convertToMarianBatch(batch));
-  batch.completeBatch(histories);
 }
 
 }  // namespace bergamot

@@ -9,7 +9,8 @@
 namespace marian {
 namespace bergamot {
 
-BlockingService::BlockingService() : requestId_(0), batchingPool_() {}
+BlockingService::BlockingService(const Ptr<Options> &options)
+    : requestId_(0), batchingPool_(), backend_(options, /*deviceId=*/0) {}
 
 std::vector<Response> BlockingService::translateMultiple(std::shared_ptr<TranslationModel> translationModel,
                                                          std::vector<std::string> &&sources,
@@ -27,23 +28,27 @@ std::vector<Response> BlockingService::translateMultiple(std::shared_ptr<Transla
   Batch batch;
   Ptr<TranslationModel> model{nullptr};
   while (batchingPool_.generateBatch(model, batch)) {
-    model->translateBatch(/*deviceId=*/0, batch);
+    backend_.translateBatch(model, batch);
   }
 
   return responses;
 }
 
-AsyncService::AsyncService(size_t numWorkers) : requestId_(0), numWorkers_(numWorkers), safeBatchingPool_() {
+AsyncService::AsyncService(const Ptr<Options> &options, size_t numWorkers)
+    : requestId_(0), numWorkers_(numWorkers), safeBatchingPool_() {
   ABORT_IF(numWorkers_ == 0, "Number of workers should be at least 1 in a threaded workflow");
   workers_.reserve(numWorkers_);
   for (size_t cpuId = 0; cpuId < numWorkers_; cpuId++) {
+    // Prepare graph backend to use.
+    backends_.emplace_back(options, cpuId);
+
+    // Consumer thread main-loop. Note that this is an infinite-loop unless the monitor is explicitly told to
+    // shutdown, which happens in the destructor for this class.
     workers_.emplace_back([cpuId, this] {
-      // Consumer thread main-loop. Note that this is an infinite-loop unless the monitor is explicitly told to
-      // shutdown, which happens in the destructor for this class.
       Batch batch;
-      Ptr<TranslationModel> translationModel{nullptr};
-      while (safeBatchingPool_.generateBatch(translationModel, batch)) {
-        translationModel->translateBatch(cpuId, batch);
+      Ptr<TranslationModel> model{nullptr};
+      while (safeBatchingPool_.generateBatch(model, batch)) {
+        backends_[cpuId].translateBatch(model, batch);
       }
     });
   }

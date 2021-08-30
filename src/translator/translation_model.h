@@ -19,6 +19,29 @@
 namespace marian {
 namespace bergamot {
 
+class TranslationModel;
+class ReusableMarianBackend;
+
+Ptr<marian::data::CorpusBatch> convertToMarianBatch(Batch& batch);
+
+/// A package of marian-entities which form a backend to translate. This is common and upper-bounded by the number of
+/// workers. The required tensors are copied from a TranslationModel when required for translation onto an existing
+/// graph.
+class ReusableMarianBackend {
+ public:
+  using Graph = Ptr<ExpressionGraph>;
+  using ScorerEnsemble = std::vector<Ptr<Scorer>>;
+  using ShortlistGenerator = Ptr<data::ShortlistGenerator const>;
+
+  ReusableMarianBackend(const Ptr<Options>& options, size_t deviceId);
+
+  void translateBatch(Ptr<TranslationModel> model, Batch& batch);
+
+ private:
+  Graph graph_;
+  marian::DeviceId device_;
+};
+
 /// A TranslationModel is associated with the translation of a single language direction. Holds the graph and other
 /// structures required to run the forward pass of the neural network, along with preprocessing logic (TextProcessor)
 /// and a BatchingPool to create batches that are to be used in conjuction with an instance.
@@ -41,7 +64,10 @@ namespace bergamot {
 
 class TranslationModel {
  public:
+  friend class ReusableMarianBackend;
   using Config = Ptr<Options>;
+  using ScorerEnsemble = std::vector<Ptr<Scorer>>;
+  using ShortlistGenerator = Ptr<data::ShortlistGenerator const>;
 
   /// Equivalent to options based constructor, where `options` is parsed from string configuration. Configuration can be
   /// JSON or YAML. Keys expected correspond to those of `marian-decoder`, available at
@@ -80,13 +106,6 @@ class TranslationModel {
   /// @returns number of sentences that constitute the Batch.
   size_t generateBatch(Batch& batch) { return batchingPool_.generateBatch(batch); }
 
-  /// Translate a batch generated with generateBatch
-  ///
-  /// @param [in] deviceId: There are replicas of backend created for use in each worker thread. deviceId indicates
-  /// which replica to use.
-  /// @param [in] batch: A batch generated from generateBatch from the same TranslationModel instance.
-  void translateBatch(size_t deviceId, Batch& batch);
-
  private:
   Config options_;
   MemoryBundle memory_;
@@ -95,24 +114,8 @@ class TranslationModel {
 
   /// Maintains sentences from multiple requests bucketed by length and sorted by priority in each bucket.
   BatchingPool batchingPool_;
-
-  /// A package of marian-entities which form a backend to translate.
-  struct MarianBackend {
-    using Graph = Ptr<ExpressionGraph>;
-    using ScorerEnsemble = std::vector<Ptr<Scorer>>;
-    using ShortlistGenerator = Ptr<data::ShortlistGenerator const>;
-
-    Graph graph;
-    ScorerEnsemble scorerEnsemble;
-    ShortlistGenerator shortlistGenerator;
-  };
-
-  /// Hold replicas of the backend (graph, scorers, shortlist) for use in each thread.
-  /// Controlled and consistent external access via graph(id), scorerEnsemble(id),
-  std::vector<MarianBackend> backend_;
-
-  void loadBackend(size_t idx);
-  Ptr<marian::data::CorpusBatch> convertToMarianBatch(Batch& batch);
+  ShortlistGenerator shortlistGenerator_;
+  ScorerEnsemble scorerEnsemble_;
 };
 
 }  // namespace bergamot

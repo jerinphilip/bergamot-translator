@@ -32,13 +32,6 @@ class BlockingService {
   /// be set.
   BlockingService();
 
-  /// Create a TranslationModel compatible with this instance of Service. Internally assigns how many replicas of
-  /// backend needed based on worker threads set. See TranslationModel for documentation on other params.
-  template <class ConfigType>
-  Ptr<TranslationModel> createCompatibleModel(const ConfigType &config, MemoryBundle &&memory) {
-    return New<TranslationModel>(config, /*replicas=*/1, std::move(memory));
-  }
-
   /// Translate multiple text-blobs in a single *blocking* API call, providing ResponseOptions which applies across all
   /// text-blobs dictating how to construct Response. ResponseOptions can be used to enable/disable additional
   /// information like quality-scores, alignments etc.
@@ -62,6 +55,7 @@ class BlockingService {
   /// An aggregate batching pool associated with an async translating instance, which maintains an aggregate queue of
   /// requests compiled from  batching-pools of multiple translation models. Not thread-safe.
   AggregateBatchingPool batchingPool_;
+  ReusableMarianBackend backend_;
 };
 
 /// Effectively a threadpool, providing an API to take a translation request of a source-text, paramaterized by
@@ -71,14 +65,7 @@ class AsyncService {
  public:
   /// Construct an AsyncService with configuration loaded from Options. Expects positive integer value for
   /// `cpu-threads`. Additionally requires options which configure AggregateBatchingPool.
-  AsyncService(size_t numWorkers);
-
-  /// Create a TranslationModel compatible with this instance of Service. Internally assigns how many replicas of
-  /// backend needed based on worker threads set. See TranslationModel for documentation on other params.
-  template <class ConfigType>
-  Ptr<TranslationModel> createCompatibleModel(const ConfigType &config, MemoryBundle &&memory = MemoryBundle{}) {
-    return New<TranslationModel>(config, /*replicas=*/numWorkers_, std::move(memory));
-  }
+  AsyncService(const Ptr<Options> &options, size_t numWorkers);
 
   /// With the supplied TranslationModel, translate an input. A Response is constructed with optional items set/unset
   /// indicated via ResponseOptions. Upon completion translation of the input, the client supplied callback is triggered
@@ -103,6 +90,7 @@ class AsyncService {
   size_t numWorkers_;
 
   std::vector<std::thread> workers_;
+  std::vector<ReusableMarianBackend> backends_;
 
   /// Numbering requests processed through this instance. Used to keep account of arrival times of the request. This
   /// allows for using this quantity in priority based ordering.
