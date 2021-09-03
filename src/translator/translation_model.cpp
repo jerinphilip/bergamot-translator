@@ -11,6 +11,32 @@
 namespace marian {
 namespace bergamot {
 
+MarianBackend::MarianBackend(size_t workspaceSize, size_t deviceId)
+    : device_(deviceId, DeviceType::cpu), workspaceSize_(workspaceSize) {
+  graph_ = New<ExpressionGraph>(/*inference=*/true);
+}
+
+bool MarianBackend::maybeReconfigure(const Ptr<Options> &options) {
+  // This is a passthrough for now, but can be conditioned on checks.
+  reconfigure(options);
+  return true;
+}
+
+void MarianBackend::reconfigure(const Ptr<Options> &options) {
+  auto prec = options->get<std::vector<std::string>>("precision", {"float32"});
+  graph_->setDefaultElementType(typeFromString(prec[0]));
+
+  // setDevice launches tensor allocating backends. This is the op that essentially has to be constrained once per
+  // worker, to ensure one allocator per worker attached with workspace-size.
+  graph_->setDevice(device_);
+  graph_->getBackend()->configureDevice(options);
+
+  if (!staticAllocated_) {
+    graph_->reserveWorkspaceMB(workspaceSize_);
+    staticAllocated_ = true;
+  }
+}
+
 TranslationModel::TranslationModel(const Config &options, MemoryBundle &&memory /*=MemoryBundle{}*/,
                                    size_t replicas /*=1*/)
     : options_(options),
@@ -19,22 +45,7 @@ TranslationModel::TranslationModel(const Config &options, MemoryBundle &&memory 
       textProcessor_(options, vocabs_, std::move(memory_.ssplitPrefixFile)),
       batchingPool_(options) {
   ABORT_IF(replicas == 0, "At least one replica needs to be created.");
-  backend_.resize(replicas);
-  // ShortList: Load from memoryBundle or options
-  for (size_t idx = 0; idx < replicas; idx++) {
-    loadBackend(idx);
-  }
-}
-
-void TranslationModel::loadBackend(size_t idx) {
-  // Aliasing to reuse old code.
-  auto &slgen_ = backend_[idx].shortlistGenerator;
-  auto &graph_ = backend_[idx].graph;
-  auto &scorers_ = backend_[idx].scorerEnsemble;
-
-  marian::DeviceId device_(idx, DeviceType::cpu);
-
-  // Old code.
+  // Load shortlist from memorybundle or file-system
   if (options_->hasAndNotEmpty("shortlist")) {
     int srcIdx = 0, trgIdx = 1;
     bool shared_vcb =
@@ -42,25 +53,18 @@ void TranslationModel::loadBackend(size_t idx) {
         vocabs_.target();  // vocabs_->sources().front() is invoked as we currently only support one source vocab
     if (memory_.shortlist.size() > 0 && memory_.shortlist.begin() != nullptr) {
       bool check = options_->get<bool>("check-bytearray", false);
-      slgen_ = New<data::BinaryShortlistGenerator>(memory_.shortlist.begin(), memory_.shortlist.size(),
-                                                   vocabs_.sources().front(), vocabs_.target(), srcIdx, trgIdx,
-                                                   shared_vcb, check);
+      shortlistGenerator_ = New<data::BinaryShortlistGenerator>(memory_.shortlist.begin(), memory_.shortlist.size(),
+                                                                vocabs_.sources().front(), vocabs_.target(), srcIdx,
+                                                                trgIdx, shared_vcb, check);
     } else {
       // Changed to BinaryShortlistGenerator to enable loading binary shortlist file
       // This class also supports text shortlist file
-      slgen_ = New<data::BinaryShortlistGenerator>(options_, vocabs_.sources().front(), vocabs_.target(), srcIdx,
-                                                   trgIdx, shared_vcb);
+      shortlistGenerator_ = New<data::BinaryShortlistGenerator>(options_, vocabs_.sources().front(), vocabs_.target(),
+                                                                srcIdx, trgIdx, shared_vcb);
     }
   }
 
-  graph_ = New<ExpressionGraph>(true);  // set the graph to be inference only
-  auto prec = options_->get<std::vector<std::string>>("precision", {"float32"});
-  graph_->setDefaultElementType(typeFromString(prec[0]));
-  graph_->setDevice(device_);
-  graph_->getBackend()->configureDevice(options_);
-  graph_->reserveWorkspaceMB(options_->get<size_t>("workspace"));
-
-  // Marian Model: Load from memoryBundle or shortList
+  // Marian Model: Load from memoryBundle or file-system
   if (memory_.model.size() > 0 &&
       memory_.model.begin() !=
           nullptr) {  // If we have provided a byte array that contains the model memory, we can initialise the
@@ -74,17 +78,10 @@ void TranslationModel::loadBackend(size_t idx) {
     const std::vector<const void *> container = {
         memory_.model.begin()};  // Marian supports multiple models initialised in this manner hence std::vector.
                                  // However we will only ever use 1 during decoding.
-    scorers_ = createScorers(options_, container);
+    scorerEnsemble_ = createScorers(options_, container);
   } else {
-    scorers_ = createScorers(options_);
+    scorerEnsemble_ = createScorers(options_);
   }
-  for (auto scorer : scorers_) {
-    scorer->init(graph_);
-    if (slgen_) {
-      scorer->setShortlistGenerator(slgen_);
-    }
-  }
-  graph_->forward();
 }
 
 // Make request process is shared between Async and Blocking workflow of translating.
@@ -165,10 +162,23 @@ Ptr<marian::data::CorpusBatch> TranslationModel::convertToMarianBatch(Batch &bat
   return corpusBatch;
 }
 
-void TranslationModel::translateBatch(size_t deviceId, Batch &batch) {
-  auto &backend = backend_[deviceId];
-  auto search = New<BeamSearch>(options_, backend.scorerEnsemble, vocabs_.target());
-  auto histories = search->search(backend.graph, convertToMarianBatch(batch));
+void TranslationModel::translateBatch(MarianBackend &backend, Batch &batch) {
+  backend.maybeReconfigure(options_);
+
+  auto &graph = backend.graph_;
+
+  // Attach the scorer and shortlist onto the graph.
+  for (auto scorer : scorerEnsemble_) {
+    scorer->init(graph);
+    if (shortlistGenerator_) {
+      scorer->setShortlistGenerator(shortlistGenerator_);
+    }
+  }
+
+  graph->forward();
+
+  auto search = New<BeamSearch>(options_, scorerEnsemble_, vocabs_.target());
+  auto histories = search->search(graph, convertToMarianBatch(batch));
   batch.completeBatch(histories);
 }
 

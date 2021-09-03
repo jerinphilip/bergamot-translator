@@ -30,11 +30,15 @@ std::istringstream &operator>>(std::istringstream &in, OpMode &mode);
 
 struct CLIConfig {
   using ModelConfigPaths = std::vector<std::string>;
+
+  OpMode opMode;
   ModelConfigPaths modelConfigPaths;
+
   bool byteArray;
   bool validateByteArray;
+
   size_t numWorkers;
-  OpMode opMode;
+  size_t workspaceSize;
 };
 
 /// ConfigParser for bergamot. Internally stores config options with CLIConfig. CLI11 parsing binds the parsing code to

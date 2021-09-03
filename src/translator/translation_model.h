@@ -19,6 +19,25 @@
 namespace marian {
 namespace bergamot {
 
+class MarianBackend {
+  friend class TranslationModel;
+
+ public:
+  MarianBackend(size_t workspaceSize, size_t deviceId);
+
+  // Reconfigures the graph with a TransaltionModel if need be.
+  bool maybeReconfigure(const Ptr<Options>& options);
+
+ private:
+  void reconfigure(const Ptr<Options>& options);
+
+  Ptr<ExpressionGraph> graph_;
+  DeviceId device_;
+
+  bool staticAllocated_{false};
+  size_t workspaceSize_;
+};
+
 /// A TranslationModel is associated with the translation of a single language direction. Holds the graph and other
 /// structures required to run the forward pass of the neural network, along with preprocessing logic (TextProcessor)
 /// and a BatchingPool to create batches that are to be used in conjuction with an instance.
@@ -42,6 +61,9 @@ namespace bergamot {
 class TranslationModel {
  public:
   using Config = Ptr<Options>;
+  using Graph = Ptr<ExpressionGraph>;
+  using ScorerEnsemble = std::vector<Ptr<Scorer>>;
+  using ShortlistGenerator = Ptr<data::ShortlistGenerator const>;
 
   /// Equivalent to options based constructor, where `options` is parsed from string configuration. Configuration can be
   /// JSON or YAML. Keys expected correspond to those of `marian-decoder`, available at
@@ -85,7 +107,7 @@ class TranslationModel {
   /// @param [in] deviceId: There are replicas of backend created for use in each worker thread. deviceId indicates
   /// which replica to use.
   /// @param [in] batch: A batch generated from generateBatch from the same TranslationModel instance.
-  void translateBatch(size_t deviceId, Batch& batch);
+  void translateBatch(MarianBackend& backend, Batch& batch);
 
  private:
   Config options_;
@@ -96,20 +118,9 @@ class TranslationModel {
   /// Maintains sentences from multiple requests bucketed by length and sorted by priority in each bucket.
   BatchingPool batchingPool_;
 
-  /// A package of marian-entities which form a backend to translate.
-  struct MarianBackend {
-    using Graph = Ptr<ExpressionGraph>;
-    using ScorerEnsemble = std::vector<Ptr<Scorer>>;
-    using ShortlistGenerator = Ptr<data::ShortlistGenerator const>;
-
-    Graph graph;
-    ScorerEnsemble scorerEnsemble;
-    ShortlistGenerator shortlistGenerator;
-  };
-
-  /// Hold replicas of the backend (graph, scorers, shortlist) for use in each thread.
-  /// Controlled and consistent external access via graph(id), scorerEnsemble(id),
-  std::vector<MarianBackend> backend_;
+  Graph graph_;
+  ScorerEnsemble scorerEnsemble_;
+  ShortlistGenerator shortlistGenerator_;
 
   void loadBackend(size_t idx);
   Ptr<marian::data::CorpusBatch> convertToMarianBatch(Batch& batch);

@@ -13,7 +13,7 @@ namespace bergamot {
 std::istringstream &operator>>(std::istringstream &in, OpMode &mode) {
   std::string modeString;
   in >> modeString;
-  std::unordered_map<std::string, OpMode> table = {
+  const std::unordered_map<std::string, OpMode> table = {
       {"wasm", OpMode::APP_WASM},
       {"native", OpMode::APP_NATIVE},
       {"decoder", OpMode::APP_DECODER},
@@ -82,6 +82,8 @@ void ConfigParser::addOptionsBoundToConfig(CLI::App &app, CLIConfig &config) {
   app.add_option("--cpu-threads", config.numWorkers, "Number of worker threads to use for translation");
 
   app_.add_option("--bergamot-mode", config.opMode, "Operating mode for bergamot: [wasm, native, decoder]");
+
+  app_.add_option("-w,--workspace-size", config.workspaceSize, "Size of workspace for bergamot");
 }
 
 std::shared_ptr<marian::Options> parseOptionsFromFilePath(const std::string &configPath, bool validate /*= true*/) {

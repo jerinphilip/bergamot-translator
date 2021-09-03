@@ -9,7 +9,8 @@
 namespace marian {
 namespace bergamot {
 
-BlockingService::BlockingService(const BlockingService::Config &config) : requestId_(0), batchingPool_() {}
+BlockingService::BlockingService(const BlockingService::Config &config)
+    : requestId_(0), batchingPool_(), backend_(config.workspaceSize, /*deviceId=*/0) {}
 
 std::vector<Response> BlockingService::translateMultiple(std::shared_ptr<TranslationModel> translationModel,
                                                          std::vector<std::string> &&sources,
@@ -27,7 +28,7 @@ std::vector<Response> BlockingService::translateMultiple(std::shared_ptr<Transla
   Batch batch;
   Ptr<TranslationModel> model{nullptr};
   while (batchingPool_.generateBatch(model, batch)) {
-    model->translateBatch(/*deviceId=*/0, batch);
+    model->translateBatch(backend_, batch);
   }
 
   return responses;
@@ -37,13 +38,15 @@ AsyncService::AsyncService(const AsyncService::Config &config) : requestId_(0), 
   ABORT_IF(config_.numWorkers == 0, "Number of workers should be at least 1 in a threaded workflow");
   workers_.reserve(config_.numWorkers);
   for (size_t cpuId = 0; cpuId < config_.numWorkers; cpuId++) {
+    LOG(info, "Workspace size: {}", config.workspaceSize);
+    backends_.emplace_back(config.workspaceSize, cpuId);
     workers_.emplace_back([cpuId, this] {
       // Consumer thread main-loop. Note that this is an infinite-loop unless the monitor is explicitly told to
       // shutdown, which happens in the destructor for this class.
       Batch batch;
       Ptr<TranslationModel> translationModel{nullptr};
       while (safeBatchingPool_.generateBatch(translationModel, batch)) {
-        translationModel->translateBatch(cpuId, batch);
+        translationModel->translateBatch(backends_[cpuId], batch);
       }
     });
   }

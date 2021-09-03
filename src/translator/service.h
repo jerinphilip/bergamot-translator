@@ -26,7 +26,9 @@ class AsyncService;
 /// bunch of texts and optional args to translate, wait till the translation finishes).
 class BlockingService {
  public:
-  struct Config {};
+  struct Config {
+    size_t workspaceSize;
+  };
   /// Construct a BlockingService with configuration loaded from an Options object. Does not require any keys, values to
   /// be set.
   BlockingService(const BlockingService::Config &config);
@@ -50,6 +52,7 @@ class BlockingService {
   ///  Numbering requests processed through this instance. Used to keep account of arrival times of the request. This
   ///  allows for using this quantity in priority based ordering.
   size_t requestId_;
+  MarianBackend backend_;
 
   /// An aggregate batching pool associated with an async translating instance, which maintains an aggregate queue of
   /// requests compiled from  batching-pools of multiple translation models. Not thread-safe.
@@ -65,6 +68,7 @@ class AsyncService {
  public:
   struct Config {
     size_t numWorkers;
+    size_t workspaceSize;
   };
   /// Construct an AsyncService with configuration loaded from Options. Expects positive integer value for
   /// `cpu-threads`. Additionally requires options which configure AggregateBatchingPool.
@@ -97,6 +101,7 @@ class AsyncService {
  private:
   AsyncService::Config config_;
 
+  std::vector<MarianBackend> backends_;
   std::vector<std::thread> workers_;
 
   /// Numbering requests processed through this instance. Used to keep account of arrival times of the request. This
