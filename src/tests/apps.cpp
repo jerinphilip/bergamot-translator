@@ -217,6 +217,49 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
   LOG(info, "Total time: {:.5f}s wall", taskTimer.elapsed());
 }
 
+void wngt20IncrementalDecodingForCache(Ptr<Options> options) {
+  // In this particular benchmark-run, we don't care for speed. We run through WNGT 1M sentences, all hopefully unique.
+  // Analyzing cache usage every 1K sentences.
+  marian::timer::Timer decoderTimer;
+  Service service(options);
+  ResponseOptions responseOptions;
+  // Read a large input text blob from stdin
+
+  std::cout << "{";
+
+  constexpr size_t interval = 1000;
+  bool first = true;
+  while (!std::cin.eof()) {
+    if (!first) {
+      std::cout << ",\n";
+      first = false;
+    }
+    std::string buffer, line;
+    buffer.clear();
+    for (size_t i = 0; i < interval; i++) {
+      std::getline(std::cin, line);
+      buffer += line;
+    }
+
+    // Once we have the interval lines, send it for translation.
+    Response response = translateForResponse(service, responseOptions, std::move(buffer));
+    auto cacheStats = service.cacheStats();
+
+    // The following prints a JSON, not great, but enough to be consumed later in python.
+    std::cout << "{\n";
+    std::cout << "\"hits\" : " << cacheStats.hits << ",\n ";
+    std::cout << "\"misses\" : " << cacheStats.misses << ",\n ";
+    std::cout << "\"evictedRecords\": " << cacheStats.evictedRecords << ",\n";
+    std::cout << "\"activeRecords\": " << cacheStats.activeRecords << ",\n";
+    std::cout << "\"totalSize\": " << cacheStats.totalSize << "\n";
+    std::cout << "}\n";
+  }
+
+  std::cout << "}\n";
+
+  // LOG(info, "Total time: {:.5f}s wall", decoderTimer.elapsed());
+}
+
 }  // namespace testapp
 }  // namespace bergamot
 }  // namespace marian

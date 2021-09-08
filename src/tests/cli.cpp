@@ -18,6 +18,8 @@ int main(int argc, char *argv[]) {
     testapp::translationCache(options);
   } else if (mode == "test-benchmark-edit-workflow") {
     testapp::benchmarkCacheEditWorkflow(options);
+  } else if (mode == "test-benchmark-cache-storage") {
+    testapp::wngt20IncrementalDecodingForCache(options);
   } else {
     ABORT("Unknown --mode {}. Please run a valid test", mode);
   }

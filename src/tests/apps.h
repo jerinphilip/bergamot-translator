@@ -37,6 +37,8 @@ void translationCache(Ptr<Options> options);
 
 void benchmarkCacheEditWorkflow(Ptr<Options> options);
 
+void wngt20IncrementalDecodingForCache(Ptr<Options> options);
+
 }  // namespace testapp
 }  // namespace bergamot
 }  // namespace marian
