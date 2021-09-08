@@ -10,6 +10,7 @@
 #include "3rd_party/L4/inc/L4/LocalMemory/HashTableService.h"
 #endif
 
+#include "common/hash.h"
 #include "processed_request_sentence.h"
 #include "translator/beam_search.h"
 
@@ -18,11 +19,16 @@ namespace bergamot {
 
 namespace cache_util {
 
-// Provides a unique representation of marian::Words as a string
-std::string wordsToString(const marian::Words &words);
-
+template <class HashWordType>
 struct HashWords {
-  size_t operator()(const Words &words) const { return std::hash<std::string>{}(wordsToString(words)); }
+  HashWordType operator()(const Words &words) const {
+    size_t seed = 42;
+    for (auto &word : words) {
+      HashWordType hashWord = static_cast<HashWordType>(word.toWordIndex());
+      util::hash_combine<HashWordType>(seed, hashWord);
+    }
+    return seed;
+  }
 };
 
 }  // namespace cache_util
@@ -30,6 +36,9 @@ struct HashWords {
 struct CacheStats {
   size_t hits{0};
   size_t misses{0};
+  size_t activeRecords{0};
+  size_t evictedRecords{0};
+  size_t totalSize{0};
 };
 
 /// ThreadSafeL4Cache is an adapter built on top of L4 specialized for the use-case of bergamot-translator. L4 is a
@@ -41,9 +50,7 @@ struct CacheStats {
 ///
 /// This implementation creates one additional thread which manages the garbage collection for the class.  While it may
 /// be possible to get this class to compile in WASM architecture, the additional thread makes using this class
-/// unsuitable for WASM's current blocking workflow.
-///
-/// Keys are marian::Words, values are ProcessedRequestSentences.
+/// unsuitable for WASM's current blocking workflow.  Keys are marian::Words, values are ProcessedRequestSentences.
 ///
 /// There is a serialization (converting to binary (data*, size)) of structs overhead with this class as well, which
 /// helps keep tight lid on memory usage. This should however be cheaper in comparison to recomputing through the graph.
@@ -51,6 +58,12 @@ struct CacheStats {
 #ifndef WASM_COMPATIBLE_SOURCE
 class ThreadSafeL4Cache {
  public:
+  // L4 has weird interfaces with Hungarian Notation (hence IWritableHashTable). All implementations take Key and Value
+  // defined in this interface. Both Key and Value are of format: (uint8* mdata, size_t size). L4 doesn't own these - we
+  // point something that is alive for the duration, the contents of this are memcpy'd into L4s internal storage.
+  //
+  // To hide the cryptic names, this class uses friendly "KeyBytes" and "ValueBytes", which is what they essentially
+  // are.
   using KeyBytes = L4::IWritableHashTable::Key;
   using ValueBytes = L4::IWritableHashTable::Value;
 
@@ -80,10 +93,8 @@ class ThreadSafeL4Cache {
   CacheStats stats() const;
 
  private:
-  void debug(std::string) const;
-
-  /// cacheConfig {sizeInBytes, recordTimeToLive, removeExpired} determins the upper limit on cache storage, time for a
-  /// record to live and whether or not to evict expired records.
+  /// cacheConfig {sizeInBytes, recordTimeToLive, removeExpired} determins the upper limit on cache storage, time for
+  /// a record to live and whether or not to evict expired records.
   L4::HashTableConfig::Cache cacheConfig_;
 
   /// epochManagerConfig_{epochQueueSize, epochProcessingInterval, numActionQueues}:
@@ -103,6 +114,8 @@ class ThreadSafeL4Cache {
 
   /// context_[hashTableIndex_] gives the hashmap for Get(...) or Add(...) operations
   size_t hashTableIndex_;
+
+  cache_util::HashWords<uint64_t> hashFn_;
 };
 
 #endif
@@ -137,23 +150,36 @@ class ThreadUnsafeLRUCache {
   CacheStats stats() const;
 
  private:
+  // A Record type holds Key and Value together in a linked-list as a building block for the LRU cache.
+  // Currently we use uint64_t for Key to reduce collisions. Value (Storage) is simply a binary sequential memory with
+  // some enhancements to read variables and ranges from the memory. The API works with marian::Words (internally
+  // reduced to uint6_t to reduce vector comparisons) and ProcessedRequestSentence (which can be constructed given a
+  // Storage - which is a more compressed representation).
   struct Record {
-    marian::Words key;
-    std::string value;  // serialized representation from ProcessedRequestSentence.toBytes()
-    size_t size() const { return key.size() * sizeof(marian::Word) + value.size() * sizeof(std::string::value_type); }
+    using Key = std::uint64_t;
+    using Value = Storage;
+
+    Key key;
+    Value value;
+
+    size_t size() const { return /*key=*/sizeof(Key) + value.size(); }
   };
 
   // A list representing memory where the items are stored and a hashmap (unordered_map) with values pointing to this
   // storage is used for a naive LRU implementation.
-  std::list<Record> storage_;
-  typedef std::list<Record>::iterator RecordPtr;
-  std::unordered_map<marian::Words, RecordPtr, cache_util::HashWords> cache_;
+  using RecordList = std::list<Record>;
+  using RecordPtr = RecordList::iterator;
+
+  RecordList storage_;
+  std::unordered_map<Record::Key, RecordPtr> cache_;
 
   /// Active sizes (in bytes) stored in storage_
   size_t storageSize_;
 
   // Limit of size (in bytes) of storage_
   size_t storageSizeLimit_;
+
+  cache_util::HashWords<Record::Key> hashFn_;
 
   CacheStats stats_;
 };

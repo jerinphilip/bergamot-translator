@@ -1,102 +1,70 @@
 #include "processed_request_sentence.h"
 
 #include <cstring>
-#include <iostream>
 
 namespace marian {
 namespace bergamot {
 
-namespace {
-
-// Generic write/read from pointers
-
-// write uses ostream, to get bytes/blob use with ostringstream(::binary)
-template <class T>
-void write(std::ostream &out, const T *data, size_t num = 1) {
-  const char *cdata = reinterpret_cast<const char *>(data);
-  out.write(cdata, num * sizeof(T));
-}
-
-// L4 stores the data as blobs. These use memcpy to construct parts from the blob given the start and size. It is the
-// responsibility of the caller to prepare the container with the correct contiguous size so memcpy works correctly.
-template <class T>
-const char *copyInAndAdvance(const char *src, T *dest, size_t num = 1) {
-  const void *vsrc = reinterpret_cast<const void *>(src);
-  void *vdest = reinterpret_cast<void *>(dest);
-  std::memcpy(vdest, vsrc, num * sizeof(T));
-  return reinterpret_cast<const char *>(src + num * sizeof(T));
-}
-
-// Specializations to read and write vectors. The format stored is [size, v_0, v_1 ... v_size]
-template <class T>
-void writeVector(std::ostream &out, std::vector<T> v) {
-  size_t size = v.size();
-  write<size_t>(out, &size);
-  write<T>(out, v.data(), v.size());
-}
-
-template <class T>
-const char *copyInVectorAndAdvance(const char *src, std::vector<T> &v) {
-  // Read in size of the vector
-  size_t sizePrefix;
-  src = copyInAndAdvance<size_t>(src, &sizePrefix);
-
-  // Ensure contiguous memory location exists for memcpy inside copyInAndAdvance
-  v.resize(sizePrefix);
-
-  // Read in the vector
-  src = copyInAndAdvance<T>(src, v.data(), sizePrefix);
-  return src;
-}
-
-}  // namespace
-
 ProcessedRequestSentence::ProcessedRequestSentence() {}
 
-/// Construct from History
-ProcessedRequestSentence::ProcessedRequestSentence(const History &history) {
-  // Convert marian's lazy shallow-history, consolidating just the information we want.
-  IPtr<Hypothesis> hypothesis;
-  Result result = history.top();
-  std::tie(words_, hypothesis, sentenceScore_) = result;
-  softAlignment_ = hypothesis->tracebackAlignment();
-  wordScores_ = hypothesis->tracebackWordScores();
-}
-
-std::string ProcessedRequestSentence::toBytes() const {
-  // Note: write in order of member definitions in class.
-  std::ostringstream out(std::ostringstream::binary);
-  writeVector<marian::Word>(out, words_);
-
-  size_t softAlignmentSize = softAlignment_.size();
-  write<size_t>(out, &softAlignmentSize);
-  for (auto &alignment : softAlignment_) {
-    writeVector<float>(out, alignment);
+ProcessedRequestSentence::ProcessedRequestSentence(const string_view &bytesView)
+    : storage_(bytesView.data(), bytesView.size()) {
+  StorageIO io(storage_);
+  words_ = io.readRange<Words::value_type>();
+  softAlignmentSizePtr_ = io.readVar<size_t>();
+  for (size_t i = 0; i < *(softAlignmentSizePtr_); i++) {
+    auto unitAlignment = io.readRange<DistSourceGivenTarget::value_type>();
+    softAlignment_.push_back(std::move(unitAlignment));
   }
 
-  write<float>(out, &sentenceScore_);
-  writeVector<float>(out, wordScores_);
-  return out.str();
+  wordScores_ = io.readRange<WordScores::value_type>();
+  sentenceScorePtr_ = io.readVar<float>();
+}
+
+ProcessedRequestSentence::ProcessedRequestSentence(const History &history) {
+  Result result = history.top();
+  auto [words, hypothesis, sentenceScore] = result;
+
+  auto softAlignment = hypothesis->tracebackAlignment();
+  auto wordScores = hypothesis->tracebackWordScores();
+
+  // Compute size required, and allocate.
+  size_t alignmentStorageSize = 0;
+  for (size_t i = 0; i < softAlignment.size(); i++) {
+    alignmentStorageSize += DistSourceGivenTarget::storageSize(softAlignment[i]);
+  }
+
+  size_t requiredSize = (                    // Aggregate size computation
+      Words::storageSize(words)              //
+      + sizeof(size_t)                       // softAlignment.size()
+      + alignmentStorageSize                 //
+      + WordScores::storageSize(wordScores)  //
+      + sizeof(float)                        // sentenceScore
+  );
+
+  storage_.delayedAllocate(requiredSize);
+  StorageIO io(storage_);
+
+  // Write onto the allocated space.
+  words_ = io.writeRange<Words::value_type>(words);
+  softAlignmentSizePtr_ = io.writeVar<size_t>(softAlignment.size());
+  for (size_t i = 0; i < softAlignment.size(); i++) {
+    auto unitAlignment = io.writeRange<DistSourceGivenTarget::value_type>(softAlignment[i]);
+    softAlignment_.push_back(std::move(unitAlignment));
+  }
+
+  wordScores_ = io.writeRange<WordScores::value_type>(wordScores);
+  sentenceScorePtr_ = io.writeVar<float>(sentenceScore);
+}
+
+string_view ProcessedRequestSentence::toBytesView() const {
+  return string_view(reinterpret_cast<const char *>(storage_.data()), storage_.size());
 }
 
 /// Construct from stream of bytes
-ProcessedRequestSentence ProcessedRequestSentence::fromBytes(char const *data, size_t size) {
-  ProcessedRequestSentence sentence;
-  char const *p = data;
-
-  p = copyInVectorAndAdvance<marian::Word>(p, sentence.words_);
-
-  size_t softAlignmentSize{0};
-  p = copyInAndAdvance<size_t>(p, &softAlignmentSize);
-  sentence.softAlignment_.resize(softAlignmentSize);
-
-  for (size_t i = 0; i < softAlignmentSize; i++) {
-    p = copyInVectorAndAdvance<float>(p, sentence.softAlignment_[i]);
-  }
-
-  p = copyInAndAdvance<float>(p, &sentence.sentenceScore_);
-  p = copyInVectorAndAdvance<float>(p, sentence.wordScores_);
-  return sentence;
+ProcessedRequestSentence ProcessedRequestSentence::fromBytesView(const string_view &bytesView) {
+  return ProcessedRequestSentence(bytesView);
 }
+
 }  // namespace bergamot
 }  // namespace marian

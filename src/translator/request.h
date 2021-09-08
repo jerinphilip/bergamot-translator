@@ -3,9 +3,6 @@
 
 #include <cassert>
 #include <future>
-#include <iostream>
-#include <istream>
-#include <sstream>
 #include <tuple>
 #include <vector>
 
@@ -120,9 +117,6 @@ class RequestSentence {
   /// Forwards history to Request to set history corresponding to this
   /// RequestSentence.
   void completeSentence(Ptr<History> history);
-
-  /// Check if this RequestSentence is already prefilled with a History from cache.
-  bool isCachePrefilled();
 
   friend bool operator<(const RequestSentence &a, const RequestSentence &b);
 

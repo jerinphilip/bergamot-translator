@@ -7,14 +7,20 @@ namespace bergamot {
 
 void ResponseBuilder::buildQualityScores(const ProcessedRequestSentences &processedRequestSentences,
                                          Response &response) {
-  std::vector<Quality> qualityScores;
-  for (auto &processedRequestSentence : processedRequestSentences) {
-    response.qualityScores.push_back(
-        Quality{processedRequestSentence.sentenceScore(), processedRequestSentence.wordScores()});
-  }
+  // No means to test the changes except compile words, temporarily commented to be updated after QE integration.
+  /*
+    std::vector<Quality> qualityScores;
+    for (auto &processedRequestSentence : processedRequestSentences) {
+      Quality quality{processedRequestSentence.sentenceScore(), toVector(processedRequestSentence.wordScores())};
+      response.qualityScores.push_back(std::move(quality));
+    }
+  */
 }
 
 void ResponseBuilder::buildAlignments(const ProcessedRequestSentences &processedRequestSentences, Response &response) {
+  // There are no means to test this works due to tests being removed. TagTree will have to take over after cache,
+  // tentatively.
+  /*
   for (auto &processedRequestSentence : processedRequestSentences) {
     auto softAlignment = processedRequestSentence.softAlignment();
     auto threshold = responseOptions_.alignmentThreshold;
@@ -26,6 +32,7 @@ void ResponseBuilder::buildAlignments(const ProcessedRequestSentences &processed
 
     response.alignments.push_back(std::move(unified_alignment));
   }
+  */
 }
 
 void ResponseBuilder::buildTranslatedText(const ProcessedRequestSentences &processedRequestSentences,
@@ -35,7 +42,13 @@ void ResponseBuilder::buildTranslatedText(const ProcessedRequestSentences &proce
   response.target.text.reserve(response.source.text.size());
 
   for (size_t sentenceIdx = 0; sentenceIdx < processedRequestSentences.size(); sentenceIdx++) {
-    const Words &words = processedRequestSentences[sentenceIdx].words();
+    Words words;
+
+    auto wordsSpan = processedRequestSentences[sentenceIdx].words();
+    for (auto p = wordsSpan.cbegin(); p != wordsSpan.cend(); p++) {
+      words.push_back(*p);
+    }
+
     std::string decoded;
     std::vector<string_view> targetSentenceMappings;
     vocabs_.target()->decodeWithByteRanges(words, decoded, targetSentenceMappings, /*ignoreEOS=*/false);
