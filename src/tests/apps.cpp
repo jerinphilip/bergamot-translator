@@ -239,6 +239,7 @@ void wngt20IncrementalDecodingForCache(Ptr<Options> options) {
     for (size_t i = 0; i < interval; i++) {
       std::getline(std::cin, line);
       buffer += line;
+      buffer += "\n";
     }
 
     // Once we have the interval lines, send it for translation.
@@ -255,7 +256,8 @@ void wngt20IncrementalDecodingForCache(Ptr<Options> options) {
     std::cout << "}\n";
   }
 
-  std::cout << "}\n";
+  std::cout << "}";
+  std::cout << std::endl;
 
   // LOG(info, "Total time: {:.5f}s wall", decoderTimer.elapsed());
 }
