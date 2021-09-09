@@ -256,13 +256,13 @@ void wngt20IncrementalDecodingForCache(Ptr<Options> options) {
 
     if ((lineId + 1) % interval == 0) {
       // [lineBegin, lineEnd) representing the range.
-      processDelta(/*lineBegin=*/lineId - interval, /*lineEnd=*/lineId + 1, std::move(buffer));
+      processDelta(/*lineBegin=*/(lineId + 1) - interval, /*lineEnd=*/lineId + 1, std::move(buffer));
       buffer.clear();
     }
   }
 
   if (!buffer.empty()) {
-    processDelta(/*lineBegin=*/lineId - interval, /*lineEnd=*/lineId + 1, std::move(buffer));
+    processDelta(/*lineBegin=*/(lineId + 1) - interval, /*lineEnd=*/lineId + 1, std::move(buffer));
   }
 
   std::cout << "]";
