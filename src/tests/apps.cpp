@@ -225,38 +225,47 @@ void wngt20IncrementalDecodingForCache(Ptr<Options> options) {
   ResponseOptions responseOptions;
   // Read a large input text blob from stdin
 
-  std::cout << "{";
+  std::cout << "[";
 
-  constexpr size_t interval = 1000;
-  bool first = true;
-  while (!std::cin.eof()) {
-    if (!first) {
-      std::cout << ",\n";
-      first = false;
-    }
-    std::string buffer, line;
-    buffer.clear();
-    for (size_t i = 0; i < interval; i++) {
-      std::getline(std::cin, line);
-      buffer += line;
-      buffer += "\n";
-    }
-
+  auto processDelta = [&service, &responseOptions](size_t lineBegin, size_t lineEnd, std::string &&buffer) {
     // Once we have the interval lines, send it for translation.
     Response response = translateForResponse(service, responseOptions, std::move(buffer));
     auto cacheStats = service.cacheStats();
 
     // The following prints a JSON, not great, but enough to be consumed later in python.
+    if (lineBegin != 0) {
+      std::cout << "," << '\n';
+    }
     std::cout << "{\n";
+    std::cout << "\"lines\" : " << lineEnd << ",\n ";
     std::cout << "\"hits\" : " << cacheStats.hits << ",\n ";
     std::cout << "\"misses\" : " << cacheStats.misses << ",\n ";
     std::cout << "\"evictedRecords\": " << cacheStats.evictedRecords << ",\n";
     std::cout << "\"activeRecords\": " << cacheStats.activeRecords << ",\n";
     std::cout << "\"totalSize\": " << cacheStats.totalSize << "\n";
     std::cout << "}\n";
+  };
+
+  constexpr size_t interval = 1000;
+  bool first = true;
+  std::string buffer, line;
+  size_t lineId;
+  for (lineId = 0; std::getline(std::cin, line); lineId++) {
+    buffer += line;
+    buffer += "\n";
+
+    if ((lineId + 1) % interval == 0) {
+      // [lineBegin, lineEnd) representing the range.
+      processDelta(/*lineBegin=*/lineId - interval, /*lineEnd=*/lineId + 1, std::move(buffer));
+      buffer.clear();
+    }
   }
 
-  std::cout << "}";
+  if (!buffer.empty()) {
+    processDelta(/*lineBegin=*/lineId - interval, /*lineEnd=*/lineId + 1, std::move(buffer));
+  }
+
+  std::cout << "]";
   std::cout << std::endl;
 
   // LOG(info, "Total time: {:.5f}s wall", decoderTimer.elapsed());
