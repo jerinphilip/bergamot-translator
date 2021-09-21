@@ -6,54 +6,41 @@
 
 namespace marian {
 namespace bergamot {
-namespace testapp {
 
-// This is a curiously recurring pattern among the apps below
-Response translateForResponse(Service &service, ResponseOptions &responseOptions, std::string &&input) {
-#ifndef WASM_COMPATIBLE_SOURCE
-  std::promise<Response> responsePromise;
-  std::future<Response> responseFuture = responsePromise.get_future();
-  auto callback = [&responsePromise](Response &&response) { responsePromise.set_value(std::move(response)); };
-
-  service.translate(std::move(input), callback, responseOptions);
-
-  responseFuture.wait();
-  Response response = responseFuture.get();
-  return response;
-#else   // WASM_COMPATIBLE_SOURCE
-  std::vector<Response> responses = service.translateMultiple({input}, responseOptions);
-  return responses.front();
-#endif  // WASM_COMPATIBLE_SOURCE
-}
+namespace {
 
 std::string readFromStdin() {
+  // Read a large input text blob from stdin
   std::ostringstream inputStream;
   inputStream << std::cin.rdbuf();
-  return inputStream.str();
+  std::string input = inputStream.str();
+  return input;
 }
 
 // Utility function, common for all testapps.
-Response translateFromStdin(Ptr<Options> options, ResponseOptions responseOptions) {
-  // Prepare memories for bytearrays (including model, shortlist and vocabs)
-  MemoryBundle memoryBundle;
+Response translateForResponse(AsyncService &service, Ptr<TranslationModel> model, std::string &&source,
+                              ResponseOptions responseOptions) {
+  std::promise<Response> responsePromise;
+  std::future<Response> responseFuture = responsePromise.get_future();
 
-  if (options->get<bool>("bytearray")) {
-    // Load legit values into bytearrays.
-    memoryBundle = getMemoryBundleFromConfig(options);
-  }
+  auto callback = [&responsePromise](Response &&response) { responsePromise.set_value(std::move(response)); };
+  service.translate(model, std::move(source), callback, responseOptions);
 
-  Service service(options, std::move(memoryBundle));
+  responseFuture.wait();
 
-  // Read a large input text blob from stdin
-  std::string input = readFromStdin();
-  Response response = translateForResponse(service, responseOptions, std::move(input));
+  Response response = responseFuture.get();
   return response;
 }
 
-void annotatedTextWords(Ptr<Options> options, bool source) {
+}  // namespace
+
+namespace testapp {
+
+void annotatedTextWords(AsyncService &service, Ptr<TranslationModel> model, bool sourceSide) {
   ResponseOptions responseOptions;
-  Response response = translateFromStdin(options, responseOptions);
-  AnnotatedText &annotatedText = source ? response.source : response.target;
+  std::string source = readFromStdin();
+  Response response = translateForResponse(service, model, std::move(source), responseOptions);
+  AnnotatedText &annotatedText = sourceSide ? response.source : response.target;
   for (size_t s = 0; s < annotatedText.numSentences(); s++) {
     for (size_t w = 0; w < annotatedText.numWords(s); w++) {
       std::cout << (w == 0 ? "" : "\t");
@@ -63,37 +50,28 @@ void annotatedTextWords(Ptr<Options> options, bool source) {
   }
 }
 
-void annotatedTextSentences(Ptr<Options> options, bool source) {
+void annotatedTextSentences(AsyncService &service, Ptr<TranslationModel> model, bool sourceSide) {
   ResponseOptions responseOptions;
-  Response response = translateFromStdin(options, responseOptions);
-  AnnotatedText &annotatedText = source ? response.source : response.target;
+  std::string source = readFromStdin();
+  Response response = translateForResponse(service, model, std::move(source), responseOptions);
+  AnnotatedText &annotatedText = sourceSide ? response.source : response.target;
   for (size_t s = 0; s < annotatedText.numSentences(); s++) {
     std::cout << annotatedText.sentence(s) << "\n";
   }
 }
 
-void translationCache(Ptr<Options> options) {
-  // Prepare memories for bytearrays (including model, shortlist and vocabs)
-  MemoryBundle memoryBundle;
+void translationCache(AsyncService &service, Ptr<TranslationModel> model) {
   ResponseOptions responseOptions;
 
-  if (options->get<bool>("bytearray")) {
-    // Load legit values into bytearrays.
-    memoryBundle = getMemoryBundleFromConfig(options);
-  }
-
-  Service service(options, std::move(memoryBundle));
-
   // Read a large input text blob from stdin
-  const std::string input = readFromStdin();
+  const std::string source = readFromStdin();
 
 #ifndef WASM_COMPATIBLE_SOURCE
-  auto translateForResponse = [&service, &responseOptions](std::string input) {
+  auto translateForResponse = [&service, &model, &responseOptions](std::string source) {
     std::promise<Response> responsePromise;
     std::future<Response> responseFuture = responsePromise.get_future();
     auto callback = [&responsePromise](Response &&response) { responsePromise.set_value(std::move(response)); };
-
-    service.translate(std::move(input), callback, responseOptions);
+    service.translate(model, std::move(source), callback, responseOptions);
 
     responseFuture.wait();
     Response response = responseFuture.get();
@@ -108,14 +86,14 @@ void translationCache(Ptr<Options> options) {
 #endif
 
   // Round 1
-  Response firstResponse = translateForResponse(input);
+  Response firstResponse = translateForResponse(source);
 
   auto statsFirstRun = service.cacheStats();
   LOG(info, "Cache Hits/Misses = {}/{}", statsFirstRun.hits, statsFirstRun.misses);
   ABORT_IF(statsFirstRun.hits != 0, "Expecting no cache hits, but hits found.");
 
   // Round 2; There should be cache hits
-  Response secondResponse = translateForResponse(input);
+  Response secondResponse = translateForResponse(source);
 
   auto statsSecondRun = service.cacheStats();
   LOG(info, "Cache Hits/Misses = {}/{}", statsSecondRun.hits, statsSecondRun.misses);
@@ -130,22 +108,20 @@ void translationCache(Ptr<Options> options) {
   std::cout << firstResponse.target.text;
 }
 
-void benchmarkCacheEditWorkflow(Ptr<Options> options) {
+void benchmarkCacheEditWorkflow(AsyncService &service, Ptr<TranslationModel> model) {
   std::cout << "Starting cache-warmup" << std::endl;
   Response response;
 
   {
-    Service service(options);
     ResponseOptions responseOptions;
     std::string input = readFromStdin();
 
     // Running this once lets the tokenizer work it's magic in response.source (annotation).
-    response = translateForResponse(service, responseOptions, std::move(input));
+    response = translateForResponse(service, model, std::move(input), responseOptions);
   }
 
   std::cout << "Completed first round of translations!" << std::endl;
 
-  Service service(options);
   ResponseOptions responseOptions;
   // Hyperparameters
   std::mt19937 generator;
@@ -176,21 +152,21 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
         case Action::ERROR_THEN_CORRECT_STOP: {
           // Error once
           buffer = input.substr(0, previousWordEnd) + " 0xdeadbeef" /* highly unlikely error token */;
-          editResponse = translateForResponse(service, responseOptions, std::move(buffer));
+          editResponse = translateForResponse(service, model, std::move(buffer), responseOptions);
 
           // Backspace a token
           buffer = input.substr(0, previousWordEnd);
-          editResponse = translateForResponse(service, responseOptions, std::move(buffer));
+          editResponse = translateForResponse(service, model, std::move(buffer), responseOptions);
 
           // Correct
           buffer = input.substr(0, currentWord.end);
-          editResponse = translateForResponse(service, responseOptions, std::move(buffer));
+          editResponse = translateForResponse(service, model, std::move(buffer), responseOptions);
           break;
         }
 
         case Action::CORRECT_STOP: {
           buffer = input.substr(0, currentWord.end);
-          editResponse = translateForResponse(service, responseOptions, std::move(buffer));
+          editResponse = translateForResponse(service, model, std::move(buffer), responseOptions);
           break;
         }
 
@@ -217,19 +193,18 @@ void benchmarkCacheEditWorkflow(Ptr<Options> options) {
   LOG(info, "Total time: {:.5f}s wall", taskTimer.elapsed());
 }
 
-void wngt20IncrementalDecodingForCache(Ptr<Options> options) {
+void wngt20IncrementalDecodingForCache(AsyncService &service, Ptr<TranslationModel> model) {
   // In this particular benchmark-run, we don't care for speed. We run through WNGT 1M sentences, all hopefully unique.
   // Analyzing cache usage every 1K sentences.
   marian::timer::Timer decoderTimer;
-  Service service(options);
   ResponseOptions responseOptions;
   // Read a large input text blob from stdin
 
   std::cout << "[";
 
-  auto processDelta = [&service, &responseOptions](size_t lineBegin, size_t lineEnd, std::string &&buffer) {
+  auto processDelta = [&service, &model, &responseOptions](size_t lineBegin, size_t lineEnd, std::string &&buffer) {
     // Once we have the interval lines, send it for translation.
-    Response response = translateForResponse(service, responseOptions, std::move(buffer));
+    Response response = translateForResponse(service, model, std::move(buffer), responseOptions);
     auto cacheStats = service.cacheStats();
 
     // The following prints a JSON, not great, but enough to be consumed later in python.
@@ -269,6 +244,58 @@ void wngt20IncrementalDecodingForCache(Ptr<Options> options) {
   std::cout << std::endl;
 
   // LOG(info, "Total time: {:.5f}s wall", decoderTimer.elapsed());
+}
+
+void forwardAndBackward(AsyncService &service, std::vector<Ptr<TranslationModel>> &models) {
+  ABORT_IF(models.size() != 2, "Forward and backward test needs two models.");
+  ResponseOptions responseOptions;
+  std::string source = readFromStdin();
+  Response forwardResponse = translateForResponse(service, models.front(), std::move(source), responseOptions);
+
+  // Make a copy of target
+  std::string target = forwardResponse.target.text;
+  Response backwardResponse = translateForResponse(service, models.back(), std::move(target), responseOptions);
+
+  // Print both onto the command-line
+  std::cout << forwardResponse.source.text;
+  std::cout << "----------------\n";
+  std::cout << forwardResponse.target.text;
+  std::cout << "----------------\n";
+  std::cout << backwardResponse.target.text;
+}
+
+void qualityEstimatorWords(AsyncService &service, Ptr<TranslationModel> model) {
+  ResponseOptions responseOptions;
+  responseOptions.qualityScores = true;
+  std::string source = readFromStdin();
+  const Response response = translateForResponse(service, model, std::move(source), responseOptions);
+
+  for (const auto &sentenceQualityEstimate : response.qualityScores) {
+    std::cout << "[SentenceBegin]\n";
+
+    for (const auto &wordByteRange : sentenceQualityEstimate.wordByteRanges) {
+      const string_view word(response.target.text.data() + wordByteRange.begin, wordByteRange.size());
+      std::cout << word << "\n";
+    }
+    std::cout << "[SentenceEnd]\n\n";
+  }
+}
+
+void qualityEstimatorScores(AsyncService &service, Ptr<TranslationModel> model) {
+  ResponseOptions responseOptions;
+  responseOptions.qualityScores = true;
+
+  std::string source = readFromStdin();
+  const Response response = translateForResponse(service, model, std::move(source), responseOptions);
+
+  for (const auto &sentenceQualityEstimate : response.qualityScores) {
+    std::cout << std::fixed << std::setprecision(3) << sentenceQualityEstimate.sentenceScore << "\n";
+
+    for (const float &wordScore : sentenceQualityEstimate.wordScores) {
+      std::cout << std::fixed << std::setprecision(3) << wordScore << "\n";
+    }
+    std::cout << "\n";
+  }
 }
 
 }  // namespace testapp

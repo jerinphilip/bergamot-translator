@@ -21,23 +21,27 @@ namespace bergamot {
 
 namespace testapp {
 
-// Utility function, common for all testapps. Reads content from stdin, builds a Service based on options and constructs
-// a response containing translation data according responseOptions.
-Response translateFromStdin(Ptr<Options> options, ResponseOptions responseOptions);
-
 // Reads from stdin and translates.  Prints the tokens separated by space for each sentence. Prints words from source
 // side text annotation if source=true, target annotation otherwise.
-void annotatedTextWords(Ptr<Options> options, bool source = true);
+void annotatedTextWords(AsyncService &service, Ptr<TranslationModel> model, bool source = true);
 
 // Reads from stdin and translates the read content. Prints the sentences in source or target in constructed response
 // in each line, depending on source = true or false respectively.
-void annotatedTextSentences(Ptr<Options> options, bool source = true);
+void annotatedTextSentences(AsyncService &service, Ptr<TranslationModel> model, bool source = true);
 
-void translationCache(Ptr<Options> options);
+void forwardAndBackward(AsyncService &service, std::vector<Ptr<TranslationModel>> &models);
 
-void benchmarkCacheEditWorkflow(Ptr<Options> options);
+// Reads from stdin and translates the read content. Prints the quality words for each sentence.
+void qualityEstimatorWords(AsyncService &service, Ptr<TranslationModel> model);
 
-void wngt20IncrementalDecodingForCache(Ptr<Options> options);
+// Reads from stdin and translates the read content. Prints the quality scores for each sentence.
+void qualityEstimatorScores(AsyncService &service, Ptr<TranslationModel> model);
+
+void translationCache(AsyncService &service, Ptr<TranslationModel> model);
+
+void benchmarkCacheEditWorkflow(AsyncService &service, Ptr<TranslationModel> model);
+
+void wngt20IncrementalDecodingForCache(AsyncService &service, Ptr<TranslationModel> model);
 
 }  // namespace testapp
 }  // namespace bergamot
