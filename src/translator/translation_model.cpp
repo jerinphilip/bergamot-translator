@@ -184,19 +184,16 @@ void TranslationModel::translateBatch(Workspace &workspace, Batch &batch) {
   auto p = backend_.find(deviceId);
   if (p == backend_.end()) {
     backend_[deviceId] = MarianBackend{};
+    loadBackend(backend_[deviceId], workspace);
   }
 
   auto &backend = backend_[deviceId];
-<<<<<<< HEAD
 
   if (!backend.initialized) {
     loadBackend(deviceId);
     backend.initialized = true;
   }
-=======
-  loadBackend(backend, workspace);
->>>>>>> 587d3ef (Sharing workspaces with OwningAllocator now)
-
+  
   BeamSearch search(options_, backend.scorerEnsemble, vocabs_.target());
   Histories histories = search.search(backend.graph, convertToMarianBatch(batch));
   batch.completeBatch(histories);
