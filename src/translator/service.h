@@ -11,6 +11,7 @@
 #include "quality_estimator.h"
 #include "response.h"
 #include "response_builder.h"
+#include "tensors/tensor_allocator.h"
 #include "text_processor.h"
 #include "threadsafe_batching_pool.h"
 #include "translation_model.h"
@@ -20,13 +21,48 @@
 namespace marian {
 namespace bergamot {
 
+class Workspace {
+ public:
+  Workspace(size_t deviceId, size_t workspaceSizeInMB) {
+    // We'll eventually get rid of this, but proof of concept faster?
+    auto graph = New<ExpressionGraph>(/*inference=*/true);  // set the graph to be inference only
+    const std::string precision{"float32"};
+    graph->setDefaultElementType(typeFromString(precision));
+    marian::DeviceId device(deviceId, DeviceType::cpu);
+    graph->setDevice(device);
+    graph->getBackend()->configureDevice(horribleOptionsHack());
+    Ptr<Backend> backend = graph->getBackend();
+
+    tensors_ = New<TensorAllocator>(backend);
+    tensors_->reserve(workspaceSizeInMB);
+
+    cache_ = New<TensorAllocator>(backend);
+  }
+
+  Ptr<TensorAllocator> tensors() { return tensors_; }
+  Ptr<TensorAllocator> cache() { return cache_; }
+
+ private:
+  Ptr<TensorAllocator> tensors_{nullptr};
+  Ptr<TensorAllocator> cache_{nullptr};
+
+  Ptr<Options> horribleOptionsHack() {
+    Ptr<Options> options = std::make_shared<Options>();
+    options->set<std::string>("gemm-precision", "int8shiftAlphaAll");
+    options->set<bool>("dump-quantmult", false);
+    options->set<float>("clip-gemm", 1.0);
+    options->set<bool>("use-legacy-batching", false);
+    return options;
+  }
+};
+
 class BlockingService;
 class AsyncService;
 
 /// See AsyncService.
 ///
-/// BlockingService is a not-threaded counterpart of AsyncService which can operate only in a blocking workflow (queue a
-/// bunch of texts and optional args to translate, wait till the translation finishes).
+/// BlockingService is a not-threaded counterpart of AsyncService which can operate only in a blocking workflow (queue
+/// a bunch of texts and optional args to translate, wait till the translation finishes).
 class BlockingService {
  public:
   struct Config {
@@ -35,6 +71,8 @@ class BlockingService {
     /// controlled by this parameter. However, whether we attain full occupancy or not is controlled by random factors -
     /// specifically how uniformly the hash distributes.
     size_t cacheSize{0};
+    
+    size_t workspaceSizeInMB{1024};
 
     Logger::Config logger;  ///< Configurations for logging
 
@@ -44,13 +82,14 @@ class BlockingService {
       app.add_option("--cache-size", config.cacheSize, "Number of entries to store in cache.");
       Logger::Config::addOptions(app, config.logger);
     }
+
   };
-  /// Construct a BlockingService with configuration loaded from an Options object. Does not require any keys, values to
-  /// be set.
+  /// Construct a BlockingService with configuration loaded from an Options object. Does not require any keys, values
+  /// to be set.
   BlockingService(const BlockingService::Config &config);
 
-  /// Translate multiple text-blobs in a single *blocking* API call, providing ResponseOptions which applies across all
-  /// text-blobs dictating how to construct Response. ResponseOptions can be used to enable/disable additional
+  /// Translate multiple text-blobs in a single *blocking* API call, providing ResponseOptions which applies across
+  /// all text-blobs dictating how to construct Response. ResponseOptions can be used to enable/disable additional
   /// information like quality-scores, alignments etc.
 
   /// If you have async/multithread capabilities, it is recommended to work with AsyncService instead of this class.
@@ -82,6 +121,8 @@ class BlockingService {
                                       const std::vector<ResponseOptions> &responseOptions);
   TranslationCache::Stats cacheStats() { return cache_ ? cache_->stats() : TranslationCache::Stats(); }
 
+  Workspace workspace(size_t /*idx*/) { return workspace_; }
+
  private:
   std::vector<Response> translateMultipleRaw(std::shared_ptr<TranslationModel> translationModel,
                                              std::vector<std::string> &&source,
@@ -94,6 +135,8 @@ class BlockingService {
   /// An aggregate batching pool associated with an async translating instance, which maintains an aggregate queue of
   /// requests compiled from  batching-pools of multiple translation models. Not thread-safe.
   AggregateBatchingPool batchingPool_;
+
+  Workspace workspace_;
 
   Config config_;
 
@@ -112,6 +155,8 @@ class AsyncService {
     size_t cacheSize{0};    ///< Size in History items to be stored in the cache. Loosely corresponds to sentences to
                             /// cache in the real world. A value of 0 means no caching.
     Logger::Config logger;  // Configurations for logging
+    size_t workspaceSizeInMB{1024};
+
 
     template <class App>
     static void addOptions(App &app, Config &config) {
@@ -174,6 +219,7 @@ class AsyncService {
   AsyncService::Config config_;
 
   std::vector<std::thread> workers_;
+  std::vector<Workspace> workspaces_;
 
   /// Stores requestId of active request. Used to establish
   /// ordering among requests and logging/book-keeping.
