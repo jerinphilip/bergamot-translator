@@ -135,8 +135,6 @@ class BlockingService {
                                       const std::vector<ResponseOptions> &responseOptions);
   TranslationCache::Stats cacheStats() { return cache_ ? cache_->stats() : TranslationCache::Stats(); }
 
-  Workspace workspace(size_t /*idx*/) { return workspace_; }
-
  private:
   std::vector<Response> translateMultipleRaw(std::shared_ptr<TranslationModel> translationModel,
                                              std::vector<std::string> &&source,
