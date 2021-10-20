@@ -93,7 +93,8 @@ class AsyncService {
                  const ResponseOptions &options = ResponseOptions());
 
   void pivotTranslate(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
-                      std::string &&source, CallbackType clientCallback);
+                      std::string &&source, CallbackType clientCallback,
+                      const ResponseOptions &options = ResponseOptions());
 
   /// Thread joins and proper shutdown are required to be handled explicitly.
   ~AsyncService();

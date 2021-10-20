@@ -59,27 +59,32 @@ AsyncService::~AsyncService() {
 }
 
 void AsyncService::pivotTranslate(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
-                                  std::string &&source, CallbackType clientCallback) {
+                                  std::string &&source, CallbackType clientCallback,
+                                  const ResponseOptions &responseOptions) {
   // Need callback chaining to maintain async, honestly this would be easier to implement just for blocking.
-  // When the first translation is ready, call the second
-  auto internalCallback = [this, clientCallback, second](Response &&firstHalf) {
+  // When the first translation is ready, call the second.
+  auto internalCallback = [this, clientCallback, second, responseOptions](Response &&firstHalf) {
     // Grab the segments from Response to operate. We may need to do things at a lower level.
     // FIXME: Copy of a string.
-    std::string sourceText = firstHalf.target.text;
-    auto joiningCallback = [this, sourceText = std::move(sourceText), firstHalf = std::move(firstHalf),
-                            clientCallback](Response &&secondHalf) {
+    // We have both Responses at this callback, firstHalf is moved in, second half will be available when complete.
+    auto joiningCallback = [this, firstHalf = std::move(firstHalf), clientCallback](Response &&secondHalf) {
       // All the operations.
       Response finalResponse;
       finalResponse.source.text = firstHalf.source.text;
       finalResponse.target.text = secondHalf.target.text;
 
-      // FIXME sentences can potentially be inconsisted, wrap can abort.
+      // We are not doing any sentence things.
+      // FIXME: This is wasteful, try to avoid copy.
+      finalResponse.source = firstHalf.source;
+      finalResponse.target = secondHalf.target;
+
+      // Sentences should be consistent now, give way to client.
+      clientCallback(std::move(finalResponse));
     };
 
-    // Async call, but this will get called later.
-    // Neater way to do this without blocking?
-
-    translate(second, std::move(sourceText), joiningCallback);
+    // FIXME sentences can potentially be inconsisted, wrap can abort.
+    Ptr<Request> request = second->makePivotRequest(requestId_++, joiningCallback, firstHalf, responseOptions);
+    safeBatchingPool_.enqueueRequest(second, request);
   };
 
   // First call.
