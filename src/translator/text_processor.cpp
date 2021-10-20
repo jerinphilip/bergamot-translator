@@ -149,6 +149,13 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
     std::vector<string_view> wordRanges;
     Segment segment = tokenize(sentence, wordRanges);
 
+    // Manually add EoS
+    Word sourceEosId = vocabs_.sources().front()->getEosId();
+    segment.push_back(sourceEosId);
+    string_view &last = wordRanges.back();
+    const char *end = last.data() + last.size();
+    wordRanges.emplace_back(end, 0);
+
     // Can we ignore wrap?
     size_t maxLengthThreshold_ = 0;
     ABORT_IF(segment.size() >= maxLengthBreak_ + maxLengthThreshold_, "Okay, we have failure mode");
