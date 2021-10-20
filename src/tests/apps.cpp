@@ -56,6 +56,23 @@ void annotatedTextSentences(AsyncService &service, Ptr<TranslationModel> model, 
   }
 }
 
+void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &models) {
+  ABORT_IF(models.size() != 2, "Forward and backward test needs two models.");
+  ResponseOptions responseOptions;
+  std::string source = readFromStdin();
+  std::promise<Response> responsePromise;
+  std::future<Response> responseFuture = responsePromise.get_future();
+
+  auto callback = [&responsePromise](Response &&response) { responsePromise.set_value(std::move(response)); };
+  service.pivotTranslate(models.front(), models.back(), std::move(source), callback, responseOptions);
+
+  responseFuture.wait();
+
+  Response response = responseFuture.get();
+  std::cout << response.source.text;
+  std::cout << response.target.text;
+}
+
 void forwardAndBackward(AsyncService &service, std::vector<Ptr<TranslationModel>> &models) {
   ABORT_IF(models.size() != 2, "Forward and backward test needs two models.");
   ResponseOptions responseOptions;
