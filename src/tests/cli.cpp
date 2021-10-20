@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
       testapp::forwardAndBackward(service, models);
       break;
     case OpMode::TEST_PIVOT:
-      testapp::forwardAndBackward(service, models);
+      testapp::pivotTranslate(service, models);
       break;
     case OpMode::TEST_QUALITY_ESTIMATOR_WORDS:
       testapp::qualityEstimatorWords(service, models.front());

@@ -151,7 +151,7 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
 
     // Can we ignore wrap?
     size_t maxLengthThreshold_ = 0;
-    ABORT_IF(segment.size() < maxLengthBreak_ + maxLengthThreshold_, "Okay, we have failure mode");
+    ABORT_IF(segment.size() >= maxLengthBreak_ + maxLengthThreshold_, "Okay, we have failure mode");
 
     segments.push_back(std::move(segment));
   }

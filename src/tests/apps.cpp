@@ -69,8 +69,10 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
   responseFuture.wait();
 
   Response response = responseFuture.get();
-  std::cout << response.source.text;
-  std::cout << response.target.text;
+  for (size_t s = 0; s < response.source.numSentences(); s++) {
+    std::cout << "> " << response.source.sentence(s) << "\n";
+    std::cout << "< " << response.target.sentence(s) << "\n";
+  }
 }
 
 void forwardAndBackward(AsyncService &service, std::vector<Ptr<TranslationModel>> &models) {
