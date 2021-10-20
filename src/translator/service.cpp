@@ -58,6 +58,34 @@ AsyncService::~AsyncService() {
   }
 }
 
+void AsyncService::pivotTranslate(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
+                                  std::string &&source, CallbackType clientCallback) {
+  // Need callback chaining to maintain async, honestly this would be easier to implement just for blocking.
+  // When the first translation is ready, call the second
+  auto internalCallback = [this, clientCallback, second](Response &&firstHalf) {
+    // Grab the segments from Response to operate. We may need to do things at a lower level.
+    // FIXME: Copy of a string.
+    std::string sourceText = firstHalf.target.text;
+    auto joiningCallback = [this, sourceText = std::move(sourceText), firstHalf = std::move(firstHalf),
+                            clientCallback](Response &&secondHalf) {
+      // All the operations.
+      Response finalResponse;
+      finalResponse.source.text = firstHalf.source.text;
+      finalResponse.target.text = secondHalf.target.text;
+
+      // FIXME sentences can potentially be inconsisted, wrap can abort.
+    };
+
+    // Async call, but this will get called later.
+    // Neater way to do this without blocking?
+
+    translate(second, std::move(sourceText), joiningCallback);
+  };
+
+  // First call.
+  translate(first, std::move(source), internalCallback);
+}
+
 void AsyncService::translate(std::shared_ptr<TranslationModel> translationModel, std::string &&source,
                              CallbackType callback, const ResponseOptions &responseOptions) {
   // Producer thread, a call to this function adds new work items. If batches are available, notifies workers waiting.

@@ -138,5 +138,24 @@ void TextProcessor::wrap(Segment &segment, std::vector<string_view> &wordRanges,
   }
 }
 
+void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segments) const {
+  // We will use sentences from previous annotation, but we will overwrite with new vocabulary tricks.
+  // We are aware of maxLengthBreak_ here.
+  for (size_t s = 0; s < source.numSentences(); s++) {
+    // This is our sentenceStream
+    ByteRange sentenceByteRange = source.sentenceAsByteRange(s);
+    marian::string_view sentence{&source.text[sentenceByteRange.begin], sentenceByteRange.size()};
+
+    std::vector<string_view> wordRanges;
+    Segment segment = tokenize(sentence, wordRanges);
+
+    // Can we ignore wrap?
+    size_t maxLengthThreshold_ = 0;
+    ABORT_IF(segment.size() < maxLengthBreak_ + maxLengthThreshold_, "Okay, we have failure mode");
+
+    segments.push_back(std::move(segment));
+  }
+}
+
 }  // namespace bergamot
 }  // namespace marian

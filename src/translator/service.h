@@ -92,6 +92,9 @@ class AsyncService {
   void translate(std::shared_ptr<TranslationModel> translationModel, std::string &&source, CallbackType callback,
                  const ResponseOptions &options = ResponseOptions());
 
+  void pivotTranslate(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
+                      std::string &&source, CallbackType clientCallback);
+
   /// Thread joins and proper shutdown are required to be handled explicitly.
   ~AsyncService();
 
