@@ -6,6 +6,7 @@
 #include "batch.h"
 #include "byte_array_util.h"
 #include "definitions.h"
+#include "remap_alignments.h"
 
 namespace marian {
 namespace bergamot {
@@ -70,8 +71,12 @@ void AsyncService::pivotTranslate(std::shared_ptr<TranslationModel> first, std::
     auto joiningCallback = [this, firstHalf, clientCallback](Response &&secondHalf) {
       // All the operations.
       Response finalResponse;
+
       finalResponse.source.text = firstHalf.source.text;
       finalResponse.target.text = secondHalf.target.text;
+
+      // Need to fix alignments:
+      // finalResponse.alignments = remapAlignments(firstHalf, secondHalf);
 
       // We are not doing any sentence things.
       // FIXME: This is wasteful, try to avoid copy.
