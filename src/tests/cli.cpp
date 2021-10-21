@@ -44,6 +44,8 @@ int main(int argc, char *argv[]) {
     case OpMode::TEST_TRANSLATION_CACHE:
       testapp::translationCache(service, models.front());
       break;
+    case OpMode::TEST_BENCHMARK_EDIT_WORKFLOW:
+      testapp::benchmarkCacheEditWorkflow(service, models.front());
 
     default:
       ABORT("Incompatible op-mode. Choose one of the test modes.");

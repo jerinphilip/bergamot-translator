@@ -24,6 +24,16 @@ if(NOT MSVC)
   
   set_target_properties("bergamot-test" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
+  add_executable("bergamot-test-wasm" "cli-wasm.cpp" "apps.cpp")
+  
+  if(CUDA_FOUND)
+    target_link_libraries("bergamot-test-wasm" bergamot-translator)
+  else(CUDA_FOUND)
+    target_link_libraries("bergamot-test-wasm" bergamot-translator)
+  endif(CUDA_FOUND)
+  
+  set_target_properties("bergamot-test-wasm" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+
   # Adding an intgemm_resolve cmdline
   add_executable(intgemm-resolve intgemm_resolve.cpp)
   target_link_libraries(intgemm-resolve PRIVATE bergamot-translator)

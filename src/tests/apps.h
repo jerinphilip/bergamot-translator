@@ -21,6 +21,8 @@ namespace bergamot {
 
 namespace testapp {
 
+std::string readFromStdin();
+
 // Reads from stdin and translates.  Prints the tokens separated by space for each sentence. Prints words from source
 // side text annotation if source=true, target annotation otherwise.
 void annotatedTextWords(AsyncService &service, Ptr<TranslationModel> model, bool source = true);
@@ -39,6 +41,9 @@ void qualityEstimatorScores(AsyncService &service, Ptr<TranslationModel> model);
 
 // Tests if cache is active and functional
 void translationCache(AsyncService &service, Ptr<TranslationModel> model);
+
+void benchmarkCacheEditWorkflow(AsyncService &service, Ptr<TranslationModel> model);
+
 }  // namespace testapp
 }  // namespace bergamot
 }  // namespace marian
