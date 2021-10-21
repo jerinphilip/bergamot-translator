@@ -174,6 +174,7 @@ void benchmarkCacheEditWorkflow(AsyncService &service, Ptr<TranslationModel> mod
 
   marian::timer::Timer taskTimer;
   for (size_t s = 0; s < response.source.numSentences(); s++) {
+    std::cout << "Sentence " << s << std::endl;
     for (size_t w = 0; w < response.source.numWords(s); w++) {
       ByteRange currentWord = response.source.wordAsByteRange(s, w);
       int index = actionSampler(generator);

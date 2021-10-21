@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
       break;
     case OpMode::TEST_BENCHMARK_EDIT_WORKFLOW:
       testapp::benchmarkCacheEditWorkflow(service, models.front());
-
+      break;
     default:
       ABORT("Incompatible op-mode. Choose one of the test modes.");
       break;
