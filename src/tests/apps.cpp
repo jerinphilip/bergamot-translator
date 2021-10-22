@@ -87,7 +87,7 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
       }
 
       if (argmaxV.first != -1) {
-        std::cout << response.source.word(s, argmaxV.first) << " " << response.target.word(s, argmaxV.second) << "="
+        std::cout << response.source.word(s, argmaxV.second) << " " << response.target.word(s, argmaxV.first) << "="
                   << maxV;
         std::cout << std::endl;
       }
