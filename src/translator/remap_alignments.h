@@ -4,6 +4,6 @@
 
 namespace marian::bergamot {
 
-std::vector<Alignment> remapAlignments(Response &first, Response &second);
+std::vector<Alignment> remapAlignments(const Response &first, const Response &second);
 
 }

@@ -59,6 +59,7 @@ void annotatedTextSentences(AsyncService &service, Ptr<TranslationModel> model, 
 void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &models) {
   ABORT_IF(models.size() != 2, "Forward and backward test needs two models.");
   ResponseOptions responseOptions;
+  responseOptions.alignment = true;
   std::string source = readFromStdin();
   std::promise<Response> responsePromise;
   std::future<Response> responseFuture = responsePromise.get_future();
@@ -72,6 +73,17 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
   for (size_t s = 0; s < response.source.numSentences(); s++) {
     std::cout << "> " << response.source.sentence(s) << "\n";
     std::cout << "< " << response.target.sentence(s) << "\n\n";
+
+    for (size_t i = 0; i < response.alignments[s].size(); i++) {
+      for (size_t j = 0; j < response.alignments[s][i].size(); j++) {
+        auto v = response.alignments[s][i][j];
+        if (v != 0) {
+          std::cout << response.source.word(s, i) << " " << response.target.word(s, j) << "=" << v;
+          std::cout << std::endl;
+        }
+      }
+      std::cout << std::endl;
+    }
   }
 }
 
