@@ -75,14 +75,22 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
     std::cout << "< " << response.target.sentence(s) << "\n\n";
 
     for (size_t i = 0; i < response.alignments[s].size(); i++) {
+      bool valid = false;
+      float maxV = 0.0f;
+      auto argmaxV = std::make_pair(-1, -1);
       for (size_t j = 0; j < response.alignments[s][i].size(); j++) {
         auto v = response.alignments[s][i][j];
-        if (v != 0) {
-          std::cout << response.source.word(s, i) << " " << response.target.word(s, j) << "=" << v;
-          std::cout << std::endl;
+        if (v > maxV) {
+          maxV = v;
+          argmaxV = std::make_pair(i, j);
         }
       }
-      std::cout << std::endl;
+
+      if (argmaxV.first != -1) {
+        std::cout << response.source.word(s, argmaxV.first) << " " << response.target.word(s, argmaxV.second) << "="
+                  << maxV;
+        std::cout << std::endl;
+      }
     }
   }
 }

@@ -141,10 +141,16 @@ void TextProcessor::wrap(Segment &segment, std::vector<string_view> &wordRanges,
 void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segments) const {
   // We will use sentences from previous annotation, but we will overwrite with new vocabulary tricks.
   // We are aware of maxLengthBreak_ here.
+
+  // FIXME: copy
+  std::string copySource = source.text;
+  AnnotatedText replacement(std::move(copySource));
+
   for (size_t s = 0; s < source.numSentences(); s++) {
     // This is our sentenceStream
     ByteRange sentenceByteRange = source.sentenceAsByteRange(s);
-    marian::string_view sentence{&source.text[sentenceByteRange.begin], sentenceByteRange.size()};
+    // Fool tokenization using ByteRanges into looking at replacement. They're same, so okay.
+    marian::string_view sentence{&replacement.text[sentenceByteRange.begin], sentenceByteRange.size()};
 
     std::vector<string_view> wordRanges;
     Segment segment = tokenize(sentence, wordRanges);
@@ -162,7 +168,10 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
              "Okay, we have failure mode where larger token will segfault");
 
     segments.push_back(std::move(segment));
+    replacement.recordExistingSentence(wordRanges.begin(), wordRanges.end(), wordRanges.begin()->data());
   }
+
+  source = replacement;
 }
 
 }  // namespace bergamot
