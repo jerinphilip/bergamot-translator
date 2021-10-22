@@ -41,8 +41,12 @@ struct ByteRange {
   const size_t size() const { return end - begin; }
 };
 
+inline bool operator==(const ByteRange &first, const ByteRange &second) {
+  return first.begin == second.begin and first.end == second.end;
+}
+
 class Response;
-using CallbackType = std::function<void(Response&&)>;
+using CallbackType = std::function<void(Response &&)>;
 
 }  // namespace bergamot
 }  // namespace marian

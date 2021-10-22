@@ -2,93 +2,141 @@
 
 #include "response.h"
 
+#define DEBUG_ASSERT(lhs, rhs)                                                              \
+  do {                                                                                      \
+    std::cerr << (#lhs) << ": " << (lhs) << " =? " << (#rhs) << ": " << (rhs) << std::endl; \
+    assert((lhs) == (rhs));                                                                 \
+  } while (0)
+
 namespace marian::bergamot {
+
+Alignment tranferThroughCharacters(const std::vector<ByteRange> &sQ, const std::vector<ByteRange> &Qt,
+                                   const std::vector<ByteRange> &T, const Alignment &QtT) {
+  // Initialize empty alignment matrix.
+  Alignment remapped(T.size(), std::vector<float>(sQ.size(), 0.0f));
+
+  // sQ and Qt represents same underlying sentence, one decoded on source side vocab another decoded on target side
+  // vocab.
+  ByteRange sQWhole{sQ.begin()->begin, sQ.rbegin()->end};
+  ByteRange QtWhole{Qt.begin()->begin, Qt.rbegin()->end};
+  std::cout << sQWhole.begin << "," << sQWhole.end << " =? " << QtWhole.begin << ", " << QtWhole.end << std::endl;
+  assert(sQWhole == QtWhole);
+
+  // Matrix dimensions are good to go.
+  // Dimensions seem to be target x source. How?
+  DEBUG_ASSERT(QtT[0].size(), Qt.size());
+  DEBUG_ASSERT(QtT.size(), T.size());
+
+  // Pointers into sq, qt;
+  // While we haven't covered both representations completely
+  auto sq = sQ.begin();
+  auto qt = Qt.begin();
+  while (sq != sQ.end() and qt != Qt.end()) {
+    size_t i, j;
+    i = std::distance(sQ.begin(), sq);
+    j = std::distance(Qt.begin(), qt);
+    if (*sq == *qt) {
+      for (size_t t = 0; t < T.size(); t++) {
+        remapped[t][i] += QtT[t][j];
+      }
+
+      // Perfect match, move pointer from both.
+      sq++, qt++;
+    } else {
+      // Do we have overlap? There may be an easier way to do this, exhausting for now.
+      //                 qt:[begin, end)
+      // sq:[begin, end)
+      // All our computations are w.r.t sq; ie, we need remapped[sq];
+      // There are two or three cases if exhausted for a fixed sq.
+      // 1. qt is lagging behind with overlap (sQ[sq].begin
+      // 2. qt is ahead with overlap.
+      // 3. qt is within with overlap.
+      //
+      // Other cases:
+      // 4. qt is ahead no overlap.
+      // 5. qt is behind no overlap.
+      //
+      // Since we're traversing the same underlying string, we can set invariant such that everything before
+      // sq.begin is already mapped to something. Case 5 should not be possible. Case 4 should not be possible
+      // because that would mean we skipped a qt and didn't compute.
+
+      assert(qt->size() != 0 and sq->size() != 0);
+      // assert(!4), assert(!5)?
+
+      if (sq->begin > qt->begin and sq->begin < qt->end) {
+        // lagging behind, with overlap.
+        size_t charCount = (sq->begin - qt->begin);
+        size_t probSpread = qt->size();
+
+        float fraction = static_cast<float>(charCount) / static_cast<float>(probSpread);
+        for (size_t t = 0; t < T.size(); t++) {
+          remapped[t][i] += fraction * QtT[t][j];
+        }
+        // Advance qt. Now a lagging behind pointer is updated qt has additional overlaps with current sq;
+        ++qt;
+      } else if (sq->end > qt->begin and sq->end < qt->end) {
+        size_t charCount = (sq->end - qt->begin);
+        size_t probSpread = qt->size();
+
+        float fraction = static_cast<float>(charCount) / static_cast<float>(probSpread);
+        for (size_t t = 0; t < T.size(); t++) {
+          remapped[t][i] += fraction * QtT[t][j];
+        }
+
+        // advance sq; Now the new sq will have overlaps with qt
+        ++sq;
+      } else if (sq->begin <= qt->begin and sq->end >= qt->end) {
+        for (size_t t = 0; t < T.size(); t++) {
+          remapped[t][i] += QtT[t][j];  // No need of fraction, all probability mass contained.
+        }
+
+        // The qt within sq is processed, next qt will have overlap and could be ahead, but can also just truncate
+        // at the end of sq.
+        ++qt;
+        if (sq->end == qt->end) sq++;
+      }
+    }
+  }
+  return remapped;
+}
 
 std::vector<Alignment> remapAlignments(const Response &first, const Response &second) {
   // For each sentence.
-  size_t m, n, p, nOther;
   std::vector<Alignment> alignments;
   for (size_t s = 0; s < first.source.numSentences(); s++) {
-    // Rough sketch.
-    // first has s_i, q_j
-    // second has q'_j', t_k
-    // we need to be able to express p(q'_j' | tk) in terms of q_j, and we're set. For this purpose, we take ByteRanges
-    // from q_j, do arithmetic on overlapping probabilities on q'_j', and precompute a table.
-    // There are optimizations probably, but we go for the safe choice.
-
-    // m x n x p tokens expected.
     auto SP = first.alignments[s];
-    auto PT = second.alignments[s];
-    m = SP.size();
-    n = SP[0].size();
-    nOther = PT.size();
-    p = PT[0].size();
+    const Alignment &QtT = second.alignments[s];
 
-    // PT is n'xp, not nxp do to vocab mismatch
-    Alignment rePT(n, std::vector<float>(p, 0.0));
+    size_t nS, nsQ, nQt, nT;
+    std::vector<ByteRange> sQ, Qt, T;
 
-    size_t otherT = first.target.numWords(s);
-    size_t w = 0, W = first.source.numWords(s);
-    // Slight problem here, because we absorbed the annotation and probably rewrote it.
-    // FIXME;
-    size_t t = 0, T = second.target.numWords(s);
+    nS = first.source.numWords(s);
+    nsQ = first.target.numWords(s);
+    nQt = second.source.numWords(s);
+    nT = second.target.numWords(s);
 
-    while (t < T and w < W) {
-      ByteRange word = first.target.wordAsByteRange(s, w);
-      // [word.begin, word.end] needs to be located in the other. Chances are the tokens map monotonically. We can
-      // advance pointer as we consume.
-
-      // Find [t, ...T] elements overlapping with word.begin, word.end
-      ByteRange otherWord = second.source.wordAsByteRange(s, t);
-
-      // Does otherword match exactly, if then we're good.
-      if (word.begin == otherWord.begin and word.end == otherWord.end) {
-        for (size_t j = 0; j < p; j++) {
-          rePT[w][j] = PT[t][j];
-        }
-        ++t, ++w;
-      } else {
-        // How much of otherword contained?
-        // l >= otherword.begin, r <= otherword.end
-        size_t l, r;
-        float denom, fraction;
-        if (otherWord.size() == 0 || word.size() == 0) {
-          fraction = 1.0f;
-        } else {
-          r = std::min<size_t>(otherWord.end, word.end);
-          l = std::max<size_t>(otherWord.begin, word.begin);
-          denom = static_cast<float>(otherWord.size());
-          fraction = (float)(r - l) / denom;
-        }
-
-        // assert(0.0f <= fraction and fraction <= 1.0f);
-
-        for (size_t j = 0; j < otherT; j++) {
-          rePT[w][j] += (fraction * PT[t][j]);
-        }
-
-        // Did we fully consume otherWord
-        if (r == otherWord.end) {
-          ++t;
-          // otherWord = second.source.wordAsByteRange(s, t);
-        }
-
-        if (r == word.end) {
-          ++w;
-          // word = first.source.wordAsByteRange(s, w);
-        }
-      }
+    for (size_t i = 0; i < nsQ; i++) {
+      sQ.push_back(first.target.wordAsByteRange(s, i));
     }
 
-    // ABORT_IF(n != PT.size(), "Matrix dimensions mismatch, look into character stuff");
-    Alignment output(m, std::vector<float>(p));
+    for (size_t i = 0; i < nQt; i++) {
+      Qt.push_back(second.source.wordAsByteRange(s, i));
+    }
+
+    for (size_t i = 0; i < nT; i++) {
+      T.push_back(second.target.wordAsByteRange(s, i));
+    }
+
+    std::cout << "Alignment: " << QtT.size() << " " << QtT[0].size() << std::endl;
+
+    Alignment transferredPT = tranferThroughCharacters(sQ, Qt, T, QtT);
+
+    Alignment output(nT, std::vector<float>(nS));
     // Don't try matrix multiplication, lets craft alignment compilation with the rest.
-    if (n == rePT.size()) {
-      for (size_t i = 0; i < m; i++) {
-        for (size_t k = 0; k < p; k++) {
-          for (size_t j = 0; j < n; j++) {
-            output[i][k] += SP[i][j] * rePT[j][k];
-          }
+    for (size_t ids = 0; ids < nS; ids++) {
+      for (size_t idp = 0; idp < nsQ; idp++) {
+        for (size_t idt = 0; idt < nT; idt++) {
+          output[idt][ids] += SP[idp][ids] * transferredPT[idt][idp];
         }
       }
     }
