@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "annotation.h"
+#include "batching_pool.h"
 #include "common/cli_helper.h"
 #include "common/options.h"
 #include "data/types.h"
@@ -162,10 +163,8 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
     const char *end = last.data() + last.size();
     wordRanges.emplace_back(end, 0);
 
-    // Can we ignore wrap?
-    size_t maxLengthThreshold_ = 0;
-    ABORT_IF(segment.size() >= maxLengthBreak_ + maxLengthThreshold_,
-             "Okay, we have failure mode where larger token will segfault");
+    ABORT_IF(segment.size() >= (maxLengthBreak_ + BatchingPool::PIVOT_SLACK),
+             "Turns out applied slack is not enough for overflowing tokens.");
 
     segments.push_back(std::move(segment));
     replacement.recordExistingSentence(wordRanges.begin(), wordRanges.end(), wordRanges.begin()->data());

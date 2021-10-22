@@ -15,6 +15,7 @@ namespace bergamot {
 
 class BatchingPool {
  public:
+  static const size_t PIVOT_SLACK = 42;  // Answer to life, universe, everything.
   explicit BatchingPool(Ptr<Options> options);
 
   // RequestSentence incorporates (tentative) notions of priority with each
