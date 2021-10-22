@@ -2,33 +2,16 @@
 
 #include "response.h"
 
-#define DEBUG_ASSERT(lhs, rhs)                                                              \
-  do {                                                                                      \
-    std::cerr << (#lhs) << ": " << (lhs) << " =? " << (#rhs) << ": " << (rhs) << std::endl; \
-    assert((lhs) == (rhs));                                                                 \
-  } while (0)
-
 namespace marian::bergamot {
 
+// We're marginalizing q out of p(s | q) x p( q | t). However, we have different representations of q on source side and
+// target side. sQ denotes something towards source side while Qt denotes something towards target. T denotes target.
+// Smaller-case variables denote single elements.
 Alignment tranferThroughCharacters(const std::vector<ByteRange> &sQ, const std::vector<ByteRange> &Qt,
                                    const std::vector<ByteRange> &T, const Alignment &QtT) {
-  // Initialize empty alignment matrix.
+  // Initialize an empty alignment matrix.
   Alignment remapped(T.size(), std::vector<float>(sQ.size(), 0.0f));
 
-  // sQ and Qt represents same underlying sentence, one decoded on source side vocab another decoded on target side
-  // vocab.
-  ByteRange sQWhole{sQ.begin()->begin, sQ.rbegin()->end};
-  ByteRange QtWhole{Qt.begin()->begin, Qt.rbegin()->end};
-  std::cout << sQWhole.begin << "," << sQWhole.end << " =? " << QtWhole.begin << ", " << QtWhole.end << std::endl;
-  assert(sQWhole == QtWhole);
-
-  // Matrix dimensions are good to go.
-  // Dimensions seem to be target x source. How?
-  DEBUG_ASSERT(QtT[0].size(), Qt.size());
-  DEBUG_ASSERT(QtT.size(), T.size());
-
-  // Pointers into sq, qt;
-  // While we haven't covered both representations completely
   auto sq = sQ.begin();
   auto qt = Qt.begin();
   while (sq != sQ.end() and qt != Qt.end()) {
@@ -101,7 +84,6 @@ Alignment tranferThroughCharacters(const std::vector<ByteRange> &sQ, const std::
 }
 
 std::vector<Alignment> remapAlignments(const Response &first, const Response &second) {
-  // For each sentence.
   std::vector<Alignment> alignments;
   for (size_t s = 0; s < first.source.numSentences(); s++) {
     auto SP = first.alignments[s];
@@ -132,7 +114,6 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
     Alignment transferredPT = tranferThroughCharacters(sQ, Qt, T, QtT);
 
     Alignment output(nT, std::vector<float>(nS));
-    // Don't try matrix multiplication, lets craft alignment compilation with the rest.
     for (size_t ids = 0; ids < nS; ids++) {
       for (size_t idp = 0; idp < nsQ; idp++) {
         for (size_t idt = 0; idt < nT; idt++) {
