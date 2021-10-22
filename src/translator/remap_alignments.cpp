@@ -6,7 +6,7 @@ namespace marian::bergamot {
 
 std::vector<Alignment> remapAlignments(const Response &first, const Response &second) {
   // For each sentence.
-  size_t m, n, p;
+  size_t m, n, p, nOther;
   std::vector<Alignment> alignments;
   for (size_t s = 0; s < first.source.numSentences(); s++) {
     // Rough sketch.
@@ -21,13 +21,17 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
     auto PT = second.alignments[s];
     m = SP.size();
     n = SP[0].size();
+    nOther = PT.size();
     p = PT[0].size();
 
     // PT is n'xp, not nxp do to vocab mismatch
     Alignment rePT(n, std::vector<float>(p, 0.0));
 
+    size_t otherT = first.target.numWords(s);
+    size_t w = 0, W = first.source.numWords(s);
+    // Slight problem here, because we absorbed the annotation and probably rewrote it.
+    // FIXME;
     size_t t = 0, T = second.target.numWords(s);
-    size_t w = 0, W = second.source.numWords(s);
 
     while (t < T and w < W) {
       ByteRange word = first.target.wordAsByteRange(s, w);
@@ -59,7 +63,7 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
 
         // assert(0.0f <= fraction and fraction <= 1.0f);
 
-        for (size_t j = 0; j < p; j++) {
+        for (size_t j = 0; j < otherT; j++) {
           rePT[w][j] += (fraction * PT[t][j]);
         }
 
