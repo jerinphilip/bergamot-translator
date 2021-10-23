@@ -70,25 +70,26 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
   responseFuture.wait();
 
   Response response = responseFuture.get();
-  for (size_t s = 0; s < response.source.numSentences(); s++) {
-    std::cout << "> " << response.source.sentence(s) << "\n";
-    std::cout << "< " << response.target.sentence(s) << "\n\n";
+  for (size_t sentenceId = 0; sentenceId < response.source.numSentences(); sentenceId++) {
+    std::cout << "> " << response.source.sentence(sentenceId) << "\n";
+    std::cout << "< " << response.target.sentence(sentenceId) << "\n\n";
 
-    for (size_t i = 0; i < response.alignments[s].size(); i++) {
+    // For each target token, find argmax s, i.e find argmax p(s | t), max p(s | t)
+    for (size_t t = 0; t < response.alignments[sentenceId].size(); t++) {
       bool valid = false;
       float maxV = 0.0f;
       auto argmaxV = std::make_pair(-1, -1);
-      for (size_t j = 0; j < response.alignments[s][i].size(); j++) {
-        auto v = response.alignments[s][i][j];
+      for (size_t s = 0; s < response.alignments[sentenceId][t].size(); s++) {
+        auto v = response.alignments[sentenceId][t][s];
         if (v > maxV) {
           maxV = v;
-          argmaxV = std::make_pair(i, j);
+          argmaxV = std::make_pair(t, s);
         }
       }
 
       if (argmaxV.first != -1) {
-        std::cout << response.source.word(s, argmaxV.second) << " " << response.target.word(s, argmaxV.first) << "="
-                  << maxV;
+        std::cout << response.source.word(sentenceId, argmaxV.second) << " "
+                  << response.target.word(sentenceId, argmaxV.first) << "=" << maxV;
         std::cout << std::endl;
       }
     }
