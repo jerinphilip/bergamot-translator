@@ -4,9 +4,13 @@
 
 namespace marian::bergamot {
 
-// We're marginalizing q out of p(s | q) x p( q | t). However, we have different representations of q on source side and
-// target side. sQ denotes something towards source side while Qt denotes something towards target. T denotes target.
-// Smaller-case variables denote single elements.
+// We're marginalizing q out of p(s | q) x p( q | t). However, we have different representations of q on source side to
+// intermediate - p(s_i | q_j) and intermediate to target side - p(q'_j' | t_k).
+//
+// The input here is the ByteRanges in sQ (q towards source side), ByteRanges in Qt(q towards target side) and the
+// alignment matrix computed with Qt to target T. This matrix p(q'_j' | t_k) is rewritten into p(q_j | t_k) by means of
+// spreading the probability in the former over bytes and collecting it at the ranges specified by latter, using a two
+// pointer accumulation strategy.
 Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std::vector<ByteRange> &Qt,
                                     const std::vector<ByteRange> &T, const Alignment &QtT) {
   // Initialize an empty alignment matrix.
