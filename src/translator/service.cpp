@@ -35,6 +35,59 @@ std::vector<Response> BlockingService::translateMultiple(std::shared_ptr<Transla
   return responses;
 }
 
+std::vector<Response> BlockingService::translatePivotMultiple(std::shared_ptr<TranslationModel> first,
+                                                              std::shared_ptr<TranslationModel> second,
+                                                              std::vector<std::string> &&sources,
+                                                              const ResponseOptions &responseOptions) {
+  // Translate firstRound
+  std::vector<Response> firstResponses;
+  size_t numSources = sources.size();
+  firstResponses.resize(numSources);
+
+  for (size_t i = 0; i < numSources; i++) {
+    auto callback = [i, &firstResponses](Response &&response) { firstResponses[i] = std::move(response); };  //
+    Ptr<Request> request = first->makeRequest(requestId_++, std::move(sources[i]), callback, responseOptions);
+    batchingPool_.enqueueRequest(first, request);
+  }
+
+  Batch batch;
+  Ptr<TranslationModel> model{nullptr};
+  while (batchingPool_.generateBatch(model, batch)) {
+    model->translateBatch(/*deviceId=*/0, batch);
+  }
+
+  std::vector<Response> secondResponses;
+  secondResponses.resize(numSources);
+
+  for (size_t i = 0; i < numSources; i++) {
+    auto callback = [i, &secondResponses](Response &&response) { secondResponses[i] = std::move(response); };  //
+    Ptr<Request> request = second->makePivotRequest(requestId_++, callback, secondResponses[i], responseOptions);
+    batchingPool_.enqueueRequest(second, request);
+  }
+
+  while (batchingPool_.generateBatch(model, batch)) {
+    model->translateBatch(/*deviceId=*/0, batch);
+    // FIXME sentences can potentially be inconsisted, wrap can abort.
+  }
+
+  // Compile 1, 2. They're bound by indices.
+  std::vector<Response> finalResponses;
+  for (size_t i = 0; i < numSources; i++) {
+    Response finalResponse;
+
+    // Compute alignment first using internal matrices and mappings.
+    finalResponse.alignments = remapAlignments(firstResponses[i], secondResponses[i]);
+
+    finalResponse.source = std::move(firstResponses[i].source);
+    finalResponse.target = std::move(secondResponses[i].target);
+    finalResponse.qualityScores = std::move(secondResponses[i].qualityScores);
+
+    finalResponses.push_back(std::move(finalResponse));
+  }
+
+  return finalResponses;
+}
+
 AsyncService::AsyncService(const AsyncService::Config &config) : requestId_(0), config_(config), safeBatchingPool_() {
   ABORT_IF(config_.numWorkers == 0, "Number of workers should be at least 1 in a threaded workflow");
   workers_.reserve(config_.numWorkers);

@@ -47,6 +47,11 @@ class BlockingService {
   std::vector<Response> translateMultiple(std::shared_ptr<TranslationModel> translationModel,
                                           std::vector<std::string> &&source, const ResponseOptions &responseOptions);
 
+  std::vector<Response> translatePivotMultiple(std::shared_ptr<TranslationModel> first,
+                                               std::shared_ptr<TranslationModel> second,
+                                               std::vector<std::string> &&sources,
+                                               const ResponseOptions &responseOptions);
+
  private:
   ///  Numbering requests processed through this instance. Used to keep account of arrival times of the request. This
   ///  allows for using this quantity in priority based ordering.
@@ -80,8 +85,8 @@ class AsyncService {
   }
 
   /// With the supplied TranslationModel, translate an input. A Response is constructed with optional items set/unset
-  /// indicated via ResponseOptions. Upon completion translation of the input, the client supplied callback is triggered
-  /// with the constructed Response. Concurrent-calls to this function are safe.
+  /// indicated via ResponseOptions. Upon completion translation of the input, the client supplied callback is
+  /// triggered with the constructed Response. Concurrent-calls to this function are safe.
   ///
   /// @param [in] translationModel: TranslationModel to use for the request.
   /// @param [in] source: rvalue reference of the string to be translated. This is available as-is to the client later
