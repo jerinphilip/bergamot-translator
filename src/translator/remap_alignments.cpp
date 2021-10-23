@@ -109,8 +109,6 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
       T.push_back(second.target.wordAsByteRange(s, i));
     }
 
-    std::cout << "Alignment: " << QtT.size() << " " << QtT[0].size() << std::endl;
-
     Alignment transferredPT = tranferThroughCharacters(sQ, Qt, T, QtT);
 
     Alignment output(nT, std::vector<float>(nS));
