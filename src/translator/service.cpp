@@ -72,16 +72,12 @@ void AsyncService::pivotTranslate(std::shared_ptr<TranslationModel> first, std::
       // All the operations.
       Response finalResponse;
 
-      finalResponse.source.text = firstHalf.source.text;
-      finalResponse.target.text = secondHalf.target.text;
-
-      // Need to fix alignments:
+      // Compute alignment first using internal matrices and mappings.
       finalResponse.alignments = remapAlignments(firstHalf, secondHalf);
 
-      // We are not doing any sentence things.
-      // FIXME: This is wasteful, try to avoid copy.
-      finalResponse.source = firstHalf.source;
-      finalResponse.target = secondHalf.target;
+      finalResponse.source = std::move(firstHalf.source);
+      finalResponse.target = std::move(secondHalf.target);
+      finalResponse.qualityScores = std::move(secondHalf.qualityScores);
 
       for (size_t s = 0; s < secondHalf.source.numSentences(); s++) {
         std::cout << "=" << secondHalf.source.sentence(s) << "\n";
