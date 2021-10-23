@@ -146,7 +146,6 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
   std::string copySource = source.text;
   AnnotatedText replacement(std::move(copySource));
 
-  ByteRange previousSentence = {0, 0};  // The previous ByteRange was 0, 0
   for (size_t s = 0; s < source.numSentences(); s++) {
     // This is our sentenceStream
     ByteRange sentenceByteRange = source.sentenceAsByteRange(s);
@@ -164,7 +163,7 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
       const char *end = last.data() + last.size();
       wordRanges.emplace_back(end, 0);
     } else {
-      const char *end = &(replacement.text[previousSentence.end]);
+      const char *end = &(replacement.text[sentenceByteRange.begin]);
       wordRanges.emplace_back(end, 0);
     }
 
@@ -179,7 +178,6 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
 
     segments.push_back(std::move(segment));
     replacement.recordExistingSentence(wordRanges.begin(), wordRanges.end(), wordRanges.begin()->data());
-    previousSentence = sentenceByteRange;  // Update previousSentence;
   }
 
   source = replacement;
