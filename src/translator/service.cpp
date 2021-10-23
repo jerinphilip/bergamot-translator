@@ -121,7 +121,7 @@ void AsyncService::pivotTranslate(std::shared_ptr<TranslationModel> first, std::
     // Grab the segments from Response to operate. We may need to do things at a lower level.
     // FIXME: Copy of a string.
     // We have both Responses at this callback, firstHalf is moved in, second half will be available when complete.
-    auto joiningCallback = [this, firstHalf, clientCallback](Response &&secondHalf) {
+    auto joiningCallback = [this, firstHalf = std::move(firstHalf), clientCallback](Response &&secondHalf) {
       // All the operations.
       Response finalResponse;
 
