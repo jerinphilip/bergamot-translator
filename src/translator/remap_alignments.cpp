@@ -30,57 +30,27 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std:
       // Perfect match, move pointer from both.
       sq++, qt++;
     } else {
-      // Do we have overlap? There may be an easier way to do this, exhausting for now.
-      //                 qt:[begin, end)
-      // sq:[begin, end)
-      // All our computations are w.r.t sq; ie, we need remapped[sq];
-      // There are two or three cases if exhausted for a fixed sq.
-      // 1. qt is lagging behind with overlap (sQ[sq].begin
-      // 2. qt is ahead with overlap.
-      // 3. qt is within with overlap.
-      //
-      // Other cases:
-      // 4. qt is ahead no overlap.
-      // 5. qt is behind no overlap.
-      //
-      // Since we're traversing the same underlying string, we can set invariant such that everything before
-      // sq.begin is already mapped to something. Case 5 should not be possible. Case 4 should not be possible
-      // because that would mean we skipped a qt and didn't compute.
+      // Do we have overlap?
+      size_t l = std::max(qt->begin, sq->begin);
+      size_t r = std::min(qt->end, sq->end);
 
-      assert(qt->size() != 0 && sq->size() != 0);
-      // assert(!4), assert(!5)?
+      assert(l <= r);  // there should be overlap.
 
-      if (sq->begin > qt->begin && sq->begin < qt->end) {
-        // lagging behind, with overlap.
-        size_t charCount = (sq->begin - qt->begin);
-        size_t probSpread = qt->size();
+      size_t charCount = r - l;
+      size_t probSpread = qt->size();
+      float fraction = static_cast<float>(charCount) / static_cast<float>(probSpread);
+      for (size_t t = 0; t < T.size(); t++) {
+        remapped[t][i] += fraction * QtT[t][j];
+      }
 
-        float fraction = static_cast<float>(charCount) / static_cast<float>(probSpread);
-        for (size_t t = 0; t < T.size(); t++) {
-          remapped[t][i] += fraction * QtT[t][j];
-        }
-        // Advance qt. Now a lagging behind pointer is updated qt has additional overlaps with current sq;
-        ++qt;
-      } else if (sq->end > qt->begin && sq->end < qt->end) {
-        size_t charCount = (sq->end - qt->begin);
-        size_t probSpread = qt->size();
-
-        float fraction = static_cast<float>(charCount) / static_cast<float>(probSpread);
-        for (size_t t = 0; t < T.size(); t++) {
-          remapped[t][i] += fraction * QtT[t][j];
-        }
-
-        // advance sq; Now the new sq will have overlaps with qt
-        ++sq;
-      } else if (sq->begin <= qt->begin && sq->end >= qt->end) {
-        for (size_t t = 0; t < T.size(); t++) {
-          remapped[t][i] += QtT[t][j];  // No need of fraction, all probability mass contained.
-        }
-
-        // The qt within sq is processed, next qt will have overlap and could be ahead, but can also just truncate
-        // at the end of sq.
-        ++qt;
-        if (sq->end == qt->end) sq++;
+      // Which one is ahead? sq or qt or both end at same point?
+      if (sq->end == qt->end) {
+        sq++;
+        qt++;
+      } else if (sq->end > qt->end) {
+        qt++;
+      } else {  // sq->end < qt->end
+        sq++;
       }
     }
   }
