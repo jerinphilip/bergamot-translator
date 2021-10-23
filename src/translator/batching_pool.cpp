@@ -10,8 +10,11 @@ namespace bergamot {
 
 BatchingPool::BatchingPool(Ptr<Options> options)
     : miniBatchWords_(options->get<int>("mini-batch-words")), maxActiveBucketLength_(0) {
-  pivotSlack_ = miniBatchWords_ * (1 - options->get<float>("max-length-factor", 3.0)) + 1;
-  bucket_.resize(options->get<int>("max-length-break") + 1 + pivotSlack_);
+  size_t maxLengthBreak = options->get<int>("max-length-break");
+  float maxLengthFactor = options->get<float>("max-length-factor", 3.0);
+  size_t pivotSlack = maxLengthBreak * maxLengthFactor - maxLengthBreak;
+  bucket_.resize(maxLengthBreak + pivotSlack + 1);
+
   ABORT_IF(bucket_.size() - 1 > miniBatchWords_,
            "Fatal: max-length-break > mini-batch-words  will lead to sentences "
            "longer than what can fit in a batch.");

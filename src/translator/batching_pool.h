@@ -42,7 +42,6 @@ class BatchingPool {
   std::vector<std::set<RequestSentence>> bucket_;
   size_t batchNumber_{0};
   size_t maxActiveBucketLength_;
-  size_t pivotSlack_;
 };
 
 }  // namespace bergamot
