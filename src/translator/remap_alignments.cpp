@@ -7,8 +7,8 @@ namespace marian::bergamot {
 // We're marginalizing q out of p(s | q) x p( q | t). However, we have different representations of q on source side and
 // target side. sQ denotes something towards source side while Qt denotes something towards target. T denotes target.
 // Smaller-case variables denote single elements.
-Alignment tranferThroughCharacters(const std::vector<ByteRange> &sQ, const std::vector<ByteRange> &Qt,
-                                   const std::vector<ByteRange> &T, const Alignment &QtT) {
+Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std::vector<ByteRange> &Qt,
+                                    const std::vector<ByteRange> &T, const Alignment &QtT) {
   // Initialize an empty alignment matrix.
   Alignment remapped(T.size(), std::vector<float>(sQ.size(), 0.0f));
 
