@@ -8,8 +8,8 @@
 namespace marian {
 namespace bergamot {
 
-BatchingPool::BatchingPool(Ptr<Options> options) {
-  miniBatchWords = options->get<int>("mini-batch-words");
+BatchingPool::BatchingPool(Ptr<Options> options)
+    : miniBatchWords(options->get<int>("mini-batch-words")), maxActiveBucketLength_(0) {
   bucket_.resize(options->get<int>("max-length-break") + 1 + PIVOT_SLACK);
   ABORT_IF(bucket_.size() - 1 > miniBatchWords,
            "Fatal: max-length-break > mini-batch-words  will lead to sentences "
@@ -24,7 +24,7 @@ size_t BatchingPool::generateBatch(Batch &batch) {
   batch.clear();
   size_t paddedBatchSize = 0;
 
-  for (size_t length = 0; length < bucket_.size(); length++) {
+  for (size_t length = 0; length <= maxActiveBucketLength_; length++) {
     auto p = bucket_[length].begin();
     while (p != bucket_[length].end()) {
       paddedBatchSize = (batch.size() + 1) * length;
@@ -49,6 +49,7 @@ size_t BatchingPool::enqueueRequest(Ptr<Request> request) {
     size_t bucket_id = sentence.numTokens();
     assert(bucket_id < bucket_.size());
     bucket_[bucket_id].insert(sentence);
+    maxActiveBucketLength_ = std::max<size_t>(bucket_id, maxActiveBucketLength_);
   }
 
   return request->numSegments();
