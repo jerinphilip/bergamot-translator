@@ -128,7 +128,7 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
 
     // Marginalize out q_j.
     // p(s_i | t_k) = \sum_{j} p(s_i | q_j) x p(q_j | t_k)
-    Alignment output(nT, std::vector<float>(nS));
+    Alignment output(nT, std::vector<float>(nS, 0.0f));
     for (size_t ids = 0; ids < nS; ids++) {
       for (size_t idq = 0; idq < nsQ; idq++) {
         for (size_t idt = 0; idt < nT; idt++) {
