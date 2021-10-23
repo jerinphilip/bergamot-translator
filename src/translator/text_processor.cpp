@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "annotation.h"
-#include "batching_pool.h"
 #include "common/cli_helper.h"
 #include "common/options.h"
 #include "data/types.h"
@@ -147,6 +146,7 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
   std::string copySource = source.text;
   AnnotatedText replacement(std::move(copySource));
 
+  ByteRange previousSentence = {0, 0};  // The previous ByteRange was 0, 0
   for (size_t s = 0; s < source.numSentences(); s++) {
     // This is our sentenceStream
     ByteRange sentenceByteRange = source.sentenceAsByteRange(s);
@@ -159,15 +159,27 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
     // Manually add EoS
     Word sourceEosId = vocabs_.sources().front()->getEosId();
     segment.push_back(sourceEosId);
-    string_view &last = wordRanges.back();
-    const char *end = last.data() + last.size();
-    wordRanges.emplace_back(end, 0);
+    if (!wordRanges.empty()) {
+      string_view &last = wordRanges.back();  // this is a possible segfault if wordRanges is empty. So guard.
+      const char *end = last.data() + last.size();
+      wordRanges.emplace_back(end, 0);
+    } else {
+      const char *end = &(replacement.text[previousSentence.end]);
+      wordRanges.emplace_back(end, 0);
+    }
 
-    ABORT_IF(segment.size() >= (maxLengthBreak_ + BatchingPool::PIVOT_SLACK),
-             "Turns out applied slack is not enough for overflowing tokens.");
+    // We're hopefully applying the correct slack by means of max-length-break * max-length-factor. marian cannot
+    // generate a sequence of length more than max-length-break*max-length-factor.
+    //
+    // if (segment.size() >= (maxLengthBreak_ + BatchingPool::PIVOT_SLACK)) {
+    //   std::cerr << "Line " << s << ": " << sentence << "tokenized into " << segment.size() << " tokens" << std::endl;
+    // }
+    // ABORT_IF(segment.size() >= (maxLengthBreak_ + BatchingPool::PIVOT_SLACK),
+    //          "Turns out applied slack is not enough for overflowing tokens.");
 
     segments.push_back(std::move(segment));
     replacement.recordExistingSentence(wordRanges.begin(), wordRanges.end(), wordRanges.begin()->data());
+    previousSentence = sentenceByteRange;  // Update previousSentence;
   }
 
   source = replacement;

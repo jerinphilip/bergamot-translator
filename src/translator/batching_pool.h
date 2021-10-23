@@ -15,9 +15,6 @@ namespace bergamot {
 
 class BatchingPool {
  public:
-  // Answer to life, universe, everything. Hopefully also our problem of overflowing tokens exceeding our max-length
-  // break/wrap being generated at a target.
-  //
   // Breaking this further into multiple wrapped sentences will complicate the API for Annotation, requiring to have
   // knowledge of list of sentences mapping to a single previous translation unit. Annotation needs rework for a a more
   // friendly use-case suitable API in C++ to iterate sentences, tokens etc which is a TODO for later.
@@ -29,8 +26,6 @@ class BatchingPool {
   // Very few batches are expected to be generated at the higher length.
   //
   // In the event we get an overflow max-length-break + PIVOT_SLACK, the program is configured to abort.
-  static const size_t PIVOT_SLACK = 42;
-
   explicit BatchingPool(Ptr<Options> options);
 
   // RequestSentence incorporates (tentative) notions of priority with each
@@ -47,6 +42,7 @@ class BatchingPool {
   std::vector<std::set<RequestSentence>> bucket_;
   size_t batchNumber_{0};
   size_t maxActiveBucketLength_;
+  size_t pivotSlack_;
 };
 
 }  // namespace bergamot
