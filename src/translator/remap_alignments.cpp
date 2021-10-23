@@ -109,13 +109,16 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
       T.push_back(second.target.wordAsByteRange(s, i));
     }
 
+    // Reintrepret probability p(q'_j' | t_k) as p(q_j | t_k)
     Alignment transferredPT = tranferThroughCharacters(sQ, Qt, T, QtT);
 
+    // Marginalize out q_j.
+    // p(s_i | t_k) = \sum_{j} p(s_i | q_j) x p(q_j | t_k)
     Alignment output(nT, std::vector<float>(nS));
     for (size_t ids = 0; ids < nS; ids++) {
-      for (size_t idp = 0; idp < nsQ; idp++) {
+      for (size_t idq = 0; idq < nsQ; idq++) {
         for (size_t idt = 0; idt < nT; idt++) {
-          output[idt][ids] += SP[idp][ids] * transferredPT[idt][idp];
+          output[idt][ids] += SP[idq][ids] * transferredPT[idt][idq];
         }
       }
     }
