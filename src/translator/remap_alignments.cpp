@@ -14,11 +14,11 @@ Alignment tranferThroughCharacters(const std::vector<ByteRange> &sQ, const std::
 
   auto sq = sQ.begin();
   auto qt = Qt.begin();
-  while (sq != sQ.end() and qt != Qt.end()) {
+  while (sq != sQ.end() && qt != Qt.end()) {
     size_t i, j;
     i = std::distance(sQ.begin(), sq);
     j = std::distance(Qt.begin(), qt);
-    if (*sq == *qt) {
+    if (sq->begin == qt->begin && sq->end == qt->end) {
       for (size_t t = 0; t < T.size(); t++) {
         remapped[t][i] += QtT[t][j];
       }
@@ -43,10 +43,10 @@ Alignment tranferThroughCharacters(const std::vector<ByteRange> &sQ, const std::
       // sq.begin is already mapped to something. Case 5 should not be possible. Case 4 should not be possible
       // because that would mean we skipped a qt and didn't compute.
 
-      assert(qt->size() != 0 and sq->size() != 0);
+      assert(qt->size() != 0 && sq->size() != 0);
       // assert(!4), assert(!5)?
 
-      if (sq->begin > qt->begin and sq->begin < qt->end) {
+      if (sq->begin > qt->begin && sq->begin < qt->end) {
         // lagging behind, with overlap.
         size_t charCount = (sq->begin - qt->begin);
         size_t probSpread = qt->size();
@@ -57,7 +57,7 @@ Alignment tranferThroughCharacters(const std::vector<ByteRange> &sQ, const std::
         }
         // Advance qt. Now a lagging behind pointer is updated qt has additional overlaps with current sq;
         ++qt;
-      } else if (sq->end > qt->begin and sq->end < qt->end) {
+      } else if (sq->end > qt->begin && sq->end < qt->end) {
         size_t charCount = (sq->end - qt->begin);
         size_t probSpread = qt->size();
 
@@ -68,7 +68,7 @@ Alignment tranferThroughCharacters(const std::vector<ByteRange> &sQ, const std::
 
         // advance sq; Now the new sq will have overlaps with qt
         ++sq;
-      } else if (sq->begin <= qt->begin and sq->end >= qt->end) {
+      } else if (sq->begin <= qt->begin && sq->end >= qt->end) {
         for (size_t t = 0; t < T.size(); t++) {
           remapped[t][i] += QtT[t][j];  // No need of fraction, all probability mass contained.
         }
