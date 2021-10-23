@@ -97,14 +97,12 @@ Ptr<Request> TranslationModel::makeRequest(size_t requestId, std::string &&sourc
   return request;
 }
 
-Ptr<Request> TranslationModel::makePivotRequest(size_t requestId, CallbackType callback, Response &previous,
+Ptr<Request> TranslationModel::makePivotRequest(size_t requestId, CallbackType callback, AnnotatedText &&previousTarget,
                                                 const ResponseOptions &responseOptions) {
   Segments segments;
 
-  // FIXME potentially heavy copy.
-  AnnotatedText annotation = previous.target;
-  textProcessor_.processFromAnnotation(annotation, segments);
-  ResponseBuilder responseBuilder(responseOptions, std::move(annotation), vocabs_, callback, *qualityEstimator_);
+  textProcessor_.processFromAnnotation(previousTarget, segments);
+  ResponseBuilder responseBuilder(responseOptions, std::move(previousTarget), vocabs_, callback, *qualityEstimator_);
 
   Ptr<Request> request = New<Request>(requestId, std::move(segments), std::move(responseBuilder));
   return request;

@@ -60,8 +60,11 @@ std::vector<Response> BlockingService::translatePivotMultiple(std::shared_ptr<Tr
   secondResponses.resize(numSources);
 
   for (size_t i = 0; i < numSources; i++) {
+    AnnotatedText intermediate =
+        firstResponses[i].target;  // We cannot eliminate this copy, as we need two versions of intermediate. Holding
+                                   // it in allows further use in makePivotRequest
     auto callback = [i, &secondResponses](Response &&response) { secondResponses[i] = std::move(response); };  //
-    Ptr<Request> request = second->makePivotRequest(requestId_++, callback, secondResponses[i], responseOptions);
+    Ptr<Request> request = second->makePivotRequest(requestId_++, callback, std::move(intermediate), responseOptions);
     batchingPool_.enqueueRequest(second, request);
   }
 
@@ -118,9 +121,11 @@ void AsyncService::pivotTranslate(std::shared_ptr<TranslationModel> first, std::
   // Need callback chaining to maintain async, honestly this would be easier to implement just for blocking.
   // When the first translation is ready, call the second.
   auto internalCallback = [this, clientCallback, second, responseOptions](Response &&firstHalf) {
-    // Grab the segments from Response to operate. We may need to do things at a lower level.
-    // FIXME: Copy of a string.
     // We have both Responses at this callback, firstHalf is moved in, second half will be available when complete.
+    AnnotatedText intermediate =
+        firstHalf.target;  // We cannot eliminate this copy, as we need two versions of intermediate. Holding
+                           // it in a copy allows moving the response into the lambda below.
+
     auto joiningCallback = [this, firstHalf = std::move(firstHalf), clientCallback](Response &&secondHalf) {
       // All the operations.
       Response finalResponse;
@@ -136,8 +141,9 @@ void AsyncService::pivotTranslate(std::shared_ptr<TranslationModel> first, std::
       clientCallback(std::move(finalResponse));
     };
 
-    // FIXME sentences can potentially be inconsisted, wrap can abort.
-    Ptr<Request> request = second->makePivotRequest(requestId_++, joiningCallback, firstHalf, responseOptions);
+    // FIXME sentences can potentially be inconsistent, wrap can abort.
+    Ptr<Request> request =
+        second->makePivotRequest(requestId_++, joiningCallback, std::move(intermediate), responseOptions);
     safeBatchingPool_.enqueueRequest(second, request);
   };
 
