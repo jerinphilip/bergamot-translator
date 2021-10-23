@@ -80,6 +80,20 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std:
       }
     }
   }
+
+  // At the end, assert what we have is a valid probability distribution.
+#ifdef DEBUG
+  for (size_t t = 0; t < T.size(); t++) {
+    float sum = 0.0f;
+    for (size_t q = 0; q < sQ.size(); q++) {
+      sum += remapped[t][q];
+    }
+
+    const float EPS = 1e-6;
+    assert(std::abs(sum - 1.0f) < EPS);
+  }
+#endif
+
   return remapped;
 }
 
