@@ -110,7 +110,7 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
     }
 
     // Reintrepret probability p(q'_j' | t_k) as p(q_j | t_k)
-    Alignment transferredPT = tranferThroughCharacters(sQ, Qt, T, QtT);
+    Alignment transferredPT = transferThroughCharacters(sQ, Qt, T, QtT);
 
     // Marginalize out q_j.
     // p(s_i | t_k) = \sum_{j} p(s_i | q_j) x p(q_j | t_k)
