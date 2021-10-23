@@ -9,9 +9,9 @@ namespace marian {
 namespace bergamot {
 
 BatchingPool::BatchingPool(Ptr<Options> options)
-    : miniBatchWords(options->get<int>("mini-batch-words")), maxActiveBucketLength_(0) {
+    : miniBatchWords_(options->get<int>("mini-batch-words")), maxActiveBucketLength_(0) {
   bucket_.resize(options->get<int>("max-length-break") + 1 + PIVOT_SLACK);
-  ABORT_IF(bucket_.size() - 1 > miniBatchWords,
+  ABORT_IF(bucket_.size() - 1 > miniBatchWords_,
            "Fatal: max-length-break > mini-batch-words  will lead to sentences "
            "longer than what can fit in a batch.");
 }
@@ -28,7 +28,7 @@ size_t BatchingPool::generateBatch(Batch &batch) {
     auto p = bucket_[length].begin();
     while (p != bucket_[length].end()) {
       paddedBatchSize = (batch.size() + 1) * length;
-      if (paddedBatchSize <= miniBatchWords) {
+      if (paddedBatchSize <= miniBatchWords_) {
         auto q = p++;
         batch.add(*q);
         bucket_[length].erase(q);
