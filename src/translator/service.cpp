@@ -132,10 +132,6 @@ void AsyncService::pivotTranslate(std::shared_ptr<TranslationModel> first, std::
       finalResponse.target = std::move(secondHalf.target);
       finalResponse.qualityScores = std::move(secondHalf.qualityScores);
 
-      for (size_t s = 0; s < secondHalf.source.numSentences(); s++) {
-        std::cout << "=" << secondHalf.source.sentence(s) << "\n";
-      }
-
       // Sentences should be consistent now, give way to client.
       clientCallback(std::move(finalResponse));
     };
