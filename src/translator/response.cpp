@@ -8,10 +8,8 @@ namespace marian::bergamot {
 // We're marginalizing q out of p(s | q) x p( q | t). However, we have different representations of q on source side to
 // intermediate - p(s_i | q_j) and intermediate to target side - p(q'_j' | t_k).
 //
-// The input here is the ByteRanges in sQ (q towards source side), ByteRanges in Qt(q towards target side) and the
-// alignment matrix computed with Qt to target T. This matrix p(q'_j' | t_k) is rewritten into p(q_j | t_k) by means of
-// spreading the probability in the former over bytes and collecting it at the ranges specified by latter, using a two
-// pointer accumulation strategy.
+// The matrix p(q'_j' | t_k) is rewritten into p(q_j | t_k) by means of spreading the probability in the former over
+// bytes and collecting it at the ranges specified by latter, using a two pointer accumulation strategy.
 Alignment transferThroughCharacters(const std::vector<ByteRange> &sourceSidePivots,
                                     const std::vector<ByteRange> &targetSidePivots,
                                     const Alignment &targetGivenPivots) {
@@ -105,7 +103,7 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
     for (size_t ids = 0; ids < sourceTokenCount; ids++) {
       for (size_t idq = 0; idq < sourceSidePivots.size(); idq++) {
         for (size_t idt = 0; idt < targetTokenCount; idt++) {
-          // Matrices are of for p(s | t) = P[t][s], hence idq appears on the extremes.
+          // Matrices are of form p(s | t) = P[t][s], hence idq appears on the extremes.
           output[idt][ids] += sourceGivenPivots[idq][ids] * remappedPivotGivenTargets[idt][idq];
         }
       }
