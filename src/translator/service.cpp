@@ -35,10 +35,10 @@ std::vector<Response> BlockingService::translateMultiple(std::shared_ptr<Transla
   return responses;
 }
 
-std::vector<Response> BlockingService::translatePivotMultiple(std::shared_ptr<TranslationModel> first,
-                                                              std::shared_ptr<TranslationModel> second,
-                                                              std::vector<std::string> &&sources,
-                                                              const ResponseOptions &responseOptions) {
+std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<TranslationModel> first,
+                                                     std::shared_ptr<TranslationModel> second,
+                                                     std::vector<std::string> &&sources,
+                                                     const ResponseOptions &responseOptions) {
   // Translate firstRound
   std::vector<Response> firstResponses;
   size_t numSources = sources.size();
@@ -115,9 +115,8 @@ AsyncService::~AsyncService() {
   }
 }
 
-void AsyncService::pivotTranslate(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
-                                  std::string &&source, CallbackType clientCallback,
-                                  const ResponseOptions &responseOptions) {
+void AsyncService::pivot(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
+                         std::string &&source, CallbackType clientCallback, const ResponseOptions &responseOptions) {
   // Need callback chaining to maintain async, honestly this would be easier to implement just for blocking.
   // When the first translation is ready, call the second.
   auto internalCallback = [this, clientCallback, second, responseOptions](Response &&firstHalf) {

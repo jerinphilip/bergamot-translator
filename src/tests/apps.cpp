@@ -65,7 +65,7 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
   std::future<Response> responseFuture = responsePromise.get_future();
 
   auto callback = [&responsePromise](Response &&response) { responsePromise.set_value(std::move(response)); };
-  service.pivotTranslate(models.front(), models.back(), std::move(source), callback, responseOptions);
+  service.pivot(models.front(), models.back(), std::move(source), callback, responseOptions);
 
   responseFuture.wait();
 

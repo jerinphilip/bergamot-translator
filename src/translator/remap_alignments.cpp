@@ -73,32 +73,32 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std:
 
 std::vector<Alignment> remapAlignments(const Response &first, const Response &second) {
   std::vector<Alignment> alignments;
-  for (size_t s = 0; s < first.source.numSentences(); s++) {
-    auto SP = first.alignments[s];
-    const Alignment &QtT = second.alignments[s];
+  for (size_t sentenceId = 0; sentenceId < first.source.numSentences(); sentenceId++) {
+    const Alignment &SsQ = first.alignments[sentenceId];
+    const Alignment &QtT = second.alignments[sentenceId];
 
     size_t nS, nsQ, nQt, nT;
     std::vector<ByteRange> sQ, Qt, T;
 
-    nS = first.source.numWords(s);
-    nsQ = first.target.numWords(s);
-    nQt = second.source.numWords(s);
-    nT = second.target.numWords(s);
+    nS = first.source.numWords(sentenceId);
+    nsQ = first.target.numWords(sentenceId);
+    nQt = second.source.numWords(sentenceId);
+    nT = second.target.numWords(sentenceId);
 
     for (size_t i = 0; i < nsQ; i++) {
-      sQ.push_back(first.target.wordAsByteRange(s, i));
+      sQ.push_back(first.target.wordAsByteRange(sentenceId, i));
     }
 
     for (size_t i = 0; i < nQt; i++) {
-      Qt.push_back(second.source.wordAsByteRange(s, i));
+      Qt.push_back(second.source.wordAsByteRange(sentenceId, i));
     }
 
     for (size_t i = 0; i < nT; i++) {
-      T.push_back(second.target.wordAsByteRange(s, i));
+      T.push_back(second.target.wordAsByteRange(sentenceId, i));
     }
 
     // Reintrepret probability p(q'_j' | t_k) as p(q_j | t_k)
-    Alignment transferredPT = transferThroughCharacters(sQ, Qt, T, QtT);
+    Alignment sQT = transferThroughCharacters(sQ, Qt, T, QtT);
 
     // Marginalize out q_j.
     // p(s_i | t_k) = \sum_{j} p(s_i | q_j) x p(q_j | t_k)
@@ -106,7 +106,8 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
     for (size_t ids = 0; ids < nS; ids++) {
       for (size_t idq = 0; idq < nsQ; idq++) {
         for (size_t idt = 0; idt < nT; idt++) {
-          output[idt][ids] += SP[idq][ids] * transferredPT[idt][idq];
+          // Matrices are of for p(s | t) = P[t][s], hence idq appears on the extremes.
+          output[idt][ids] += SsQ[idq][ids] * sQT[idt][idq];
         }
       }
     }

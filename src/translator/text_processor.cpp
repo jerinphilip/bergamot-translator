@@ -139,16 +139,13 @@ void TextProcessor::wrap(Segment &segment, std::vector<string_view> &wordRanges,
 }
 
 void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segments) const {
-  // We will use sentences from previous annotation, but we will overwrite with new vocabulary tricks.
-  // We are aware of maxLengthBreak_ here.
-
-  // FIXME: copy
   std::string copySource = source.text;
   AnnotatedText replacement(std::move(copySource));
 
   for (size_t s = 0; s < source.numSentences(); s++) {
     // This is our sentenceStream
     ByteRange sentenceByteRange = source.sentenceAsByteRange(s);
+
     // Fool tokenization using ByteRanges into looking at replacement. They're same, so okay.
     marian::string_view sentence{&replacement.text[sentenceByteRange.begin], sentenceByteRange.size()};
 
@@ -166,15 +163,6 @@ void TextProcessor::processFromAnnotation(AnnotatedText &source, Segments &segme
       const char *end = &(replacement.text[sentenceByteRange.begin]);
       wordRanges.emplace_back(end, 0);
     }
-
-    // We're hopefully applying the correct slack by means of max-length-break * max-length-factor. marian cannot
-    // generate a sequence of length more than max-length-break*max-length-factor.
-    //
-    // if (segment.size() >= (maxLengthBreak_ + BatchingPool::PIVOT_SLACK)) {
-    //   std::cerr << "Line " << s << ": " << sentence << "tokenized into " << segment.size() << " tokens" << std::endl;
-    // }
-    // ABORT_IF(segment.size() >= (maxLengthBreak_ + BatchingPool::PIVOT_SLACK),
-    //          "Turns out applied slack is not enough for overflowing tokens.");
 
     segments.push_back(std::move(segment));
     replacement.recordExistingSentence(wordRanges.begin(), wordRanges.end(), wordRanges.begin()->data());

@@ -47,10 +47,8 @@ class BlockingService {
   std::vector<Response> translateMultiple(std::shared_ptr<TranslationModel> translationModel,
                                           std::vector<std::string> &&source, const ResponseOptions &responseOptions);
 
-  std::vector<Response> translatePivotMultiple(std::shared_ptr<TranslationModel> first,
-                                               std::shared_ptr<TranslationModel> second,
-                                               std::vector<std::string> &&sources,
-                                               const ResponseOptions &responseOptions);
+  std::vector<Response> pivotMultiple(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
+                                      std::vector<std::string> &&sources, const ResponseOptions &responseOptions);
 
  private:
   ///  Numbering requests processed through this instance. Used to keep account of arrival times of the request. This
@@ -97,9 +95,8 @@ class AsyncService {
   void translate(std::shared_ptr<TranslationModel> translationModel, std::string &&source, CallbackType callback,
                  const ResponseOptions &options = ResponseOptions());
 
-  void pivotTranslate(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
-                      std::string &&source, CallbackType clientCallback,
-                      const ResponseOptions &options = ResponseOptions());
+  void pivot(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second, std::string &&source,
+             CallbackType clientCallback, const ResponseOptions &options = ResponseOptions());
 
   /// Thread joins and proper shutdown are required to be handled explicitly.
   ~AsyncService();
