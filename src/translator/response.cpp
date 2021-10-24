@@ -12,45 +12,44 @@ namespace marian::bergamot {
 // alignment matrix computed with Qt to target T. This matrix p(q'_j' | t_k) is rewritten into p(q_j | t_k) by means of
 // spreading the probability in the former over bytes and collecting it at the ranges specified by latter, using a two
 // pointer accumulation strategy.
-Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std::vector<ByteRange> &Qt,
-                                    const std::vector<ByteRange> &T, const Alignment &QtT) {
+Alignment transferThroughCharacters(const std::vector<ByteRange> &sourceSidePivots,
+                                    const std::vector<ByteRange> &targetSidePivots,
+                                    const Alignment &targetGivenPivots) {
   // Initialize an empty alignment matrix.
-  Alignment remapped(T.size(), std::vector<float>(sQ.size(), 0.0f));
+  Alignment remapped(targetGivenPivots.size(), std::vector<float>(sourceSidePivots.size(), 0.0f));
 
-  auto sq = sQ.begin();
-  auto qt = Qt.begin();
-  while (sq != sQ.end() && qt != Qt.end()) {
-    size_t i, j;
-    i = std::distance(sQ.begin(), sq);
-    j = std::distance(Qt.begin(), qt);
-    if (sq->begin == qt->begin && sq->end == qt->end) {
-      for (size_t t = 0; t < T.size(); t++) {
-        remapped[t][i] += QtT[t][j];
+  for (size_t sq = 0, qt = 0; sq < sourceSidePivots.size() && qt < targetSidePivots.size();
+       /*each branch inside increments either sq or qt or both, therefore the loop terminates */) {
+    auto &sourceSidePivot = sourceSidePivots[sq];
+    auto &targetSidePivot = targetSidePivots[qt];
+    if (sourceSidePivot.begin == targetSidePivot.begin && sourceSidePivot.end == targetSidePivot.end) {
+      for (size_t t = 0; t < targetGivenPivots.size(); t++) {
+        remapped[t][sq] += targetGivenPivots[t][qt];
       }
 
       // Perfect match, move pointer from both.
       sq++, qt++;
     } else {
       // Do we have overlap?
-      size_t l = std::max(qt->begin, sq->begin);
-      size_t r = std::min(qt->end, sq->end);
+      size_t left = std::max(targetSidePivot.begin, sourceSidePivot.begin);
+      size_t right = std::min(targetSidePivot.end, sourceSidePivot.end);
 
-      assert(l <= r);  // there should be overlap.
+      assert(left <= right);  // there should be overlap.
 
-      size_t charCount = r - l;
-      size_t probSpread = qt->size();
+      size_t charCount = right - left;
+      size_t probSpread = targetSidePivot.size();
       float fraction = probSpread == 0 ? 1.0f : static_cast<float>(charCount) / static_cast<float>(probSpread);
-      for (size_t t = 0; t < T.size(); t++) {
-        remapped[t][i] += fraction * QtT[t][j];
+      for (size_t t = 0; t < targetGivenPivots.size(); t++) {
+        remapped[t][sq] += fraction * targetGivenPivots[t][qt];
       }
 
       // Which one is ahead? sq or qt or both end at same point?
-      if (sq->end == qt->end) {
+      if (sourceSidePivot.end == targetSidePivot.end) {
         sq++;
         qt++;
-      } else if (sq->end > qt->end) {
+      } else if (sourceSidePivot.end > targetSidePivot.end) {
         qt++;
-      } else {  // sq->end < qt->end
+      } else {  // sourceSidePivot.end < targetSidePivot.end
         sq++;
       }
     }
@@ -58,9 +57,9 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std:
 
   // At the end, assert what we have is a valid probability distribution.
 #ifdef DEBUG
-  for (size_t t = 0; t < T.size(); t++) {
+  for (size_t t = 0; t < targets.size(); t++) {
     float sum = 0.0f;
-    for (size_t q = 0; q < sQ.size(); q++) {
+    for (size_t q = 0; q < sourceSidePivots.size(); q++) {
       sum += remapped[t][q];
     }
 
@@ -75,40 +74,39 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std:
 std::vector<Alignment> remapAlignments(const Response &first, const Response &second) {
   std::vector<Alignment> alignments;
   for (size_t sentenceId = 0; sentenceId < first.source.numSentences(); sentenceId++) {
-    const Alignment &SsQ = first.alignments[sentenceId];
-    const Alignment &QtT = second.alignments[sentenceId];
+    const Alignment &sourceGivenPivots = first.alignments[sentenceId];
+    const Alignment &targetGivenPivots = second.alignments[sentenceId];
 
-    size_t nS, nsQ, nQt, nT;
-    std::vector<ByteRange> sQ, Qt, T;
+    // TODO: Allow range iterators and change algorithm, directly tapping into AnnotatedText
+    // Extracts ByteRanges corresponding to a words constituting a sentence from an annotation.
+    auto extractWordByteRanges = [](const AnnotatedText &annotatedText,
+                                    size_t sentenceId) -> std::vector<marian::bergamot::ByteRange> {
+      size_t N = annotatedText.numWords(sentenceId);
+      std::vector<ByteRange> output;
 
-    nS = first.source.numWords(sentenceId);
-    nsQ = first.target.numWords(sentenceId);
-    nQt = second.source.numWords(sentenceId);
-    nT = second.target.numWords(sentenceId);
+      for (size_t i = 0; i < N; i++) {
+        output.push_back(annotatedText.wordAsByteRange(sentenceId, i));
+      }
+      return output;
+    };
 
-    for (size_t i = 0; i < nsQ; i++) {
-      sQ.push_back(first.target.wordAsByteRange(sentenceId, i));
-    }
-
-    for (size_t i = 0; i < nQt; i++) {
-      Qt.push_back(second.source.wordAsByteRange(sentenceId, i));
-    }
-
-    for (size_t i = 0; i < nT; i++) {
-      T.push_back(second.target.wordAsByteRange(sentenceId, i));
-    }
+    auto sourceSidePivots = extractWordByteRanges(first.target, sentenceId);
+    auto targetSidePivots = extractWordByteRanges(second.source, sentenceId);
 
     // Reintrepret probability p(q'_j' | t_k) as p(q_j | t_k)
-    Alignment sQT = transferThroughCharacters(sQ, Qt, T, QtT);
+    Alignment remappedPivotGivenTargets =
+        transferThroughCharacters(sourceSidePivots, targetSidePivots, targetGivenPivots);
 
     // Marginalize out q_j.
     // p(s_i | t_k) = \sum_{j} p(s_i | q_j) x p(q_j | t_k)
-    Alignment output(nT, std::vector<float>(nS, 0.0f));
-    for (size_t ids = 0; ids < nS; ids++) {
-      for (size_t idq = 0; idq < nsQ; idq++) {
-        for (size_t idt = 0; idt < nT; idt++) {
+    size_t sourceTokenCount = first.source.numWords(sentenceId);
+    size_t targetTokenCount = second.target.numWords(sentenceId);
+    Alignment output(targetTokenCount, std::vector<float>(sourceTokenCount, 0.0f));
+    for (size_t ids = 0; ids < sourceTokenCount; ids++) {
+      for (size_t idq = 0; idq < sourceSidePivots.size(); idq++) {
+        for (size_t idt = 0; idt < targetTokenCount; idt++) {
           // Matrices are of for p(s | t) = P[t][s], hence idq appears on the extremes.
-          output[idt][ids] += SsQ[idq][ids] * sQT[idt][idq];
+          output[idt][ids] += sourceGivenPivots[idq][ids] * remappedPivotGivenTargets[idt][idq];
         }
       }
     }
