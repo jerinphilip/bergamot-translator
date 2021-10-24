@@ -6,7 +6,6 @@
 #include "batch.h"
 #include "byte_array_util.h"
 #include "definitions.h"
-#include "remap_alignments.h"
 
 namespace marian {
 namespace bergamot {
@@ -76,15 +75,7 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
   // Compile 1, 2. They're bound by indices.
   std::vector<Response> finalResponses;
   for (size_t i = 0; i < numSources; i++) {
-    Response finalResponse;
-
-    // Compute alignment first using internal matrices and mappings.
-    finalResponse.alignments = remapAlignments(firstResponses[i], secondResponses[i]);
-
-    finalResponse.source = std::move(firstResponses[i].source);
-    finalResponse.target = std::move(secondResponses[i].target);
-    finalResponse.qualityScores = std::move(secondResponses[i].qualityScores);
-
+    Response finalResponse = combine(firstResponses[i], secondResponses[i]);
     finalResponses.push_back(std::move(finalResponse));
   }
 
@@ -125,16 +116,10 @@ void AsyncService::pivot(std::shared_ptr<TranslationModel> first, std::shared_pt
         firstHalf.target;  // We cannot eliminate this copy, as we need two versions of intermediate. Holding
                            // it in a copy allows moving the response into the lambda below.
 
-    auto joiningCallback = [this, firstHalf = std::move(firstHalf), clientCallback](Response &&secondHalf) {
-      // All the operations.
-      Response finalResponse;
-
-      // Compute alignment first using internal matrices and mappings.
-      finalResponse.alignments = remapAlignments(firstHalf, secondHalf);
-
-      finalResponse.source = std::move(firstHalf.source);
-      finalResponse.target = std::move(secondHalf.target);
-      finalResponse.qualityScores = std::move(secondHalf.qualityScores);
+    // https://stackoverflow.com/a/65606554/4565794
+    // Move semantics only work on mutable lambdas, and can only be done once. It's only once in our case, so issok.
+    auto joiningCallback = [this, firstHalf = std::move(firstHalf), clientCallback](Response &&secondHalf) mutable {
+      Response finalResponse = combine(firstHalf, secondHalf);
 
       // Sentences should be consistent now, give way to client.
       clientCallback(std::move(finalResponse));

@@ -15,17 +15,6 @@ namespace bergamot {
 
 class BatchingPool {
  public:
-  // Breaking this further into multiple wrapped sentences will complicate the API for Annotation, requiring to have
-  // knowledge of list of sentences mapping to a single previous translation unit. Annotation needs rework for a a more
-  // friendly use-case suitable API in C++ to iterate sentences, tokens etc which is a TODO for later.
-  //
-  // For the time being, we add some slack, which only BatchingPool is aware of. Since the TextProcessor still wraps at
-  // first request in, most of the Batches generated will be under max-length break.
-  //
-  // In the unlikely event of a few sentences overflowing, this allows the exceeding words to be put in the slack area.
-  // Very few batches are expected to be generated at the higher length.
-  //
-  // In the event we get an overflow max-length-break + PIVOT_SLACK, the program is configured to abort.
   explicit BatchingPool(Ptr<Options> options);
 
   // RequestSentence incorporates (tentative) notions of priority with each

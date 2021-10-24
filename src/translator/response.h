@@ -74,6 +74,13 @@ struct Response {
 
   const std::string &getTranslatedText() const { return target.text; }
 };
+
+Response combine(Response &first, Response &second);
+
+Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std::vector<ByteRange> &Qt,
+                                    const std::vector<ByteRange> &T, const Alignment &QtT);
+std::vector<Alignment> remapAlignments(const Response &first, const Response &second);
+
 }  // namespace bergamot
 }  // namespace marian
 

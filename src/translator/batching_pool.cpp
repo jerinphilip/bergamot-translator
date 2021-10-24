@@ -12,6 +12,12 @@ BatchingPool::BatchingPool(Ptr<Options> options)
     : miniBatchWords_(options->get<int>("mini-batch-words")), maxActiveBucketLength_(0) {
   size_t maxLengthBreak = options->get<int>("max-length-break");
   float maxLengthFactor = options->get<float>("max-length-factor", 3.0);
+
+  // For the time being, we add some slack, which only BatchingPool is aware of. Since the TextProcessor still wraps at
+  // first request in, most of the Batches generated will be under max-length break.
+  //
+  // In the unlikely event of a few sentences overflowing, this allows the exceeding words to be put in the slack area.
+  // Very few batches are expected to be generated at a higher length.
   size_t pivotSlack = maxLengthBreak * maxLengthFactor - maxLengthBreak;
   bucket_.resize(maxLengthBreak + pivotSlack + 1);
 
