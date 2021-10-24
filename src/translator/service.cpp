@@ -114,7 +114,6 @@ void AsyncService::pivot(std::shared_ptr<TranslationModel> first, std::shared_pt
       clientCallback(std::move(finalResponse));
     };
 
-    // FIXME sentences can potentially be inconsistent, wrap can abort.
     Ptr<Request> request =
         second->makePivotRequest(requestId_++, joiningCallback, std::move(intermediate), responseOptions);
     safeBatchingPool_.enqueueRequest(second, request);
