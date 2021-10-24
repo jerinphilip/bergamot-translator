@@ -40,26 +40,13 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
                                                      const ResponseOptions &responseOptions) {
   // Translate firstRound
   std::vector<Response> firstResponses;
-  size_t numSources = sources.size();
-  firstResponses.resize(numSources);
-
-  for (size_t i = 0; i < numSources; i++) {
-    auto callback = [i, &firstResponses](Response &&response) { firstResponses[i] = std::move(response); };  //
-    Ptr<Request> request = first->makeRequest(requestId_++, std::move(sources[i]), callback, responseOptions);
-    batchingPool_.enqueueRequest(first, request);
-  }
-
-  Batch batch;
-  Ptr<TranslationModel> model{nullptr};
-  while (batchingPool_.generateBatch(model, batch)) {
-    model->translateBatch(/*deviceId=*/0, batch);
-  }
+  firstResponses = translateMultiple(first, std::move(sources), responseOptions);
 
   // Translate secondRound, after we have outputs at pivot from first round
   std::vector<Response> secondResponses;
-  secondResponses.resize(numSources);
+  secondResponses.resize(firstResponses.size());
 
-  for (size_t i = 0; i < numSources; i++) {
+  for (size_t i = 0; i < firstResponses.size(); i++) {
     AnnotatedText intermediate =
         firstResponses[i].target;  // We cannot eliminate this copy, as we need two versions of intermediate. Holding
                                    // it in allows further use in makePivotRequest
@@ -68,13 +55,15 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
     batchingPool_.enqueueRequest(second, request);
   }
 
+  Batch batch;
+  Ptr<TranslationModel> model{nullptr};
   while (batchingPool_.generateBatch(model, batch)) {
     model->translateBatch(/*deviceId=*/0, batch);
   }
 
   // Compile 1, 2. They're bound by indices.
   std::vector<Response> finalResponses;
-  for (size_t i = 0; i < numSources; i++) {
+  for (size_t i = 0; i < firstResponses.size(); i++) {
     Response finalResponse = combine(firstResponses[i], secondResponses[i]);
     finalResponses.push_back(std::move(finalResponse));
   }
