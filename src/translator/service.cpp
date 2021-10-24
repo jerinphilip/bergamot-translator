@@ -101,16 +101,18 @@ void AsyncService::pivot(std::shared_ptr<TranslationModel> first, std::shared_pt
                          std::string &&source, CallbackType clientCallback, const ResponseOptions &responseOptions) {
   // Need callback chaining to maintain async, honestly this would be easier to implement just for blocking.
   // When the first translation is ready, call the second.
-  auto internalCallback = [this, clientCallback, second, responseOptions](Response &&firstHalf) {
-    // We have both Responses at this callback, firstHalf is moved in, second half will be available when complete.
+  auto internalCallback = [this, clientCallback, second, responseOptions](Response &&sourceToPivot) {
     AnnotatedText intermediate =
-        firstHalf.target;  // We cannot eliminate this copy, as we need two versions of intermediate. Holding
-                           // it in a copy allows moving the response into the lambda below.
+        sourceToPivot.target;  // We cannot eliminate this copy, as we need two versions of intermediate. Holding
+                               // it in a copy allows moving the response into the lambda below.
 
     // https://stackoverflow.com/a/65606554/4565794
     // Move semantics only work on mutable lambdas, and can only be done once. It's only once in our case, so issok.
-    auto joiningCallback = [this, firstHalf = std::move(firstHalf), clientCallback](Response &&secondHalf) mutable {
-      Response finalResponse = combine(firstHalf, secondHalf);
+    auto joiningCallback = [this, sourceToPivot = std::move(sourceToPivot),
+                            clientCallback](Response &&pivotToTarget) mutable {
+      // We have both Responses at this callback, sourceToPivot is moved in, second half will be available when
+      // complete.
+      Response finalResponse = combine(sourceToPivot, pivotToTarget);
 
       // Sentences should be consistent now, give way to client.
       clientCallback(std::move(finalResponse));
