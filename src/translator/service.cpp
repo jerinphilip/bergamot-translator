@@ -121,12 +121,16 @@ AsyncService::~AsyncService() {
 
 void AsyncService::pivot(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
                          std::string &&source, CallbackType clientCallback, const ResponseOptions &responseOptions) {
-  // Need callback chaining to maintain async, honestly this would be easier to implement just for blocking.
-  // When the first translation is ready, call the second.
+  // This is callback chaining or CPS due to async.
+
+  // We create a callback which feeds the result of first into a second translation (internalCallback), which is
+  // supplied with a callback (joiningCallback) which merges both results and creates our final response.
+
   auto internalCallback = [this, clientCallback, second, responseOptions](Response &&sourceToPivot) {
-    AnnotatedText intermediate =
-        sourceToPivot.target;  // We cannot eliminate this copy, as we need two versions of intermediate. Holding
-                               // it in a copy allows moving the response into the lambda below.
+    // We cannot eliminate the following copy, as we need two versions of intermediate. Holding
+    // it in a copy allows moving the response into the lambda below.
+
+    AnnotatedText intermediate = sourceToPivot.target;
 
     // https://stackoverflow.com/a/65606554/4565794
     // Move semantics only work on mutable lambdas, and can only be done once. It's only once in our case, so issok.
@@ -140,6 +144,7 @@ void AsyncService::pivot(std::shared_ptr<TranslationModel> first, std::shared_pt
       clientCallback(std::move(finalResponse));
     };
 
+    // Second call.
     Ptr<Request> request =
         second->makePivotRequest(requestId_++, joiningCallback, std::move(intermediate), responseOptions);
     safeBatchingPool_.enqueueRequest(second, request);
