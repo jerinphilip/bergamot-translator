@@ -55,6 +55,7 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
     model->translateBatch(/*deviceId=*/0, batch);
   }
 
+  // Translate secondRound, after we have outputs at pivot from first round
   std::vector<Response> secondResponses;
   secondResponses.resize(numSources);
 
@@ -69,7 +70,6 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
 
   while (batchingPool_.generateBatch(model, batch)) {
     model->translateBatch(/*deviceId=*/0, batch);
-    // FIXME sentences can potentially be inconsisted, wrap can abort.
   }
 
   // Compile 1, 2. They're bound by indices.
