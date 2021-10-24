@@ -82,33 +82,72 @@ const constructTranslationService = async () => {
 // Constructs a translation model object for the source and target language pair
 const constructTranslationModel = async (from, to) => {
   // Delete all previously constructed translation models and clear the map
-  languagePairToTranslationModels.forEach((value, key) => {
-    log(`Destructing model '${key}'`);
-    value.delete();
-  });
-  languagePairToTranslationModels.clear();
+  // languagePairToTranslationModels.forEach((value, key) => {
+  //   log(`Destructing model '${key}'`);
+  //   value.delete();
+  // });
+  // languagePairToTranslationModels.clear();
 
   // If none of the languages is English then construct multiple models with
   // English as a pivot language.
   if (from !== 'en' && to !== 'en') {
-    log(`Constructing model '${from}${to}' via pivoting: '${from}en' and 'en${to}'`);
-    await Promise.all([_constructTranslationModelInvolvingEnglish(from, 'en'),
-                        _constructTranslationModelInvolvingEnglish('en', to)]);
+      if(!languagePairToTranslationModels.has("${from}en")){
+         log(`Constructing model '${from}en'`);
+         await _constructTranslationModelInvolvingEnglish(from, 'en');
+      } 
+
+      if(!languagePairToTranslationModels.has("en${to}")) {
+         log(`Constructing model 'en${to}'`);
+         await _constructTranslationModelInvolvingEnglish('en', to);
+      }
   }
   else {
-    log(`Constructing model '${from}${to}'`);
-    await _constructTranslationModelInvolvingEnglish(from, to);
+      if(!languagePairToTranslationModels.has("${from}${to}")){
+        log(`Constructing model '${from}${to}'`);
+        await _constructTranslationModelInvolvingEnglish(from, to);
+      }
   }
 }
 
 // Translates text from source language to target language.
 const translate = (from, to, paragraphs) => {
   // If none of the languages is English then perform translation with
-  // English as a pivot language.
+  // English as a pivot language. 
   if (from !== 'en' && to !== 'en') {
     log(`Translating '${from}${to}' via pivoting: '${from}en' -> 'en${to}'`);
-    let translatedParagraphsInEnglish = _translateInvolvingEnglish(from, 'en', paragraphs);
-    return _translateInvolvingEnglish('en', to, translatedParagraphsInEnglish);
+    // Do we have required models to pivot?
+    const pivotToTarget = `en${to}`;
+    const sourceToPivot = `${from}en`;
+    if (!(languagePairToTranslationModels.has(sourceToPivot) && languagePairToTranslationModels.has(pivotToTarget))) {
+        throw Error(`Please have ready translation model '${sourceToPivot}' and '${pivotToTarget}' before translating`);
+    } else {
+      var first = languagePairToTranslationModels.get(sourceToPivot);
+      var second = languagePairToTranslationModels.get(pivotToTarget);
+
+      // Instantiate the arguments of translate() API i.e. ResponseOptions and input (vector<string>)
+      var responseOptions = new Module.ResponseOptions();
+      let input = new Module.VectorString;
+
+      // Initialize the input
+      paragraphs.forEach(paragraph => {
+        // prevent empty paragraph - it breaks the translation
+        if (paragraph.trim() === "") {
+          return;
+        }
+        input.push_back(paragraph.trim())
+      })
+
+      // Access input (just for debugging)
+      log(`Input size: ${input.size()}`);
+
+      // Translate the input, which is a vector<String>; the result is a vector<Response>
+      let response = translationService.pivot(first, second, input, responseOptions);
+      let translatedParagraphs = collectParagraphsFromResponse(response);
+
+      responseOptions.delete();
+      input.delete();
+      return translatedParagraphs;
+    }
   }
   else {
     log(`Translating '${from}${to}'`);
@@ -225,11 +264,25 @@ gemm-precision: int8shiftAll
   languagePairToTranslationModels.set(languagePair, translationModel);
 }
 
+const collectParagraphsFromResponse = (response) => {
+  const translatedParagraphs = [];
+  const translatedSentencesOfParagraphs = [];
+  // Why is there sourceSentencesOfParagaphs here, if it's never used? :?
+  const sourceSentencesOfParagraphs = [];
+  for (let i = 0; i < response.size(); i++) {
+    translatedParagraphs.push(response.get(i).getTranslatedText());
+    translatedSentencesOfParagraphs.push(_getAllTranslatedSentencesOfParagraph(response.get(i)));
+    sourceSentencesOfParagraphs.push(_getAllSourceSentencesOfParagraph(response.get(i)));
+  }
+  return translatedParagraphs;
+}
+
 const _translateInvolvingEnglish = (from, to, paragraphs) => {
   const languagePair = `${from}${to}`;
   if (!languagePairToTranslationModels.has(languagePair)) {
     throw Error(`Please load translation model '${languagePair}' before translating`);
   }
+
   translationModel = languagePairToTranslationModels.get(languagePair);
 
   // Instantiate the arguments of translate() API i.e. ResponseOptions and input (vector<string>)
@@ -249,16 +302,9 @@ const _translateInvolvingEnglish = (from, to, paragraphs) => {
   log(`Input size: ${input.size()}`);
 
   // Translate the input, which is a vector<String>; the result is a vector<Response>
-  let result = translationService.translate(translationModel, input, responseOptions);
-
-  const translatedParagraphs = [];
-  const translatedSentencesOfParagraphs = [];
-  const sourceSentencesOfParagraphs = [];
-  for (let i = 0; i < result.size(); i++) {
-    translatedParagraphs.push(result.get(i).getTranslatedText());
-    translatedSentencesOfParagraphs.push(_getAllTranslatedSentencesOfParagraph(result.get(i)));
-    sourceSentencesOfParagraphs.push(_getAllSourceSentencesOfParagraph(result.get(i)));
-  }
+  let response = translationService.translate(translationModel, input, responseOptions);
+  log(`Response size: ${response.size()}`);
+  var translatedParagraphs = collectParagraphsFromResponse(response);
 
   responseOptions.delete();
   input.delete();
