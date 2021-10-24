@@ -38,19 +38,21 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
                                                      std::shared_ptr<TranslationModel> second,
                                                      std::vector<std::string> &&sources,
                                                      const ResponseOptions &responseOptions) {
-  // Translate firstRound
-  std::vector<Response> firstResponses;
-  firstResponses = translateMultiple(first, std::move(sources), responseOptions);
+  // Translate source to pivots. This is same as calling translateMultiple.
+  std::vector<Response> sourcesToPivots;
+  sourcesToPivots = translateMultiple(first, std::move(sources), responseOptions);
 
-  // Translate secondRound, after we have outputs at pivot from first round
-  std::vector<Response> secondResponses;
-  secondResponses.resize(firstResponses.size());
+  // Translate pivots to targets, after we have outputs at pivot from first round. We cannot use translateMultiple here
+  // because need consistency at pivot on both sides.
+  std::vector<Response> pivotsToTargets;
+  pivotsToTargets.resize(sourcesToPivots.size());
 
-  for (size_t i = 0; i < firstResponses.size(); i++) {
+  for (size_t i = 0; i < sourcesToPivots.size(); i++) {
     AnnotatedText intermediate =
-        firstResponses[i].target;  // We cannot eliminate this copy, as we need two versions of intermediate. Holding
-                                   // it in allows further use in makePivotRequest
-    auto callback = [i, &secondResponses](Response &&response) { secondResponses[i] = std::move(response); };  //
+        sourcesToPivots[i].target;  // We cannot eliminate this copy, as we need two versions of intermediate. Holding
+                                    // it in allows further use in makePivotRequest
+    auto callback = [i, &pivotsToTargets](Response &&response) { pivotsToTargets[i] = std::move(response); };  //
+
     Ptr<Request> request = second->makePivotRequest(requestId_++, callback, std::move(intermediate), responseOptions);
     batchingPool_.enqueueRequest(second, request);
   }
@@ -61,10 +63,10 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
     model->translateBatch(/*deviceId=*/0, batch);
   }
 
-  // Compile 1, 2. They're bound by indices.
+  // Combine both sides. They're associated by indices.
   std::vector<Response> finalResponses;
-  for (size_t i = 0; i < firstResponses.size(); i++) {
-    Response finalResponse = combine(firstResponses[i], secondResponses[i]);
+  for (size_t i = 0; i < sourcesToPivots.size(); i++) {
+    Response finalResponse = combine(sourcesToPivots[i], pivotsToTargets[i]);
     finalResponses.push_back(std::move(finalResponse));
   }
 
