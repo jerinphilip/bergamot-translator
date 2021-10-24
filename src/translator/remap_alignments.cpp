@@ -38,7 +38,7 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sQ, const std:
 
       size_t charCount = r - l;
       size_t probSpread = qt->size();
-      float fraction = static_cast<float>(charCount) / static_cast<float>(probSpread);
+      float fraction = probSpread == 0 ? 1.0f : static_cast<float>(charCount) / static_cast<float>(probSpread);
       for (size_t t = 0; t < T.size(); t++) {
         remapped[t][i] += fraction * QtT[t][j];
       }
