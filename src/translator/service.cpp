@@ -10,6 +10,28 @@
 namespace marian {
 namespace bergamot {
 
+namespace {
+
+// Combines two responses with first.target == second.source mapping alignments etc accordingly.
+// There are several constraints which are matched by only the pivoting workflow in <>Service source, therefore this
+// function is not for external use and in a hidden namespace.
+Response combine(Response &&first, Response &&second) {
+  Response combined;
+
+  // Compute alignment first using internal matrices and mappings.
+  if (first.alignments.size()) {
+    combined.alignments = remapAlignments(first, second);
+  }
+
+  combined.source = std::move(first.source);
+  combined.target = std::move(second.target);
+  combined.qualityScores = std::move(second.qualityScores);
+
+  return combined;
+}
+
+}  // namespace
+
 BlockingService::BlockingService(const BlockingService::Config &config) : requestId_(0), batchingPool_() {}
 
 std::vector<Response> BlockingService::translateMultiple(std::shared_ptr<TranslationModel> translationModel,
@@ -66,7 +88,7 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
   // Combine both sides. They're associated by indices.
   std::vector<Response> finalResponses;
   for (size_t i = 0; i < sourcesToPivots.size(); i++) {
-    Response finalResponse = combine(sourcesToPivots[i], pivotsToTargets[i]);
+    Response finalResponse = combine(std::move(sourcesToPivots[i]), std::move(pivotsToTargets[i]));
     finalResponses.push_back(std::move(finalResponse));
   }
 
@@ -112,7 +134,7 @@ void AsyncService::pivot(std::shared_ptr<TranslationModel> first, std::shared_pt
                             clientCallback](Response &&pivotToTarget) mutable {
       // We have both Responses at this callback, sourceToPivot is moved in, second half will be available when
       // complete.
-      Response finalResponse = combine(sourceToPivot, pivotToTarget);
+      Response finalResponse = combine(std::move(sourceToPivot), std::move(pivotToTarget));
 
       // Sentences should be consistent now, give way to client.
       clientCallback(std::move(finalResponse));

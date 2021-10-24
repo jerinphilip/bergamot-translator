@@ -118,17 +118,4 @@ std::vector<Alignment> remapAlignments(const Response &first, const Response &se
   return alignments;
 }
 
-Response combine(Response &first, Response &second) {
-  Response combined;
-
-  // Compute alignment first using internal matrices and mappings.
-  combined.alignments = remapAlignments(first, second);
-
-  combined.source = std::move(first.source);
-  combined.target = std::move(second.target);
-  combined.qualityScores = std::move(second.qualityScores);
-
-  return combined;
-}
-
 }  // namespace marian::bergamot
