@@ -71,7 +71,7 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
 
   responseFuture.wait();
 
-  const float EPS = 1e-6;  // 1e-7 fails interestingly.
+  const float EPS = 1e-2;
   size_t totalOutcomes = 0;
   size_t favourableOutcomes = 0;
 
@@ -87,6 +87,7 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
         sum += response.alignments[sentenceId][t][s];
       }
 
+      std::cerr << fmt::format("Sum @ (target-token = {}, sentence = {}) = {}", t, sentenceId, sum) << std::endl;
       ABORT_IF((std::abs(sum - 1.0f) > EPS), "Not a probability distribution, something's going wrong");
     }
 
