@@ -109,7 +109,7 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
         favourableOutcomes += 1;
       }
 
-      std::cout << sourceToken << " " << targetToken << " " << maxV << std::endl;
+      std::cerr << sourceToken << " " << targetToken << " " << maxV << std::endl;
 
       totalOutcomes += 1;
     }
