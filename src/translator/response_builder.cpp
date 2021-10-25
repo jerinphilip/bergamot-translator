@@ -40,9 +40,6 @@ void ResponseBuilder::buildTranslatedText(Histories &histories, Response &respon
     std::vector<string_view> targetSentenceMappings;
     vocabs_.target()->decodeWithByteRanges(words, decoded, targetSentenceMappings, /*ignoreEOS=*/false);
 
-    // For some reason, marian has decided to give us something with no EOS. Manually inserting an EOS.
-    ABORT_IF(targetSentenceMappings.rbegin()->size() != 0, "No EOS in targetSentenceMappings");
-
     switch (responseOptions_.concatStrategy) {
       case ConcatStrategy::FAITHFUL: {
         // For each sentence, prepend the filler text between the corresponding
