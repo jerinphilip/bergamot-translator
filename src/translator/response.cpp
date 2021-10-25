@@ -16,16 +16,8 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sourceSidePivo
   // Initialize an empty alignment matrix.
   Alignment remapped(pivotGivenTargets.size(), std::vector<float>(sourceSidePivots.size(), 0.0f));
 
-#ifdef DEBUG
-  std::vector<float> expectedSum(pivotGivenTargets.size(), 0.0f);
-  for (size_t t = 0; t < pivotGivenTargets.size(); t++) {
-    for (size_t qt = 0; qt < targetSidePivots.size(); t++) {
-      expectedSum[t] += pivotGivenTargets[t][qt];
-    }
-  }
-#endif
-
-  for (size_t sq = 0, qt = 0; sq < sourceSidePivots.size() && qt < targetSidePivots.size();
+  size_t sq, qt;
+  for (sq = 0, qt = 0; sq < sourceSidePivots.size() && qt < targetSidePivots.size();
        /*each branch inside increments either sq or qt or both, therefore the loop terminates */) {
     auto &sourceSidePivot = sourceSidePivots[sq];
     auto &targetSidePivot = targetSidePivots[qt];
@@ -45,9 +37,11 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sourceSidePivo
 
       size_t charCount = right - left;
       size_t probSpread = targetSidePivot.size();
-      float weight = probSpread == 0 ? 1.0f : static_cast<float>(charCount) / static_cast<float>(probSpread);
       for (size_t t = 0; t < pivotGivenTargets.size(); t++) {
-        remapped[t][sq] += weight * pivotGivenTargets[t][qt];
+        double logprob = std::log(static_cast<double>(charCount)) +
+                         std::log(static_cast<double>(pivotGivenTargets[t][qt])) -
+                         std::log(static_cast<double>(probSpread));
+        remapped[t][sq] += std::exp(logprob);
       }
 
       // Which one is ahead? sq or qt or both end at same point?
@@ -62,16 +56,45 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sourceSidePivo
     }
   }
 
+  // while (sq < sourceSidePivots.size()) {
+  //   std::cerr << fmt::format("Unaccumulated sourceSidePivots[{}] = ({}, {})", sq, sourceSidePivots[sq].begin,
+  //                            sourceSidePivots[sq].end)
+  //             << std::endl;
+  //   ++sq;
+  // }
+
+  while (qt < targetSidePivots.size()) {
+    // There is a case of EOS not being predicted. In this case the two pointer algorithm will fail. The just author
+    // will redistribute the surplus among subjects.
+    for (size_t t = 0; t < pivotGivenTargets.size(); t++) {
+      float gift = pivotGivenTargets[t][qt] / sourceSidePivots.size();
+      for (size_t sq = 0; sq < sourceSidePivots.size(); sq++) {
+        remapped[t][sq] += gift;
+      }
+    }
+
+    qt++;
+  }
+
 #ifdef DEBUG
-  const float EPS = 1e-7;  // Warning this might be too high.
+  // The following sanity check ensures when DEBUG is enabled that we have successfully transferred all probabily mass
+  // available over pivot tokens given a target token in our original input to the new remapped representation.
+  //
+  // It's been discovered that floating point arithmetic before we get the Alignment matrix can have values such that
+  // the distribution does not sum upto 1.
+  const float EPS = 1e-6;
   for (size_t t = 0; t < pivotGivenTargets.size(); t++) {
-    float sum = 0.0f;
+    float sum = 0.0f, expectedSum = 0.0f;
+    for (size_t qt = 0; qt < targetSidePivots.size(); qt++) {
+      expectedSum += pivotGivenTargets[t][qt];
+    }
     for (size_t sq = 0; sq < sourceSidePivots.size(); sq++) {
       sum += remapped[t][sq];
     }
-    ABORT_IF(std::abs(sum - expectedSum[t]) > EPS, "Haven't accumulated probabilities, re-examine");
+    std::cerr << fmt::format("Sum @ token {} = {} to be compared with expected {}.", t, sum, expectedSum) << std::endl;
+    ABORT_IF(std::abs(sum - expectedSum) > EPS, "Haven't accumulated probabilities, re-examine");
   }
-#endif
+#endif  // DEBUG
 
   return remapped;
 }
