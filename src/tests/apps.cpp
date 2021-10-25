@@ -71,7 +71,7 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
 
   responseFuture.wait();
 
-  const float EPS = 5e-1;
+  const float EPS = 1e-6;
   size_t totalOutcomes = 0;
   size_t favourableOutcomes = 0;
 

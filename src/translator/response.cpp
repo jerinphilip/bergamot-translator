@@ -56,12 +56,7 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sourceSidePivo
     }
   }
 
-  // while (sq < sourceSidePivots.size()) {
-  //   std::cerr << fmt::format("Unaccumulated sourceSidePivots[{}] = ({}, {})", sq, sourceSidePivots[sq].begin,
-  //                            sourceSidePivots[sq].end)
-  //             << std::endl;
-  //   ++sq;
-  // }
+  assert(sq == sourceSidePivots.size());  // Nothing can be done here, this should not happen.
 
   while (qt < targetSidePivots.size()) {
     // There is a case of EOS not being predicted. In this case the two pointer algorithm will fail. The just author
