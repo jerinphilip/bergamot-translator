@@ -47,6 +47,21 @@ class BlockingService {
   std::vector<Response> translateMultiple(std::shared_ptr<TranslationModel> translationModel,
                                           std::vector<std::string> &&source, const ResponseOptions &responseOptions);
 
+  /// With the supplied two translation models, translate using first and then the second generating a response as if it
+  /// were translated from first's source language to second's target langauge. Requires first's target to be second's
+  /// source to work correctly - effectively implementing pivoting translation via an intermediate language.
+  ///
+  /// Requires that `max-length-break` * `max-length-factor` for the second to be greater than the value for the first
+  /// model.
+  ///
+  /// @param[in] first: TranslationModel capable of translating from source language to pivot language.
+  /// @param[in] second: TranslationModel capable of translating between pivot and target language.
+  /// @param[move] sources: The input source texts to be translated.
+  /// @param[in] options: Options indicating whether or not to include optional members in response and pass additional
+  /// configurations. See ResponseOptions.
+  ///
+  /// @returns responses corresponding to the source-text which can be used as if they were translated with
+  /// translateMultiple.
   std::vector<Response> pivotMultiple(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second,
                                       std::vector<std::string> &&sources, const ResponseOptions &responseOptions);
 
@@ -95,6 +110,20 @@ class AsyncService {
   void translate(std::shared_ptr<TranslationModel> translationModel, std::string &&source, CallbackType callback,
                  const ResponseOptions &options = ResponseOptions());
 
+  /// With the supplied two translation models, translate using first and then the second generating a response as if it
+  /// were translated from first's source language to second's target langauge. Requires first's target to be second's
+  /// source to work correctly - effectively implementing pivoting translation via an intermediate language.
+  ///
+  /// Requires that `max-length-break` * `max-length-factor` for the second to be greater than the value for the first
+  /// model.
+  ///
+  /// @param[in] first: TranslationModel capable of translating from source language to pivot language.
+  /// @param[in] second: TranslationModel capable of translating between pivot and target language.
+  /// @param[move] source: The source text to be translated
+  /// @param[in] clientCallback: The callback to be called with the constructed Response. Expects the callback to
+  /// consume the Response.
+  /// @param[in] options: Options indicating whether or not to include optional members in response and pass additional
+  /// configurations. See ResponseOptions.
   void pivot(std::shared_ptr<TranslationModel> first, std::shared_ptr<TranslationModel> second, std::string &&source,
              CallbackType clientCallback, const ResponseOptions &options = ResponseOptions());
 
