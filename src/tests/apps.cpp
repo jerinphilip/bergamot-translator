@@ -123,7 +123,7 @@ void pivotTranslate(AsyncService &service, std::vector<Ptr<TranslationModel>> &m
   // This is arbitrary value chosen by @jerinphilip, but should be enough to check if things fail.
   // This value is calibrated on bergamot input in BRT. All this is supposed to do is let the developers know if
   // something's largely amiss to the point alignments are not working.
-  ABORT_IF(accuracy < 0.75, "Accuracy {} not enough. Please check if something's off.", accuracy * 100);
+  ABORT_IF(accuracy < 0.70, "Accuracy {} not enough. Please check if something's off.", accuracy * 100);
 
   std::cout << response.source.text;
   std::cout << response.target.text;
