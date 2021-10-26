@@ -61,6 +61,8 @@ Alignment transferThroughCharacters(const std::vector<ByteRange> &sourceSidePivo
   while (qt < targetSidePivots.size()) {
     // There is a case of EOS not being predicted. In this case the two pointer algorithm will fail. The just author
     // will redistribute the surplus among subjects.
+
+    assert(qt.size() == 0);  // assert in DEBUG, that this is only EOS.
     for (size_t t = 0; t < pivotGivenTargets.size(); t++) {
       float gift = pivotGivenTargets[t][qt] / sourceSidePivots.size();
       for (size_t sq = 0; sq < sourceSidePivots.size(); sq++) {
