@@ -42,6 +42,7 @@ void ResponseBuilder::buildTranslatedText(Histories &histories, Response &respon
     if (targetSentenceMappings.rbegin()->size() != 0) {
       std::cerr << "Input string: " << response.source.sentence(sentenceIdx) << std::endl;
       std::cerr << "Output string: " << decoded << std::endl;
+      std::cerr << "Input string had words = " << response.source.numWords(sentenceIdx) << std::endl;
       std::cerr << "Words"
                 << "(" << words.size() << "): ";
       for (auto &word : words) {
