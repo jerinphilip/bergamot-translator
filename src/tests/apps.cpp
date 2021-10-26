@@ -140,6 +140,15 @@ void translationCache(AsyncService &service, Ptr<TranslationModel> model) {
   std::cout << firstResponse.target.text;
 }
 
+void cacheHashDist(AsyncService &service, Ptr<TranslationModel> model) {
+  std::string line;
+  ResponseOptions options;
+  auto callback = [](Response &&) -> void {};
+  while (std::getline(std::cin, line)) {
+    service.translate(model, std::move(line), callback, options);
+  }
+}
+
 void benchmarkCacheEditWorkflow(AsyncService &service, Ptr<TranslationModel> model) {
   std::cout << "Starting cache-warmup" << std::endl;
   Response response;

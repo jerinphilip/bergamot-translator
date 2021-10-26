@@ -44,6 +44,8 @@ void translationCache(AsyncService &service, Ptr<TranslationModel> model);
 
 void benchmarkCacheEditWorkflow(AsyncService &service, Ptr<TranslationModel> model);
 
+void cacheHashDist(AsyncService &service, Ptr<TranslationModel> model);
+
 }  // namespace testapp
 }  // namespace bergamot
 }  // namespace marian

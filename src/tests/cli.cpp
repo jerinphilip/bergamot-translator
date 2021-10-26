@@ -47,6 +47,9 @@ int main(int argc, char *argv[]) {
     case OpMode::TEST_BENCHMARK_EDIT_WORKFLOW:
       testapp::benchmarkCacheEditWorkflow(service, models.front());
       break;
+    case OpMode::TEST_CACHE_HASH_DIST:
+      testapp::cacheHashDist(service, models.front());
+      break;
     default:
       ABORT("Incompatible op-mode. Choose one of the test modes.");
       break;

@@ -26,6 +26,7 @@ std::istringstream &operator>>(std::istringstream &in, OpMode &mode) {
       {"test-forward-backward", OpMode::TEST_FORWARD_BACKWARD_FOR_OUTBOUND},
       {"test-translation-cache", OpMode::TEST_TRANSLATION_CACHE},
       {"test-benchmark-edit-workflow", OpMode::TEST_BENCHMARK_EDIT_WORKFLOW},
+      {"test-cache-hash-dist", OpMode::TEST_CACHE_HASH_DIST},
   };
 
   auto query = table.find(modeString);
