@@ -11,7 +11,6 @@ namespace marian::bergamot {
 template <class Key, class Value, class Hash = std::hash<Key>, class Equals = std::equal_to<Key>>
 class AtomicCache {
  public:
-  using Record = std::pair<Key, Value>;
   struct Stats {
     size_t hits{0};
     size_t misses{0};
@@ -30,6 +29,8 @@ class AtomicCache {
   const Stats stats() const { return stats_; }
 
  private:
+  using Record = std::pair<Key, Value>;
+
   bool atomicLoad(const Key &key, Value &value) const {
     // No probing, direct map onto records_
     size_t index = hash_(key) % records_.size();
@@ -37,7 +38,7 @@ class AtomicCache {
 
     std::lock_guard<std::mutex> lock(mutexBuckets_[mutexId]);
     const Record &candidate = records_[index];
-    if (key == candidate.first) {
+    if (equals_(key, candidate.first)) {
       value = candidate.second;
       stats_.hits += 1;
       return true;
