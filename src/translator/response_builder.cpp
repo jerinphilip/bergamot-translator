@@ -39,6 +39,32 @@ void ResponseBuilder::buildTranslatedText(Histories &histories, Response &respon
     std::string decoded;
     std::vector<string_view> targetSentenceMappings;
     vocabs_.target()->decodeWithByteRanges(words, decoded, targetSentenceMappings, /*ignoreEOS=*/false);
+    if (targetSentenceMappings.rbegin()->size() != 0) {
+      std::cerr << "Input string: " << response.source.sentence(sentenceIdx) << std::endl;
+      std::cerr << "Output string: " << decoded << std::endl;
+      std::cerr << "Words"
+                << "(" << words.size() << "): ";
+      for (auto &word : words) {
+        std::cerr << word.toString() << " ";
+      }
+      std::cerr << std::endl;
+
+#define debugWord(x) std::cerr << #x << " " << x.toString() << std::endl;
+      debugWord(marian::Word::NONE);
+      debugWord(marian::Word::ZERO);
+      debugWord(marian::Word::DEFAULT_EOS_ID);
+      debugWord(marian::Word::DEFAULT_UNK_ID);
+      debugWord(vocabs_.target()->getEosId());
+#undef debugWord
+
+      // What is the last word?
+      marian::Words custom;
+      custom.push_back(words.back());
+      std::cerr << "The last word is: " << vocabs_.target()->decode(custom) << std::endl;
+    }
+
+    // For some reason, marian has decided to give us something with no EOS. Manually inserting an EOS.
+    ABORT_IF(targetSentenceMappings.rbegin()->size() != 0, "No EOS in targetSentenceMappings");
 
     switch (responseOptions_.concatStrategy) {
       case ConcatStrategy::FAITHFUL: {
