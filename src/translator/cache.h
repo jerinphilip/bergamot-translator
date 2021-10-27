@@ -55,23 +55,28 @@ class AtomicCache {
   ~AtomicCache() {
     // Load.
     auto print = [](std::string tag, Counter &counter) {
+      std::cerr << "\"" << tag << "\": {\n";
       auto asList = [](std::string name, std::vector<size_t> V) {
-        std::cerr << name << "  = [\n";
+        std::cerr << name << " [\n";
         for (size_t i = 0; i < V.size(); i++) {
           if (i != 0) std::cerr << ", ";
           std::cerr << V[i];
         }
-        std::cerr << "]\n";
+        std::cerr << "],\n";
       };
 
-      asList(tag + "[\"indexCount\"]", counter.indexCount);
-      asList(tag + "[\"mutexCount\"]", counter.mutexCount);
+      asList("\"indexCount\": ", counter.indexCount);
+      asList("\"mutexCount\": ", counter.mutexCount);
 
-      std::cerr << tag + "[\"processed\"] = " << counter.processed << "\n";
+      std::cerr << "\"processed\": " << counter.processed << "\n";
+      std::cerr << "}" << std::endl;
     };
 
+    std::cerr << "{\n";
     print("loadCounter", load_);
+    std::cerr << ",\n";
     print("storeCounter", store_);
+    std::cerr << "}" << std::endl;
   }
 
  private:
@@ -82,9 +87,8 @@ class AtomicCache {
     size_t index = hash_(key) % records_.size();
     size_t mutexId = index % mutexBuckets_.size();
 
-    load_.account(index, mutexId);
-
     std::lock_guard<std::mutex> lock(mutexBuckets_[mutexId]);
+    load_.account(index, mutexId);
     const Record &candidate = records_[index];
     if (equals_(key, candidate.first)) {
       value = candidate.second;
@@ -102,9 +106,8 @@ class AtomicCache {
     size_t index = hash_(key) % records_.size();
     size_t mutexId = index % mutexBuckets_.size();
 
-    store_.account(index, mutexId);
-
     std::lock_guard<std::mutex> lock(mutexBuckets_[mutexId]);
+    store_.account(index, mutexId);
     Record &candidate = records_[index];
 
     candidate.first = key;
