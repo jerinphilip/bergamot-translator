@@ -146,6 +146,8 @@ void translationCache(AsyncService &service, Ptr<TranslationModel> model) {
 void tagTranslationBlockingService(Ptr<TranslationModel> model) {
   ResponseOptions responseOptions;
   responseOptions.alignment = true;
+  BlockingService::Config serviceConfig;
+  BlockingService service(serviceConfig);
 
   std::mt19937 g;  // seed the generator
   g.seed(42);
@@ -177,9 +179,6 @@ void tagTranslationBlockingService(Ptr<TranslationModel> model) {
     // std::string source = "A republican strategy to counteract the re-election of Obama.";
     // source.erase(std::remove(source.begin(), source.end(), '\n'), source.end());
     std::vector<std::string> texts = {source};
-
-    BlockingService::Config serviceConfig;
-    BlockingService service(serviceConfig);
 
     std::vector<ByteRange> tagPosSourceCharLevel;
     placeTags(tagPosSourceCharLevel, 0, source.size(), /*nodes=*/5);
