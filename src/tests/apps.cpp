@@ -147,27 +147,65 @@ void tagTranslationBlockingService(Ptr<TranslationModel> model) {
   ResponseOptions responseOptions;
   responseOptions.alignment = true;
 
-  // Set up data: "A <i><b>republican</b> strategy</i> to counteract the re-election of Obama."
-  std::string source = "A republican strategy to counteract the re-election of Obama.";
-  source.erase(std::remove(source.begin(), source.end(), '\n'), source.end());
-  std::vector<std::string> texts = {source};
+  std::mt19937 g;  // seed the generator
+  g.seed(42);
 
-  BlockingService::Config serviceConfig;
-  BlockingService service(serviceConfig);
+  std::function<void(std::vector<ByteRange> &, int, int, int)> placeTags;
+  placeTags = [&g, &placeTags](std::vector<ByteRange> &tags, int l, int r, int remaining) {
+    if (remaining == 0) return;
 
-  std::vector<ByteRange> tagPosSourceCharLevel;
-  tagPosSourceCharLevel.push_back(ByteRange{2, 21});
-  tagPosSourceCharLevel.push_back(ByteRange{2, 12});
-
-  auto results = service.translateMultiple(model, std::move(texts), responseOptions, {tagPosSourceCharLevel});
-
-  std::cout << "Translated character-level ByteRange array:" << std::endl;
-  for (ByteRange br : results[0].tagPositionTarget) {
-    std::cout << br.begin << " " << br.end;
-    for (size_t pos = br.begin; pos < br.end; pos++) {
-      std::cout << results[0].target.text[pos];
+    if (remaining == 1) {
+      tags.push_back({static_cast<size_t>(l), static_cast<size_t>(r)});
+      return;
     }
-    std::cout << std::endl;
+
+    std::uniform_int_distribution<> dist(l, r);
+    int splitPoint = dist(g);
+
+    std::uniform_int_distribution<> pdist(1, remaining - 1);
+    int k = pdist(g);
+
+    tags.push_back({static_cast<size_t>(l), static_cast<size_t>(r)});
+    placeTags(tags, l, splitPoint, remaining - 1 - k);
+    placeTags(tags, splitPoint, r, k);
+  };
+
+  // Set up data: "A <i><b>republican</b> strategy</i> to counteract the re-election of Obama."
+  std::string line;
+  while (std::getline(std::cin, line)) {
+    std::string source = line;
+    // std::string source = "A republican strategy to counteract the re-election of Obama.";
+    // source.erase(std::remove(source.begin(), source.end(), '\n'), source.end());
+    std::vector<std::string> texts = {source};
+
+    BlockingService::Config serviceConfig;
+    BlockingService service(serviceConfig);
+
+    std::vector<ByteRange> tagPosSourceCharLevel;
+    placeTags(tagPosSourceCharLevel, 0, source.size(), /*nodes=*/5);
+    tagPosSourceCharLevel.erase(tagPosSourceCharLevel.begin());
+    bool first = true;
+    std::cout << "Source tag - traversal { ";
+    for (auto &r : tagPosSourceCharLevel) {
+      if (!first) {
+        std::cout << ", ";
+      } else {
+        first = false;
+      }
+      std::cout << fmt::format("[{}, {})", r.begin, r.end);
+    }
+    std::cout << "} " << std::endl;
+
+    auto results = service.translateMultiple(model, std::move(texts), responseOptions, {tagPosSourceCharLevel});
+
+    std::cout << "Translated character-level ByteRange array:" << std::endl;
+    for (ByteRange br : results[0].tagPositionTarget) {
+      std::cout << br.begin << " " << br.end;
+      for (size_t pos = br.begin; pos < br.end; pos++) {
+        std::cout << results[0].target.text[pos];
+      }
+      std::cout << std::endl;
+    }
   }
 }
 
