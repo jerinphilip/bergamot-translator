@@ -23,3 +23,5 @@ wasm/test_page/bergamot-translator-worker.*
 
 # VSCode
 .vscode
+
+build
