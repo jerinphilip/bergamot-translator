@@ -34,7 +34,6 @@ TranslationModel::TranslationModel(const Config &options, MemoryBundle &&memory 
   for (size_t idx = 0; idx < replicas; idx++) {
     loadBackend(idx);
   }
-  */
 }
 
 void TranslationModel::loadBackend(MarianBackend &backend, Workspace &workspace) {

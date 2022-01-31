@@ -41,7 +41,12 @@ BlockingService::BlockingService(const BlockingService::Config &config)
     : config_(config),
       requestId_(0),
       batchingPool_(),
+<<<<<<< HEAD
       cache_(makeOptionalCache(config.cacheSize, /*mutexBuckets = */ 1)),
+=======
+      cache_(config.cacheSize, /*mutexBuckets=*/1),
+      workspace_(/*deviceId=*/0, config.workspaceSizeInMB),
+>>>>>>> 0902d72 (Fix failed GitHub UI merge attempt)
       logger_(config.logger) {}
 =======
 BlockingService::BlockingService(const BlockingService::Config &config)
@@ -117,7 +122,7 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
   Batch batch;
   Ptr<TranslationModel> model{nullptr};
   while (batchingPool_.generateBatch(model, batch)) {
-    model->translateBatch(/*deviceId=*/0, batch);
+    model->translateBatch(workspace_, batch);
   }
 
   // Combine both sides. They're associated by indices.
