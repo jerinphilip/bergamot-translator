@@ -169,7 +169,6 @@ class AsyncService {
     Logger::Config logger;  // Configurations for logging
     size_t workspaceSizeInMB{1024};
 
-
     template <class App>
     static void addOptions(App &app, Config &config) {
       app.add_option("--cpu-threads", config.numWorkers, "Workers to form translation backend");
