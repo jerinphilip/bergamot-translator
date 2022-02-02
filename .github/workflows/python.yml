@@ -250,8 +250,8 @@ jobs:
            title: "Latest Build"
            files: |
                 ${{github.workspace}}/artifact/*.whl
-                ${{github.workspace}}/bergamot-translator-worker/build-wasm/bergamot-translator-worker.js
-                ${{github.workspace}}/bergamot-translator-worker/build-wasm/bergamot-translator-worker.wasm
+                ${{github.workspace}}/bergamot-translator-worker/bergamot-translator-worker.js
+                ${{github.workspace}}/bergamot-translator-worker/bergamot-translator-worker.wasm
   
     release-version:
       name: Release version 
@@ -275,8 +275,8 @@ jobs:
            title: "${{ github.ref_name }}"
            files: |
               ${{github.workspace}}/artifact/*.whl
-              ${{github.workspace}}/bergamot-translator-worker/build-wasm/bergamot-translator-worker.js
-              ${{github.workspace}}/bergamot-translator-worker/build-wasm/bergamot-translator-worker.wasm
+              ${{github.workspace}}/bergamot-translator-worker/bergamot-translator-worker.js
+              ${{github.workspace}}/bergamot-translator-worker/bergamot-translator-worker.wasm
   
     python-checks:
       name: "formatting and typechecks"
