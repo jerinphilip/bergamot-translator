@@ -400,11 +400,11 @@ jobs:
            files: |
                 ${{github.workspace}}/artifact/*.whl
 
-                ${{github.workspace}}/wasm-artefacts/bergamot-translator-worker.js
-                ${{github.workspace}}/wasm-artefacts/bergamot-translator-worker.wasm
+                ${{github.workspace}}/wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker.js
+                ${{github.workspace}}/wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker.wasm
 
-                ${{github.workspace}}/wasm-artefacts/bergamot-translator-worker-with-wormhole.js
-                ${{github.workspace}}/wasm-artefacts/bergamot-translator-worker-with-wormhole.wasm
+                ${{github.workspace}}/wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker-with-wormhole.js
+                ${{github.workspace}}/wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker-with-wormhole.wasm
   
     release-version:
       name: Release version 
