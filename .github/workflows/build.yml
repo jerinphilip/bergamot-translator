@@ -382,10 +382,6 @@ jobs:
       runs-on: ubuntu-latest
       needs: [python-ubuntu, python-macos, build-wasm]
       if: github.ref == 'refs/heads/main'
-      permissions:
-        contents: "write"
-        packages: "write"
-        pull-requests: "read"
       steps:
        - name: Download artifacts
          uses: actions/download-artifact@v2
@@ -403,13 +399,11 @@ jobs:
            prerelease: true
            title: "Latest Build"
            files: |
-                ${{github.workspace}}/artifact/*.whl
-
-                ${{github.workspace}}/wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.js
-                ${{github.workspace}}/wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
-
-                ${{github.workspace}}/wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
-                ${{github.workspace}}/wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
+                artifact/*.whl
+                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.js
+                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
+                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
+                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
   
     release-version:
       name: Release version 
@@ -432,13 +426,11 @@ jobs:
            prerelease: false
            title: "${{ github.ref_name }}"
            files: |
-                ${{github.workspace}}/artifact/*.whl
-
-                ${{github.workspace}}/wasm-artefacts/bergamot-translator-worker.js
-                ${{github.workspace}}/wasm-artefacts/bergamot-translator-worker.wasm
-
-                ${{github.workspace}}/wasm-artefacts/bergamot-translator-worker-with-wormhole.js
-                ${{github.workspace}}/wasm-artefacts/bergamot-translator-worker-with-wormhole.wasm
+                artifact/*.whl
+                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.js
+                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
+                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
+                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
 
   
     python-checks:
