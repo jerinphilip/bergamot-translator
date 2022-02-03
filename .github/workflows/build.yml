@@ -321,10 +321,6 @@ jobs:
           run: |
             ccache -s # Print current cache stats
 
-        - name: Instantiate simd wormhole
-          working-directory: build-wasm-without-wormhole
-          run: bash ../wasm/patch-artifacts-enable-wormhole.sh
-
         - name: Import GEMM library from a separate wasm module
           working-directory: build-wasm-without-wormhole
           run: bash ../wasm/patch-artifacts-import-gemm-module.sh
