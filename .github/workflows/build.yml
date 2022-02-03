@@ -331,7 +331,7 @@ jobs:
           run: |
             mkdir -p build-wasm-with-wormhole
             cd build-wasm-with-wormhole
-            emcmake cmake -DCOMPILE_WASM=on -WORMHOLE=on ..
+            emcmake cmake -DCOMPILE_WASM=on -DWORMHOLE=on ..
 
 
         - name: Compile
@@ -382,6 +382,10 @@ jobs:
       runs-on: ubuntu-latest
       needs: [python-ubuntu, python-macos, build-wasm]
       if: github.ref == 'refs/heads/main'
+      permissions:
+        contents: "write"
+        packages: "write"
+        pull-requests: "read"
       steps:
        - name: Download artifacts
          uses: actions/download-artifact@v2
