@@ -412,6 +412,11 @@ jobs:
       steps:
        - name: Download artifacts
          uses: actions/download-artifact@v2
+
+       - name: Prepare WebAssembly combined SHA256
+         run: |
+           mkdir shasums
+           cat wasm-artefacts-{with,without}-wormhole/SHA256 > shasums/SHA256
   
        - name: Update GitHub release
          uses: marvinpinto/action-automatic-releases@latest
@@ -422,10 +427,10 @@ jobs:
            title: "${{ github.ref_name }}"
            files: |
                 artifact/*.whl
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.js
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
+                wasm-artefacts-without-wormhole/bergamot-translator-worker-without-wormhole.js
+                wasm-artefacts-without-wormhole/bergamot-translator-worker-without-wormhole.wasm
+                wasm-artefacts-with-wormhole/bergamot-translator-worker-with-wormhole.js
+                wasm-artefacts-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
                 shasums/SHA256
   
     python-checks:
