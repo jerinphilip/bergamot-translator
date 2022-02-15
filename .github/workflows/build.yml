@@ -265,6 +265,13 @@ jobs:
           run: |
               git clone --depth 1 https://github.com/emscripten-core/emsdk.git
 
+        - name: Generate ccache_vars for ccache based on machine
+          shell: bash
+          id: ccache_vars
+          run: |-
+            echo "::set-output name=hash::$(echo ${{ env.ccache_compilercheck }})"
+            echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
+
         - name: Cache-op for build-cache through ccache
           uses: actions/cache@v2
           with:
@@ -292,12 +299,6 @@ jobs:
               # This looks more permanent than version pinned, so keeping temporarily to avoid failures.
               echo "${{ github.workspace }}/emsdk/ccache/git-emscripten_64bit/bin" >> $GITHUB_PATH
 
-        - name: Generate ccache_vars for ccache based on machine
-          shell: bash
-          id: ccache_vars
-          run: |-
-            echo "::set-output name=hash::$(echo ${{ env.ccache_compilercheck }})"
-            echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
 
         - name: Verify Emscripten setup
           run: |
