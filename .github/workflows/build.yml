@@ -233,6 +233,7 @@ jobs:
 
     build-wasm:
       strategy: 
+        fail-fast: false
         matrix:
           include:
             - name: "with-wormhole"
