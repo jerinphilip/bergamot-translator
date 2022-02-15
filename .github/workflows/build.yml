@@ -361,7 +361,7 @@ jobs:
         - name: Upload wasm artifact
           uses: actions/upload-artifact@v2
           with:
-            name: wasm-artefacts
+            name: wasm-artefacts-${{matrix-name}}
             if-no-files-found: error
             path: |
                 ${{github.workspace}}/build-wasm-${{ matrix.name }}/bergamot-translator-worker-${{matrix.name}}.js
@@ -382,7 +382,7 @@ jobs:
        - name: Prepare WebAssembly combined SHA256
          run: |
            mkdir shasums
-           cat wasm/artefacts/build-wasm-{with,without}-wormhole/SHA256 > shasums/SHA256
+           cat wasm-artefacts-{with,without}-wormhole/SHA256 > shasums/SHA256
 
         
        - name: Update GitHub prerelease
@@ -394,10 +394,10 @@ jobs:
            title: "Latest Build"
            files: |
                 artifact/*.whl
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker-without-wormhole.js
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker-without-wormhole.wasm
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
+                wasm-artefacts-without-wormhole/bergamot-translator-worker-without-wormhole.js
+                wasm-artefacts-without-wormhole/bergamot-translator-worker-without-wormhole.wasm
+                wasm-artefacts-with-wormhole/bergamot-translator-worker-with-wormhole.js
+                wasm-artefacts-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
                 shasums/SHA256
   
     release-version:
