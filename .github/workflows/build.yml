@@ -359,6 +359,13 @@ jobs:
                 mv bergamot-translator-worker{,-with-wormhole}.js.bak
                 mv bergamot-translator-worker{,-with-wormhole}.wasm
 
+        # Prepare SHA
+        - name: Compute SHA256
+          run:  |
+            mkdir -p shasums
+            shasum -a 256 build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.{js,wasm} > shasums/SHA256.with-wormhole
+            shasum -a 256 build-wasm-without-wormhole/bergamot-translator-worker{js,wasm} > shasums/SHA256.without-wormhole
+            cat shasums/SHA256.{with-wormhole,without-wormhole} > ./shasums/SHA256
 
         # Upload both together.
         - name: Upload wasm artifact
@@ -375,6 +382,8 @@ jobs:
                 ${{github.workspace}}/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
                 ${{github.workspace}}/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
                 ${{github.workspace}}/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js.bak
+
+                ${{github.workspace}}/shasums/SHA256
 
   # Try to upload a release using https://github.com/marvinpinto/actions/issues/177#issuecomment-917605585 as a model
     release-latest:
@@ -399,6 +408,7 @@ jobs:
                 wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
                 wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
                 wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
+                shasums/SHA256
   
     release-version:
       name: Release version 
@@ -426,7 +436,7 @@ jobs:
                 wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
                 wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
                 wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
-
+                shasums/SHA256
   
     python-checks:
       name: "formatting and typechecks"
