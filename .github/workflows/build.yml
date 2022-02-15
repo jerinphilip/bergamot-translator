@@ -355,7 +355,7 @@ jobs:
         - name: Compute SHA256
           run:  |
             mkdir -p shasums
-            shasum -a 256 build-wasm-${{matrix.name}}/bergamot-translator-worker-${{ matrix-name }}.{js,wasm} > build-wasm-${{matrix.name}}/SHA256
+            shasum -a 256 build-wasm-${{matrix.name}}/bergamot-translator-worker-${{ matrix.name }}.{js,wasm} > build-wasm-${{matrix.name}}/SHA256
 
         # Upload both together.
         - name: Upload wasm artifact
