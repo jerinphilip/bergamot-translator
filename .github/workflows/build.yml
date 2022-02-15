@@ -329,7 +329,7 @@ jobs:
             ccache -s # Print current cache stats
 
         - name: Import GEMM library from a separate wasm module
-          working-directory: build-wasm-{{ matrix.name }}
+          working-directory: build-wasm-${{ matrix.name }}
           run: bash ../wasm/patch-artifacts-import-gemm-module.sh
 
 
@@ -343,7 +343,7 @@ jobs:
           run: bash ../wasm/patch-artifacts-import-gemm-module.sh
 
         # Rename the wormhole on builds
-        - name: Rename artefacts with wormhole
+        - name: Rename artefacts indicating ${{ matrix.name }}
           working-directory: build-wasm-${{matrix.name }}
           run: |
                 mv bergamot-translator-worker{,-${{ matrix.name }}}.js
@@ -366,8 +366,7 @@ jobs:
                 ${{github.workspace}}/build-wasm-${{ matrix.name }}/bergamot-translator-worker-${{matrix.name}}.js
                 ${{github.workspace}}/build-wasm-${{ matrix.name }}/bergamot-translator-worker-${{matrix.name}}.wasm
                 ${{github.workspace}}/build-wasm-${{ matrix.name }}/bergamot-translator-worker-${{matrix.name}}.js.bak
-
-                ${{github.workspace}}/build-wasm-${{matrix.name}}/SHA256
+                ${{github.workspace}}/build-wasm-${{ matrix.name }}/SHA256
 
   # Try to upload a release using https://github.com/marvinpinto/actions/issues/177#issuecomment-917605585 as a model
     release-latest:
