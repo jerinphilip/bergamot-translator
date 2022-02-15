@@ -237,7 +237,7 @@ jobs:
           include:
             - name: "with-wormhole"
               WORMHOLE: "ON"
-            - name: "without-wormhole":
+            - name: "without-wormhole"
               WORMHOLE: "OFF"
       name: "emscripten / ${{ matrix.name }}"
       runs-on: ubuntu-latest
