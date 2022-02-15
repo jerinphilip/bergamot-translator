@@ -232,10 +232,17 @@ jobs:
             path: ${{github.workspace}}/dist/bergamot-*.whl
 
     build-wasm:
-      name: "emscripten"
+      strategy: 
+        fail-fast: false
+        matrix:
+          include:
+            - name: "with-wormhole"
+              WORMHOLE: "ON"
+            - name: "without-wormhole"
+              WORMHOLE: "OFF"
+      name: "emscripten / ${{ matrix.name }}"
       runs-on: ubuntu-latest
       steps:
-
         - name: Checkout
           uses: actions/checkout@v2
           with:
@@ -259,17 +266,24 @@ jobs:
           run: |
               git clone --depth 1 https://github.com/emscripten-core/emsdk.git
 
+        - name: Generate ccache_vars for ccache based on machine
+          shell: bash
+          id: ccache_vars
+          run: |-
+            echo "::set-output name=hash::$(echo ${{ env.ccache_compilercheck }})"
+            echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
+
         - name: Cache-op for build-cache through ccache
           uses: actions/cache@v2
           with:
             path: |
                 ${{ env.ccache_dir }}
                 ${{ github.workspace }}/emsdk/ccache/git-emscripten_64bit/
-            key: ccache-${{ github.job }}-${{ env.emsdk_version }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
+            key: ccache-${{ matrix.name }}-${{ env.emsdk_version }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}-${{ steps.ccache_vars.outputs.timestamp }}
             restore-keys: |-
-              ccache-${{ github.job }}-${{ env.emsdk_version }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
-              ccache-${{ github.job }}-${{ env.emsdk_version }}-${{ steps.ccache_vars.outputs.hash }}
-              ccache-${{ github.job }}-${{ env.emsdk_version }}
+              ccache-${{ matrix.name  }}-${{ env.emsdk_version }}-${{ steps.ccache_vars.outputs.hash }}-${{ github.ref }}
+              ccache-${{ matrix.name  }}-${{ env.emsdk_version }}-${{ steps.ccache_vars.outputs.hash }}
+              ccache-${{ matrix.name  }}-${{ env.emsdk_version }}
 
         - name: Setup Emscripten toolchain
           run: |
@@ -286,12 +300,6 @@ jobs:
               # This looks more permanent than version pinned, so keeping temporarily to avoid failures.
               echo "${{ github.workspace }}/emsdk/ccache/git-emscripten_64bit/bin" >> $GITHUB_PATH
 
-        - name: Generate ccache_vars for ccache based on machine
-          shell: bash
-          id: ccache_vars
-          run: |-
-            echo "::set-output name=hash::$(echo ${{ env.ccache_compilercheck }})"
-            echo "::set-output name=timestamp::$(date '+%Y-%m-%dT%H.%M.%S')"
 
         - name: Verify Emscripten setup
           run: |
@@ -305,15 +313,15 @@ jobs:
             ccache -z # Zero cache entry
 
         # WORMHOLE=off
-        - name: "Configure builds for WORMHOLE=off"
+        - name: "Configure builds for WORMHOLE=${{matrix.WORMHOLE}}"
           run: |
-            mkdir -p build-wasm-without-wormhole
-            cd build-wasm-without-wormhole
-            emcmake cmake -DCOMPILE_WASM=on -DWORMHOLE=off ..
+            mkdir -p build-wasm-${{ matrix.name }}
+            cd build-wasm-${{matrix.name }}
+            emcmake cmake -DCOMPILE_WASM=on -DWORMHOLE=${{matrix.WORMHOLE}} ..
 
 
-        - name: "Compile with WORMHOLE=off"
-          working-directory: build-wasm-without-wormhole
+        - name: "Compile with WORMHOLE=${{ matrix.WORMHOLE }}"
+          working-directory: build-wasm-${{ matrix.name }}
           run: |
             emmake make -j2
 
@@ -322,59 +330,44 @@ jobs:
             ccache -s # Print current cache stats
 
         - name: Import GEMM library from a separate wasm module
-          working-directory: build-wasm-without-wormhole
+          working-directory: build-wasm-${{ matrix.name }}
           run: bash ../wasm/patch-artifacts-import-gemm-module.sh
 
 
-        # WORMHOLE=on
-        - name: "Configure builds for WORMHOLE=on"
-          run: |
-            mkdir -p build-wasm-with-wormhole
-            cd build-wasm-with-wormhole
-            emcmake cmake -DCOMPILE_WASM=on -DWORMHOLE=on ..
-
-
-        - name: "Compile with WORMHOLE=on"
-          working-directory: build-wasm-with-wormhole
-          run: |
-            emmake make -j2
-
-        - name: ccache epilog
-          run: |
-            ccache -s # Print current cache stats
-
         - name: Instantiate simd wormhole
-          working-directory: build-wasm-with-wormhole
+          if: ${{ matrix.WORMHOLE == 'ON' }}
+          working-directory: build-wasm-${{ matrix.name }}
           run: bash ../wasm/patch-artifacts-enable-wormhole.sh
 
         - name: Import GEMM library from a separate wasm module
-          working-directory: build-wasm-with-wormhole
+          working-directory: build-wasm-${{ matrix.name }}
           run: bash ../wasm/patch-artifacts-import-gemm-module.sh
 
         # Rename the wormhole on builds
-        - name: Rename artefacts with wormhole
-          working-directory: build-wasm-with-wormhole
+        - name: Rename artefacts indicating ${{ matrix.name }}
+          working-directory: build-wasm-${{matrix.name }}
           run: |
-                mv bergamot-translator-worker{,-with-wormhole}.js
-                mv bergamot-translator-worker{,-with-wormhole}.js.bak
-                mv bergamot-translator-worker{,-with-wormhole}.wasm
+                mv bergamot-translator-worker{,-${{ matrix.name }}}.js
+                mv bergamot-translator-worker{,-${{ matrix.name }}}.js.bak
+                mv bergamot-translator-worker{,-${{ matrix.name }}}.wasm
 
+        # Prepare SHA
+        - name: Compute SHA256
+          run:  |
+            mkdir -p shasums
+            shasum -a 256 build-wasm-${{matrix.name}}/bergamot-translator-worker-${{ matrix.name }}.{js,wasm} > build-wasm-${{matrix.name}}/SHA256
 
         # Upload both together.
         - name: Upload wasm artifact
           uses: actions/upload-artifact@v2
           with:
-            name: wasm-artefacts
+            name: wasm-artefacts-${{matrix.name}}
             if-no-files-found: error
             path: |
-                # Without wormhole
-                ${{github.workspace}}/build-wasm-without-wormhole/bergamot-translator-worker.js
-                ${{github.workspace}}/build-wasm-without-wormhole/bergamot-translator-worker.wasm
-                ${{github.workspace}}/build-wasm-without-wormhole/bergamot-translator-worker.js.bak
-
-                ${{github.workspace}}/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
-                ${{github.workspace}}/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
-                ${{github.workspace}}/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js.bak
+                ${{github.workspace}}/build-wasm-${{ matrix.name }}/bergamot-translator-worker-${{matrix.name}}.js
+                ${{github.workspace}}/build-wasm-${{ matrix.name }}/bergamot-translator-worker-${{matrix.name}}.wasm
+                ${{github.workspace}}/build-wasm-${{ matrix.name }}/bergamot-translator-worker-${{matrix.name}}.js.bak
+                ${{github.workspace}}/build-wasm-${{ matrix.name }}/SHA256
 
   # Try to upload a release using https://github.com/marvinpinto/actions/issues/177#issuecomment-917605585 as a model
     release-latest:
@@ -385,6 +378,12 @@ jobs:
       steps:
        - name: Download artifacts
          uses: actions/download-artifact@v2
+
+       - name: Prepare WebAssembly combined SHA256
+         run: |
+           mkdir shasums
+           cat wasm-artefacts-{with,without}-wormhole/SHA256 > shasums/SHA256
+
         
        - name: Update GitHub prerelease
          uses: marvinpinto/action-automatic-releases@latest
@@ -395,10 +394,11 @@ jobs:
            title: "Latest Build"
            files: |
                 artifact/*.whl
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.js
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
+                wasm-artefacts-without-wormhole/bergamot-translator-worker-without-wormhole.js
+                wasm-artefacts-without-wormhole/bergamot-translator-worker-without-wormhole.wasm
+                wasm-artefacts-with-wormhole/bergamot-translator-worker-with-wormhole.js
+                wasm-artefacts-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
+                shasums/SHA256
   
     release-version:
       name: Release version 
@@ -426,7 +426,7 @@ jobs:
                 wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
                 wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
                 wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
-
+                shasums/SHA256
   
     python-checks:
       name: "formatting and typechecks"
