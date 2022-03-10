@@ -163,9 +163,10 @@ class BlockingService {
 class AsyncService {
  public:
   struct Config {
-    size_t numWorkers{1};   ///< How many worker translation threads to spawn.
-    size_t cacheSize{0};    ///< Size in History items to be stored in the cache. Loosely corresponds to sentences to
-                            /// cache in the real world. A value of 0 means no caching.
+    size_t numWorkers{1};  ///< How many worker translation threads to spawn.
+    size_t cacheSize{0};   ///< Size in History items to be stored in the cache. Loosely corresponds to sentences to
+                           /// cache in the real world. A value of 0 means no caching.
+    size_t workspaceSizeInMB{1024};
     Logger::Config logger;  // Configurations for logging
     size_t workspaceSizeInMB{1024};
 
