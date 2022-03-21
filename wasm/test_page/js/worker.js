@@ -150,6 +150,7 @@ const translate = (from, to, input, translateOptions) => {
     const listSourceText = _parseSourceText(vectorResponse);
     const listTranslatedTextSentences = _parseTranslatedTextSentences(vectorResponse);
     const listSourceTextSentences = _parseSourceTextSentences(vectorResponse);
+    const listAlignments = _parseAlignments(vectorResponse);
 
     log(`Source text: ${listSourceText}`);
     log(`Translated text: ${listTranslatedText}`);
@@ -252,6 +253,18 @@ const _getLoadedTranslationModel = (srcLang, tgtLang) => {
   }
   return languagePairToTranslationModels.get(languagePair);
 }
+
+const _parseAlignments = (vectorResponse) => {
+  const result = [];
+  for (let i = 0; i < vectorResponse.size(); i++) {
+    const response = vectorResponse.get(i);
+    log("Parsing Alignments");
+    result.push(response.alignments);
+    log(response.alignments);
+  }
+  return result;
+}
+
 
 const _parseTranslatedText = (vectorResponse) => {
   const result = [];
