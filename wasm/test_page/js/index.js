@@ -83,13 +83,13 @@ worker.onmessage = function (e) {
 
     // Add each translation in its own div to have a known root in which the
     // sentence ids are unique. Used for highlighting sentences.
-    e.data[1].forEach(translatedHTML => {
+    for(var i = 0; i < e.data[1].length; i++){
       const translation = document.createElement('div');
       translation.classList.add('translation');
-      translation.innerHTML = translatedHTML;
+      translation.innerHTML = e.data[1][i]["target"];
       addQualityClasses(translation);
       document.querySelector("#output").appendChild(translation);
-    });
+    }
   } else if (e.data[0] === "load_model_reply" && e.data[1]) {
     status(e.data[1]);
     translateCall();
