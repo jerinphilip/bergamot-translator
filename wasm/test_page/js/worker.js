@@ -40,24 +40,48 @@ const log = (message) => {
 }
 
 const makeResponse = (response) => {
-    alignments = [];
-    for(var i = 0; i < response.alignments.size(); i++){
-        alignment = []
-        for(var s = 0; s < response.alignments.get(i).size(); s++){
-            distribution = []
-            for (var t = 0; t < response.alignments.get(i).get(s).size(); t++){
-                distribution.push(response.alignments.get(i).get(s).get(t));
-            }
-            alignment.push(distribution);
-        }
-        alignments.push(alignment);
+  alignments = [];
+  for (var i = 0; i < response.alignments.size(); i++) {
+    alignment = [];
+    for (var s = 0; s < response.alignments.get(i).size(); s++) {
+      distribution = [];
+      for (var t = 0; t < response.alignments.get(i).get(s).size(); t++) {
+        distribution.push(response.alignments.get(i).get(s).get(t));
+      }
+      alignment.push(distribution);
     }
+    alignments.push(alignment);
+  }
 
-    return {
-        'source': response.getOriginalText(),
-        'target': response.getTranslatedText(),
-        'alignments': alignments
+  sourceTokens = [];
+  for (var i = 0; i < response.alignments.size(); i++) {
+    var result = [];
+    var tokens = response.getSourceTokens(i);
+    for (var s = 0; s < tokens.size(); s++) {
+      result.push(tokens.get(s));
     }
+    sourceTokens.push(result);
+  }
+
+  targetTokens = [];
+  for (var i = 0; i < response.alignments.size(); i++) {
+    var result = [];
+    var tokens = response.getTargetTokens(i);
+    for (var s = 0; s < tokens.size(); s++) {
+      result.push(tokens.get(s));
+    }
+    targetTokens.push(result);
+  }
+
+  js_response = {
+    'source': response.getOriginalText(),
+    'target': response.getTranslatedText(),
+    'alignments': alignments,
+    'sourceTokens': sourceTokens,
+    'targetTokens': targetTokens
+  };
+  log(js_response);
+  return js_response;
 }
 
 onmessage = async function(e) {

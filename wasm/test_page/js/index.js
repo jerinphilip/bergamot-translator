@@ -33,7 +33,7 @@ const _prepareTranslateOptions = (paragraphs) => {
     // Each option object can be different for each entry. But to keep the test page simple,
     // we just keep all the options same (specifically avoiding parsing the input to determine
     // html/non-html text)
-    translateOptions.push({"isQualityScores": true, "isHtml": true});
+    translateOptions.push({"isQualityScores": false, "isHtml": true});
   });
   return translateOptions;
 };
@@ -100,7 +100,10 @@ worker.onmessage = function (e) {
               }
               return _result;
           }
-          attention(labels(alignments.length), labels(alignments[0].length), alignments);
+
+          var sourceTokens = e.data[1][i]["sourceTokens"][0];
+          var targetTokens = e.data[1][i]["targetTokens"][0];
+          attention(targetTokens, sourceTokens, alignments);
 
       }
     }
