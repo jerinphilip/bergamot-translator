@@ -20,9 +20,6 @@ const fileInfo = [
   {"type": "qualityModel", "alignment": 64}
 ];
 
-const encoder = new TextEncoder(); // string to utf-8 converter
-const decoder = new TextDecoder(); // utf-8 to string converter
-
 const start = Date.now();
 let moduleLoadStart;
 var Module = {
@@ -166,18 +163,6 @@ const translate = (from, to, input, translateOptions) => {
       vectorResponse = translationService.translate(translationModel, vectorSourceText, vectorResponseOptions);
     }
 
-    // Parse all relevant information from vectorResponse
-    const listTranslatedText = _parseTranslatedText(vectorResponse);
-    const listSourceText = _parseSourceText(vectorResponse);
-    const listTranslatedTextSentences = _parseTranslatedTextSentences(vectorResponse);
-    const listSourceTextSentences = _parseSourceTextSentences(vectorResponse);
-    const listAlignments = _parseAlignments(vectorResponse);
-
-    log(`Source text: ${listSourceText}`);
-    log(`Translated text: ${listTranslatedText}`);
-    log(`Translated sentences: ${JSON.stringify(listTranslatedTextSentences)}`);
-    log(`Source sentences: ${JSON.stringify(listSourceTextSentences)}`);
-
     responses = []
     for(var i = 0; i < vectorResponse.size(); i++){
         responses.push(makeResponse(vectorResponse.get(i)));
@@ -280,54 +265,6 @@ const _getLoadedTranslationModel = (srcLang, tgtLang) => {
   return languagePairToTranslationModels.get(languagePair);
 }
 
-const _parseAlignments = (vectorResponse) => {
-  const result = [];
-  for (let i = 0; i < vectorResponse.size(); i++) {
-    const response = vectorResponse.get(i);
-    log("Parsing Alignments");
-    result.push(response.alignments);
-    log(response.alignments);
-  }
-  return result;
-}
-
-
-const _parseTranslatedText = (vectorResponse) => {
-  const result = [];
-  for (let i = 0; i < vectorResponse.size(); i++) {
-    const response = vectorResponse.get(i);
-    result.push(response.getTranslatedText());
-  }
-  return result;
-}
-
-const _parseTranslatedTextSentences = (vectorResponse) => {
-  const result = [];
-  for (let i = 0; i < vectorResponse.size(); i++) {
-    const response = vectorResponse.get(i);
-    result.push(_getTranslatedSentences(response));
-  }
-  return result;
-}
-
-const _parseSourceText = (vectorResponse) => {
-  const result = [];
-  for (let i = 0; i < vectorResponse.size(); i++) {
-    const response = vectorResponse.get(i);
-    result.push(response.getOriginalText());
-  }
-  return result;
-}
-
-const _parseSourceTextSentences = (vectorResponse) => {
-  const result = [];
-  for (let i = 0; i < vectorResponse.size(); i++) {
-    const response = vectorResponse.get(i);
-    result.push(_getSourceSentences(response));
-  }
-  return result;
-}
-
 const _prepareResponseOptions = (translateOptions) => {
   let vectorResponseOptions = new Module.VectorResponseOptions;
   translateOptions.forEach(translateOption => {
@@ -360,32 +297,3 @@ const _prepareSourceText = (input) => {
   return vectorSourceText;
 }
 
-const _getTranslatedSentences = (response) => {
-  const sentences = [];
-  const text = response.getTranslatedText();
-  for (let sentenceIndex = 0; sentenceIndex < response.size(); sentenceIndex++) {
-    const utf8SentenceByteRange = response.getTranslatedSentence(sentenceIndex);
-    sentences.push(_getSubString(text, utf8SentenceByteRange));
-  }
-  return sentences;
-}
-
-const _getSourceSentences = (response) => {
-  const sentences = [];
-  const text = response.getOriginalText();
-  for (let sentenceIndex = 0; sentenceIndex < response.size(); sentenceIndex++) {
-    const utf8SentenceByteRange = response.getSourceSentence(sentenceIndex);
-    sentences.push(_getSubString(text, utf8SentenceByteRange));
-  }
-  return sentences;
-}
-
-/*
- * Returns a substring of text (a string). The substring is represented by
- * byteRange (begin and end endices) within the utf-8 encoded version of the text.
- */
-const _getSubString = (text, utf8ByteRange) => {
-  const textUtf8ByteView = encoder.encode(text);
-  const substringUtf8ByteView = textUtf8ByteView.subarray(utf8ByteRange.begin, utf8ByteRange.end);
-  return decoder.decode(substringUtf8ByteView);
-}
