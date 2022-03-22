@@ -89,6 +89,20 @@ worker.onmessage = function (e) {
       translation.innerHTML = e.data[1][i]["target"];
       addQualityClasses(translation);
       document.querySelector("#output").appendChild(translation);
+
+      // Update attention
+      if(i == 0){
+          var alignments = e.data[1][i]["alignments"][0];
+          var labels = function(count) {
+              _result = []
+              for(var i = 1; i <= count; i++){
+                  _result.push(i.toString());
+              }
+              return _result;
+          }
+          attention(labels(alignments.length), labels(alignments[0].length), alignments);
+
+      }
     }
   } else if (e.data[0] === "load_model_reply" && e.data[1]) {
     status(e.data[1]);
