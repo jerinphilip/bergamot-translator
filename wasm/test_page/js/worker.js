@@ -42,6 +42,27 @@ const log = (message) => {
   console.debug(message);
 }
 
+const makeResponse = (response) => {
+    alignments = [];
+    for(var i = 0; i < response.alignments.size(); i++){
+        alignment = []
+        for(var s = 0; s < response.alignments.get(i).size(); s++){
+            distribution = []
+            for (var t = 0; t < response.alignments.get(i).get(s).size(); t++){
+                distribution.push(response.alignments.get(i).get(s).get(t));
+            }
+            alignment.push(distribution);
+        }
+        alignments.push(alignment);
+    }
+
+    return {
+        'source': response.getOriginalText(),
+        'target': response.getTranslatedText(),
+        'alignments': alignments
+    }
+}
+
 onmessage = async function(e) {
   const command = e.data[0];
   log(`Message '${command}' received from main script`);
@@ -157,7 +178,12 @@ const translate = (from, to, input, translateOptions) => {
     log(`Translated sentences: ${JSON.stringify(listTranslatedTextSentences)}`);
     log(`Source sentences: ${JSON.stringify(listSourceTextSentences)}`);
 
-    return listTranslatedText;
+    responses = []
+    for(var i = 0; i < vectorResponse.size(); i++){
+        responses.push(makeResponse(vectorResponse.get(i)));
+    }
+
+    return responses;
   } finally {
     // Necessary clean up
     if (vectorSourceText != null) vectorSourceText.delete();
