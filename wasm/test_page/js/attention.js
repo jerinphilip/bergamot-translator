@@ -14,8 +14,8 @@ var attention = function(labelsA, labelsB, data) {
   var networkMargin = 120;
 
   var html = d3.select('#attentional-ex2');
-  var outerWidth = 984;   // html.node().getBoundingClientRect().width;
-  var outerHeight = 240;  // html.node().getBoundingClientRect().height;
+  var outerWidth = html.node().getBoundingClientRect().width;
+  var outerHeight = html.node().getBoundingClientRect().height;
   var margin = {top: 36, right: nodeMargin, bottom: 24, left: nodeMargin};
   var width = outerWidth - margin.left - margin.right;
   var height = outerHeight - margin.top - margin.bottom;
