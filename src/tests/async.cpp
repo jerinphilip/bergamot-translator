@@ -20,8 +20,12 @@ int main(int argc, char *argv[]) {
     models.push_back(model);
   }
 
-  TestSuite<AsyncService> testSuite(service);
-  testSuite.run(config.opMode, models);
+  if (config.opMode == "test-multimodels-intensive") {
+    marian::bergamot::concurrentMultimodels(service, models);
+  } else {
+    TestSuite<AsyncService> testSuite(service);
+    testSuite.run(config.opMode, models);
+  }
 
   return 0;
 }
