@@ -295,7 +295,6 @@ jobs:
        - name: List downloaded assets
          run: |
            find ./
-
        - name: Update GitHub prerelease
          uses: marvinpinto/action-automatic-releases@latest
          with:
@@ -325,7 +324,6 @@ jobs:
        - name: List downloaded assets
          run: |
            find ./
-
        - name: Update GitHub release
          uses: marvinpinto/action-automatic-releases@latest
          with:
