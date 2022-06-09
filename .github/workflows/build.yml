@@ -304,16 +304,15 @@ jobs:
             ccache -s # Print current cache stats
             ccache -z # Zero cache entry
 
-        # WORMHOLE=off
-        - name: "Configure builds for WORMHOLE=off"
+        - name: "Configure builds"
           run: |
-            mkdir -p build-wasm-without-wormhole
-            cd build-wasm-without-wormhole
+            mkdir -p build-wasm
+            cd build-wasm
             emcmake cmake -DCOMPILE_WASM=on -DWORMHOLE=off ..
 
 
-        - name: "Compile with WORMHOLE=off"
-          working-directory: build-wasm-without-wormhole
+        - name: "Compile"
+          working-directory: build-wasm
           run: |
             emmake make -j2
 
@@ -322,43 +321,8 @@ jobs:
             ccache -s # Print current cache stats
 
         - name: Import GEMM library from a separate wasm module
-          working-directory: build-wasm-without-wormhole
+          working-directory: build-wasm
           run: bash ../wasm/patch-artifacts-import-gemm-module.sh
-
-
-        # WORMHOLE=on
-        - name: "Configure builds for WORMHOLE=on"
-          run: |
-            mkdir -p build-wasm-with-wormhole
-            cd build-wasm-with-wormhole
-            emcmake cmake -DCOMPILE_WASM=on -DWORMHOLE=on ..
-
-
-        - name: "Compile with WORMHOLE=on"
-          working-directory: build-wasm-with-wormhole
-          run: |
-            emmake make -j2
-
-        - name: ccache epilog
-          run: |
-            ccache -s # Print current cache stats
-
-        - name: Instantiate simd wormhole
-          working-directory: build-wasm-with-wormhole
-          run: bash ../wasm/patch-artifacts-enable-wormhole.sh
-
-        - name: Import GEMM library from a separate wasm module
-          working-directory: build-wasm-with-wormhole
-          run: bash ../wasm/patch-artifacts-import-gemm-module.sh
-
-        # Rename the wormhole on builds
-        - name: Rename artefacts with wormhole
-          working-directory: build-wasm-with-wormhole
-          run: |
-                mv bergamot-translator-worker{,-with-wormhole}.js
-                mv bergamot-translator-worker{,-with-wormhole}.js.bak
-                mv bergamot-translator-worker{,-with-wormhole}.wasm
-
 
         # Upload both together.
         - name: Upload wasm artifact
@@ -368,13 +332,9 @@ jobs:
             if-no-files-found: error
             path: |
                 # Without wormhole
-                ${{github.workspace}}/build-wasm-without-wormhole/bergamot-translator-worker.js
-                ${{github.workspace}}/build-wasm-without-wormhole/bergamot-translator-worker.wasm
-                ${{github.workspace}}/build-wasm-without-wormhole/bergamot-translator-worker.js.bak
-
-                ${{github.workspace}}/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
-                ${{github.workspace}}/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
-                ${{github.workspace}}/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js.bak
+                ${{github.workspace}}/build-wasm/bergamot-translator-worker.js
+                ${{github.workspace}}/build-wasm/bergamot-translator-worker.wasm
+                ${{github.workspace}}/build-wasm/bergamot-translator-worker.js.bak
 
   # Try to upload a release using https://github.com/marvinpinto/actions/issues/177#issuecomment-917605585 as a model
     release-latest:
@@ -395,10 +355,8 @@ jobs:
            title: "Latest Build"
            files: |
                 artifact/*.whl
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.js
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
+                wasm-artefacts/build-wasm/bergamot-translator-worker.js
+                wasm-artefacts/build-wasm/bergamot-translator-worker.wasm
   
     release-version:
       name: Release version 
@@ -422,10 +380,8 @@ jobs:
            title: "${{ github.ref_name }}"
            files: |
                 artifact/*.whl
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.js
-                wasm-artefacts/build-wasm-without-wormhole/bergamot-translator-worker.wasm
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.js
-                wasm-artefacts/build-wasm-with-wormhole/bergamot-translator-worker-with-wormhole.wasm
+                wasm-artefacts/build-wasm/bergamot-translator-worker.js
+                wasm-artefacts/build-wasm/bergamot-translator-worker.wasm
 
   
     python-checks:
