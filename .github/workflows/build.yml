@@ -327,8 +327,7 @@ jobs:
         - name: Test run
           working-directory: build-wasm
           run: |
-            # Using system nodejs instead of an older version
-            /usr/bin/node ../wasm/node-test.js
+            node ../wasm/node-test.js
 
         # Upload both together.
         - name: Upload wasm artifact
