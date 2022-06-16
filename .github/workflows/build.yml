@@ -324,6 +324,11 @@ jobs:
           working-directory: build-wasm
           run: bash ../wasm/patch-artifacts-import-gemm-module.sh
 
+        - name: Test run
+          working-directory: build-wasm
+          run: |
+            node ../wasm/node-test.js
+
         # Upload both together.
         - name: Upload wasm artifact
           uses: actions/upload-artifact@v2
