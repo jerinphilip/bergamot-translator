@@ -355,8 +355,8 @@ jobs:
            title: "Latest Build"
            files: |
                 artifact/*.whl
-                wasm-artefacts/build-wasm/bergamot-translator-worker.js
-                wasm-artefacts/build-wasm/bergamot-translator-worker.wasm
+                wasm-artefacts/bergamot-translator-worker.js
+                wasm-artefacts/bergamot-translator-worker.wasm
   
     release-version:
       name: Release version 
@@ -380,8 +380,8 @@ jobs:
            title: "${{ github.ref_name }}"
            files: |
                 artifact/*.whl
-                wasm-artefacts/build-wasm/bergamot-translator-worker.js
-                wasm-artefacts/build-wasm/bergamot-translator-worker.wasm
+                wasm-artefacts/bergamot-translator-worker.js
+                wasm-artefacts/bergamot-translator-worker.wasm
 
   
     python-checks:
