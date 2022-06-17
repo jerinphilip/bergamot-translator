@@ -331,7 +331,7 @@ jobs:
             node-version: 16
 
         - name: Test run
-          working-directory: wasm-artefacts
+          working-directory: build-wasm
           run: |
             # --unhandled-rejections make the script exit with a non-zero code (at least on node-14).
             # So leaving this here. 
