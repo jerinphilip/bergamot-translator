@@ -324,6 +324,18 @@ jobs:
           working-directory: build-wasm
           run: bash ../wasm/patch-artifacts-import-gemm-module.sh
 
+        # Setup nodejs-16, as nodejs-14 provided by emsdk fails when running.
+        - name: Setup nodejs
+          uses: actions/setup-node@v3
+          with:
+            node-version: 16
+
+        - name: Test run
+          working-directory: wasm-artefacts
+          run: |
+            # --unhandled-rejections make the script exit with a non-zero code (at least on node-14).
+            # So leaving this here. 
+            node --unhandled-rejections=strict ../wasm/node-test.js
 
         # Upload both together.
         - name: Upload wasm artifact
@@ -337,34 +349,12 @@ jobs:
                 ${{github.workspace}}/build-wasm/bergamot-translator-worker.wasm
                 ${{github.workspace}}/build-wasm/bergamot-translator-worker.js.bak
 
-    test-wasm:
-      name: "emscripten/test"
-      runs-on: ubuntu-latest
-      needs: [build-wasm]
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-          with:
-            submodules: recursive
-
-        - name: Setup nodejs
-          uses: actions/setup-node@v3
-          with:
-            node-version: 16
-
-        - name: Download artifacts
-          uses: actions/download-artifact@v2
-
-        - name: Test run
-          working-directory: wasm-artefacts
-          run: |
-            node --unhandled-rejections=strict ../wasm/node-test.js
 
   # Try to upload a release using https://github.com/marvinpinto/actions/issues/177#issuecomment-917605585 as a model
     release-latest:
       name: Release Latest Build
       runs-on: ubuntu-latest
-      needs: [python-ubuntu, python-macos, build-wasm, test-wasm]
+      needs: [python-ubuntu, python-macos, build-wasm]
       if: github.ref == 'refs/heads/main'
       steps:
        - name: Download artifacts
