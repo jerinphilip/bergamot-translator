@@ -19,6 +19,7 @@ env:
   ccache_compresslevel: 9
   ccache_maxsize: 200M
   ccache_cmake: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+  MKL_URL: "https://romang.blob.core.windows.net/mariandev/ci/mkl-2020.1-windows-static.zip"
 
 jobs:
     build-wheels:
@@ -110,6 +111,25 @@ jobs:
               chmod -R a+rwx ${{ env.ccache_dir }}
               ccache -s # Print current cache stats
               ccache -z # Zero cache entry
+
+            CIBW_BEFORE_BUILD_WINDOWS: |
+              # Wget retries downloading files and is faster than Invoke-WebRequest
+              C:\msys64\usr\bin\wget.exe -nv ${{ env.MKL_URL }} -O mkl.zip
+              Expand-Archive -Force mkl.zip ${{ github.workspace }}\mkl
+              # Set MKLROOT environment variable so that CMake can find MKL
+              echo "MKLROOT=${{ github.workspace }}\mkl" | Out-File -FilePath $env:GITHUB_ENV  -Encoding utf8 -Append
+
+              $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' # Powershell murders me.
+              echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows-static.cmake -Append
+              echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows.cmake -Append
+              cat x64-windows-static.cmake
+              cat x64-windows.cmake
+
+              $Env:VCPKG_BUILD_TYPE = 'release'
+              $Env:VCPKG_DEFAULT_TRIPLET = 'x64-windows-static' # QT6 version, linguist tools not working yet: qtbase:x64-windows-static qttools:x64-windows-static qtsvg:x64-windows-static
+              .\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static 
+              .\vcpkg upgrade --no-dry-run # In case there are new builds available after cache restoration
+
 
             CIBW_BUILD: "cp{36,37,38,39,310}-*manylinux_x86_64 cp{36,37,38,39,310}-macosx_x86_64 cp{37,38,39,310}-win_amd64"
 
