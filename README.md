@@ -76,10 +76,8 @@ faster.  The browser environment can also use Native Messaging as a third
 option to translate web-pages locally, which is the fastest at the time of
 writing this. 
 
-The following chart created from
-[jelmervdl/firefox-translations/pull#19](https://github.com/jelmervdl/firefox-translations/pull/19)
-shows how each method compares against one another in terms of words-per-second
-(wps).
+The following chart shows how each method compares against one another in terms
+of words-per-second (wps).
 
 <img src="./doc/bergamot-comparisons.png" width=800>
 
