@@ -40,7 +40,8 @@ We provide bindings to Python and JavaScript through WebAssembly.
 #### Python
 
 This repository provides a python module which also comes with  a command-line
-interface to use available models. The module is available to install through PyPI for Linux and MacOS at the moment.
+interface to use available models. The module is available to install through
+PyPI for Linux and MacOS at the moment.
 
 
 ```bash
@@ -70,11 +71,12 @@ works locally in your modern browser see
 
 WebAssembly is slower due to lack of optimized matrix-multiply primitives.
 Nightly builds of Mozilla Firefox have faster GEMM (Generalized Matrix
-Multiplication) capabilities and are expected to be slightly faster. 
-The browser environment can also use Native Messaging as a third option to translate web-pages locally, which is the fastest at the moment. 
+Multiplication) capabilities (MozIntGemm) and are expected to be slightly
+faster.  The browser environment can also use Native Messaging as a third
+option to translate web-pages locally, which is the fastest at the time of
+writing this. 
 
-The
-following chart created from
+The following chart created from
 [jelmervdl/firefox-translations/pull#19](https://github.com/jelmervdl/firefox-translations/pull/19)
 shows how each method compares against one another in terms of words-per-second
 (wps).
