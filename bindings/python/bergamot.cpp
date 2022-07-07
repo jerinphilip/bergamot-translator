@@ -18,7 +18,6 @@ namespace py = pybind11;
 
 using marian::bergamot::AnnotatedText;
 using marian::bergamot::ByteRange;
-using marian::bergamot::ConcatStrategy;
 using marian::bergamot::Response;
 using marian::bergamot::ResponseOptions;
 using Service = marian::bergamot::AsyncService;
@@ -172,23 +171,14 @@ PYBIND11_MODULE(_bergamot, m) {
   py::bind_vector<std::vector<std::string>>(m, "VectorString");
   py::bind_vector<std::vector<Response>>(m, "VectorResponse");
 
-  py::enum_<ConcatStrategy>(m, "ConcatStrategy")
-      .value("FAITHFUL", ConcatStrategy::FAITHFUL)
-      .value("SPACE", ConcatStrategy::SPACE)
-      .export_values();
-
   py::class_<ResponseOptions>(m, "ResponseOptions")
-      .def(
-          py::init<>([](bool qualityScores, bool alignment, bool HTML, bool sentenceMappings, ConcatStrategy strategy) {
-            return ResponseOptions{qualityScores, alignment, HTML, sentenceMappings, strategy};
-          }),
-          py::arg("qualityScores") = true, py::arg("alignment") = false, py::arg("HTML") = false,
-          py::arg("sentenceMappings") = true, py::arg("concatStrategy") = ConcatStrategy::FAITHFUL)
+      .def(py::init<>([](bool qualityScores, bool alignment, bool HTML) {
+             return ResponseOptions{qualityScores, alignment, HTML};
+           }),
+           py::arg("qualityScores") = true, py::arg("alignment") = false, py::arg("HTML") = false)
       .def_readwrite("qualityScores", &ResponseOptions::qualityScores)
       .def_readwrite("HTML", &ResponseOptions::HTML)
-      .def_readwrite("alignment", &ResponseOptions::alignment)
-      .def_readwrite("concatStrategy", &ResponseOptions::concatStrategy)
-      .def_readwrite("sentenceMappings", &ResponseOptions::sentenceMappings);
+      .def_readwrite("alignment", &ResponseOptions::alignment);
 
   py::class_<ServicePyAdapter>(m, "Service")
       .def(py::init<const Service::Config &>())
