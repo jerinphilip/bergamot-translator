@@ -20,9 +20,6 @@ const fileInfo = [
   {"type": "qualityModel", "alignment": 64}
 ];
 
-const encoder = new TextEncoder(); // string to utf-8 converter
-const decoder = new TextDecoder(); // utf-8 to string converter
-
 const start = Date.now();
 let moduleLoadStart;
 var Module = {
@@ -40,6 +37,51 @@ var Module = {
 
 const log = (message) => {
   console.debug(message);
+}
+
+const makeResponse = (response) => {
+  alignments = [];
+  for (var i = 0; i < response.alignments.size(); i++) {
+    alignment = [];
+    for (var s = 0; s < response.alignments.get(i).size(); s++) {
+      distribution = [];
+      for (var t = 0; t < response.alignments.get(i).get(s).size(); t++) {
+        distribution.push(response.alignments.get(i).get(s).get(t));
+      }
+      alignment.push(distribution);
+    }
+    alignments.push(alignment);
+  }
+
+  sourceTokens = [];
+  for (var i = 0; i < response.alignments.size(); i++) {
+    var result = [];
+    var tokens = response.getSourceTokens(i);
+    for (var s = 0; s < tokens.size(); s++) {
+      result.push(tokens.get(s));
+    }
+    sourceTokens.push(result);
+  }
+
+  targetTokens = [];
+  for (var i = 0; i < response.alignments.size(); i++) {
+    var result = [];
+    var tokens = response.getTargetTokens(i);
+    for (var s = 0; s < tokens.size(); s++) {
+      result.push(tokens.get(s));
+    }
+    targetTokens.push(result);
+  }
+
+  js_response = {
+    'source': response.getOriginalText(),
+    'target': response.getTranslatedText(),
+    'alignments': alignments,
+    'sourceTokens': sourceTokens,
+    'targetTokens': targetTokens
+  };
+  log(js_response);
+  return js_response;
 }
 
 onmessage = async function(e) {
@@ -145,18 +187,12 @@ const translate = (from, to, input, translateOptions) => {
       vectorResponse = translationService.translate(translationModel, vectorSourceText, vectorResponseOptions);
     }
 
-    // Parse all relevant information from vectorResponse
-    const listTranslatedText = _parseTranslatedText(vectorResponse);
-    const listSourceText = _parseSourceText(vectorResponse);
-    const listTranslatedTextSentences = _parseTranslatedTextSentences(vectorResponse);
-    const listSourceTextSentences = _parseSourceTextSentences(vectorResponse);
+    responses = []
+    for(var i = 0; i < vectorResponse.size(); i++){
+        responses.push(makeResponse(vectorResponse.get(i)));
+    }
 
-    log(`Source text: ${listSourceText}`);
-    log(`Translated text: ${listTranslatedText}`);
-    log(`Translated sentences: ${JSON.stringify(listTranslatedTextSentences)}`);
-    log(`Source sentences: ${JSON.stringify(listSourceTextSentences)}`);
-
-    return listTranslatedText;
+    return responses;
   } finally {
     // Necessary clean up
     if (vectorSourceText != null) vectorSourceText.delete();
@@ -253,42 +289,6 @@ const _getLoadedTranslationModel = (srcLang, tgtLang) => {
   return languagePairToTranslationModels.get(languagePair);
 }
 
-const _parseTranslatedText = (vectorResponse) => {
-  const result = [];
-  for (let i = 0; i < vectorResponse.size(); i++) {
-    const response = vectorResponse.get(i);
-    result.push(response.getTranslatedText());
-  }
-  return result;
-}
-
-const _parseTranslatedTextSentences = (vectorResponse) => {
-  const result = [];
-  for (let i = 0; i < vectorResponse.size(); i++) {
-    const response = vectorResponse.get(i);
-    result.push(_getTranslatedSentences(response));
-  }
-  return result;
-}
-
-const _parseSourceText = (vectorResponse) => {
-  const result = [];
-  for (let i = 0; i < vectorResponse.size(); i++) {
-    const response = vectorResponse.get(i);
-    result.push(response.getOriginalText());
-  }
-  return result;
-}
-
-const _parseSourceTextSentences = (vectorResponse) => {
-  const result = [];
-  for (let i = 0; i < vectorResponse.size(); i++) {
-    const response = vectorResponse.get(i);
-    result.push(_getSourceSentences(response));
-  }
-  return result;
-}
-
 const _prepareResponseOptions = (translateOptions) => {
   let vectorResponseOptions = new Module.VectorResponseOptions;
   translateOptions.forEach(translateOption => {
@@ -321,32 +321,3 @@ const _prepareSourceText = (input) => {
   return vectorSourceText;
 }
 
-const _getTranslatedSentences = (response) => {
-  const sentences = [];
-  const text = response.getTranslatedText();
-  for (let sentenceIndex = 0; sentenceIndex < response.size(); sentenceIndex++) {
-    const utf8SentenceByteRange = response.getTranslatedSentence(sentenceIndex);
-    sentences.push(_getSubString(text, utf8SentenceByteRange));
-  }
-  return sentences;
-}
-
-const _getSourceSentences = (response) => {
-  const sentences = [];
-  const text = response.getOriginalText();
-  for (let sentenceIndex = 0; sentenceIndex < response.size(); sentenceIndex++) {
-    const utf8SentenceByteRange = response.getSourceSentence(sentenceIndex);
-    sentences.push(_getSubString(text, utf8SentenceByteRange));
-  }
-  return sentences;
-}
-
-/*
- * Returns a substring of text (a string). The substring is represented by
- * byteRange (begin and end endices) within the utf-8 encoded version of the text.
- */
-const _getSubString = (text, utf8ByteRange) => {
-  const textUtf8ByteView = encoder.encode(text);
-  const substringUtf8ByteView = textUtf8ByteView.subarray(utf8ByteRange.begin, utf8ByteRange.end);
-  return decoder.decode(substringUtf8ByteView);
-}

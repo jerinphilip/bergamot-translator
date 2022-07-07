@@ -22,7 +22,7 @@ const _prepareTranslateOptions = (paragraphs) => {
     // Each option object can be different for each entry. But to keep the test page simple,
     // we just keep all the options same (specifically avoiding parsing the input to determine
     // html/non-html text)
-    translateOptions.push({"isQualityScores": true, "isHtml": true});
+    translateOptions.push({"isQualityScores": false, "isHtml": true});
   });
   return translateOptions;
 };
@@ -72,13 +72,30 @@ worker.onmessage = function (e) {
 
     // Add each translation in its own div to have a known root in which the
     // sentence ids are unique. Used for highlighting sentences.
-    e.data[1].forEach(translatedHTML => {
+    for(var i = 0; i < e.data[1].length; i++){
       const translation = document.createElement('div');
       translation.classList.add('translation');
-      translation.innerHTML = translatedHTML;
+      translation.innerHTML = e.data[1][i]["target"];
       addQualityClasses(translation);
       document.querySelector("#output").appendChild(translation);
-    });
+
+      // Update attention
+      if(i == 0){
+          var alignments = e.data[1][i]["alignments"][0];
+          var labels = function(count) {
+              _result = []
+              for(var i = 1; i <= count; i++){
+                  _result.push(i.toString());
+              }
+              return _result;
+          }
+
+          var sourceTokens = e.data[1][i]["sourceTokens"][0];
+          var targetTokens = e.data[1][i]["targetTokens"][0];
+          attention(targetTokens, sourceTokens, alignments);
+
+      }
+    }
   } else if (e.data[0] === "load_model_reply" && e.data[1]) {
     status(e.data[1]);
     translateCall();

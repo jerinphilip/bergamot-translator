@@ -3,11 +3,13 @@
   <head>
     <title>Mozilla Translations</title>
     <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/attention.css"/>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
+    <script src="js/d3.v4.min.js"></script>
   </head>
   <body>
     <div class="app">
@@ -28,6 +30,48 @@
       </div>
       <div class="footer" id="status"></div>
     </div>
+    <div style="max-width: 1024px; margin: 1em auto;">
+        <figure id="attentional-ex2" class="l-page">
+            <pre id="attentional-ex2-data" style="display: none;">0.50, 0.02, 0.04, 0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.01, 0.00, 0.00, 0.00, 0.05, 0.05
+0.14, 0.89, 0.07, 0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.06, 0.00, 0.00, 0.00, 0.02, 0.00
+0.02, 0.00, 0.56, 0.00, 0.00, 0.00, 0.00, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.02, 0.00
+0.00, 0.00, 0.01, 0.61, 0.02, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+0.00, 0.00, 0.02, 0.03, 0.01, 0.21, 0.97, 0.05, 0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.00
+0.00, 0.00, 0.02, 0.07, 0.25, 0.76, 0.02, 0.04, 0.00, 0.00, 0.00, 0.00, 0.00, 0.02, 0.00
+0.02, 0.04, 0.03, 0.27, 0.71, 0.02, 0.00, 0.02, 0.00, 0.00, 0.02, 0.00, 0.00, 0.05, 0.01
+0.02, 0.00, 0.07, 0.00, 0.00, 0.00, 0.00, 0.60, 0.40, 0.01, 0.04, 0.00, 0.00, 0.13, 0.01
+0.13, 0.02, 0.02, 0.00, 0.01, 0.00, 0.00, 0.23, 0.52, 0.91, 0.07, 0.00, 0.00, 0.10, 0.00
+0.04, 0.00, 0.01, 0.00, 0.00, 0.00, 0.00, 0.01, 0.03, 0.00, 0.67, 0.00, 0.00, 0.16, 0.02
+0.02, 0.00, 0.04, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.14, 0.96, 0.00, 0.02, 0.07
+0.02, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.02, 0.02, 1.00, 0.02, 0.03
+0.02, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.00, 0.01, 0.00, 0.00, 0.32, 0.11
+0.04, 0.00, 0.08, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.01, 0.00, 0.00, 0.04, 0.67</pre>
+            <svg>
+                <defs>
+                <marker id="edgeArrowhead" viewBox="0 -5 10 10" markerWidth="6" markerHeight="10" orient="auto" refX="5" refY="0">
+                <path d="M0,-5L5,0L0,5" fill="none" stroke="#666"></path>
+                </marker>
+                <marker id="edgeArrowheadLeft" viewBox="0 -5 10 10" markerWidth="6" markerHeight="10" orient="auto" refX="0" refY="0">
+                <path d="M5,-5L0,0L5,5" fill="none" stroke="#666"></path>
+                </marker>
+                </defs>
+                <g class="labels" style="display: none;">
+                <text transform="translate(0, 20)">output text</text>
+                <text transform="translate(0, 65)">network B</text>
+                <text transform="translate(0, 185)">network A</text>
+                <text transform="translate(0, 233)">input text</text>
+                </g>
+            </svg>
+            <figcaption>Diagram derived from Fig. 3 of <a href="https://arxiv.org/pdf/1409.0473.pdf">Bahdanau, <i>et al.</i> 2014</a></figcaption>
+        </figure>
+
+
+        <p>This kind of attention between RNNs has a number of other applications. It can be used in voice recognition <dt-cite key="chan2015listen"><span id="citation-9" data-hover-ref="dt-cite-hover-box-9"><span class="citation-number">[12]</span></span></dt-cite>, allowing one RNN to process the audio and then have another RNN skim over it, focusing on relevant parts as it generates a transcript.</p>
+                </div>
+            </div>
+        </div>
+        </div>
+    <script src="js/attention.js"></script>
     <script src="js/index.js"></script>
   </body>
 </html>
