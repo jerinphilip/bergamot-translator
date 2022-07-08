@@ -15,7 +15,7 @@ from .utils import download_resource, patch_marian_for_bergamot
 APP = "bergamot"
 
 
-class Repository(ABC):
+class Repository(ABC):  # pragma: no cover
     """
     An interface for several repositories. Intended to enable interchangable
     use of translateLocally and Mozilla repositories for usage through python.
@@ -32,7 +32,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def models(self) -> t.List[str]:
+    def models(self, filter_downloaded: bool) -> t.List[str]:
         """returns identifiers for available models"""
         pass
 
@@ -187,7 +187,9 @@ class Aggregator:
         )
 
     def models(self, name: str, filter_downloaded: bool = True) -> t.List[str]:
-        return self.repositories.get(name, self.default_repository).models()
+        return self.repositories.get(name, self.default_repository).models(
+            filter_downloaded
+        )
 
     def model(self, name: str, model_identifier: str) -> t.Any:
         return self.repositories.get(name, self.default_repository).model(
