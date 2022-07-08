@@ -94,6 +94,8 @@ class BlockingService {
     static void addOptions(App &app, Config &config) {
       // Options will come here.
       app.add_option("--cache-size", config.cacheSize, "Number of entries to store in cache.");
+      app.add_option("--workspace-size", config.workspaceSizeInMB, "Workspace size to use");
+
       Logger::Config::addOptions(app, config.logger);
     }
   };
@@ -172,6 +174,7 @@ class AsyncService {
     static void addOptions(App &app, Config &config) {
       app.add_option("--cpu-threads", config.numWorkers, "Workers to form translation backend");
       app.add_option("--cache-size", config.cacheSize, "Number of entries to store in cache.");
+      app.add_option("--workspace-size", config.workspaceSizeInMB, "Workspace size to use");
       Logger::Config::addOptions(app, config.logger);
     }
   };
