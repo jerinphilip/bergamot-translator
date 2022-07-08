@@ -85,7 +85,7 @@ class BlockingService {
     /// controlled by this parameter. However, whether we attain full occupancy or not is controlled by random factors -
     /// specifically how uniformly the hash distributes.
     size_t cacheSize{0};
-    
+
     size_t workspaceSizeInMB{1024};
 
     Logger::Config logger;  ///< Configurations for logging
@@ -96,7 +96,6 @@ class BlockingService {
       app.add_option("--cache-size", config.cacheSize, "Number of entries to store in cache.");
       Logger::Config::addOptions(app, config.logger);
     }
-
   };
   /// Construct a BlockingService with configuration loaded from an Options object. Does not require any keys, values
   /// to be set.
