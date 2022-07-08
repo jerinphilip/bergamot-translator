@@ -24,18 +24,7 @@ TranslationModel::TranslationModel(const Config &options, MemoryBundle &&memory 
       vocabs_(options, std::move(memory_.vocabs)),
       textProcessor_(options, vocabs_, std::move(memory_.ssplitPrefixFile)),
       batchingPool_(options),
-      qualityEstimator_(createQualityEstimator(getQualityEstimatorModel(memory, options))) {
-  // ABORT_IF(replicas == 0, "At least one replica needs to be created.");
-  // backend_.resize(replicas);
-
-  // Try to load shortlist from memory-bundle. If not available, try to load from options_;
-
-  /*
-  for (size_t idx = 0; idx < replicas; idx++) {
-    loadBackend(idx);
-  }
-  */
-}
+      qualityEstimator_(createQualityEstimator(getQualityEstimatorModel(memory, options))) {}
 
 void TranslationModel::loadBackend(MarianBackend &backend, Workspace &workspace) {
   auto &graph = backend.graph;
@@ -75,13 +64,6 @@ void TranslationModel::loadBackend(MarianBackend &backend, Workspace &workspace)
       scorer->setShortlistGenerator(shortlistGenerator_);
     }
   }
-
-  // Forward consumes nodeForward and we'll be unable to do anything.
-  // auto deviceId = graph->getDeviceId().no;
-  // if (deviceId == 0) {
-  //   std::cout << graph->graphviz() << std::endl;
-  //   graph->pprintTensors();
-  // }
 
   graph->forward();
 }
