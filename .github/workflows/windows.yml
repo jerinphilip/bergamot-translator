@@ -2,7 +2,7 @@ name: Windows
 
 on:
   push:
-    branches: [ main, ci-sandbox ]
+    branches: [ main, ci-sandbox, dev ]
   pull_request:
     branches: [ '**' ]
 

@@ -4,6 +4,7 @@ name: native
     branches:
     - main
     - ci-sandbox
+    - dev
   pull_request:
     branches:
     - '**'

@@ -4,7 +4,7 @@ env:
     clang_version: 10
 on: 
   push:
-    branches: [ main, ci-sandbox ]
+    branches: [ main, ci-sandbox, dev ]
   pull_request:
     branches: [ '**' ]
 

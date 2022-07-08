@@ -4,6 +4,7 @@ name: "Build"
     branches:
       - main
       - ci-sandbox
+      - dev
     tags:
       - "v*.*.*"
   pull_request:
