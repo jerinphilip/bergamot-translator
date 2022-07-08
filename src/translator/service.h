@@ -168,7 +168,6 @@ class AsyncService {
                            /// cache in the real world. A value of 0 means no caching.
     size_t workspaceSizeInMB{1024};
     Logger::Config logger;  // Configurations for logging
-    size_t workspaceSizeInMB{1024};
 
     template <class App>
     static void addOptions(App &app, Config &config) {

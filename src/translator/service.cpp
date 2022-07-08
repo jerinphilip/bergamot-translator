@@ -10,7 +10,6 @@
 namespace marian {
 namespace bergamot {
 
-<<<<<<< HEAD
 namespace {
 
 // Combines two responses with first.target == second.source mapping alignments etc accordingly.
@@ -41,17 +40,8 @@ BlockingService::BlockingService(const BlockingService::Config &config)
     : config_(config),
       requestId_(0),
       batchingPool_(),
-<<<<<<< HEAD
       cache_(makeOptionalCache(config.cacheSize, /*mutexBuckets = */ 1)),
-=======
-      cache_(config.cacheSize, /*mutexBuckets=*/1),
-      workspace_(/*deviceId=*/0, config.workspaceSizeInMB),
->>>>>>> 0902d72 (Fix failed GitHub UI merge attempt)
-      logger_(config.logger) {}
-=======
-BlockingService::BlockingService(const BlockingService::Config &config)
-    : requestId_(0), batchingPool_(), workspace_(/*deviceId=*/0, config.workspaceSizeInMB) {}
->>>>>>> 39d4b82 (Adding some workspace injection ideas, to be connected with TranslationModel)
+      logger_(config.logger), workspace_(/*deviceId=*/0, config.workspaceSizeInMB) {}
 
 std::vector<Response> BlockingService::translateMultiple(std::shared_ptr<TranslationModel> translationModel,
                                                          std::vector<std::string> &&sources,
