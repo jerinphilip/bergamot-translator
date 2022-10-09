@@ -79,6 +79,7 @@ jobs:
             echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath C:\vcpkg\triplets\x64-windows.cmake -Append
             cat C:\vcpkg\triplets\x64-windows-static.cmake
             cat C:\vcpkg\triplets\x64-windows.cmake
+            cat C:\vcpkg\scripts\buildsystems\vcpkg.cmake
             C:\vcpkg\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static
             C:\vcpkg\vcpkg upgrade --no-dry-run 
 
