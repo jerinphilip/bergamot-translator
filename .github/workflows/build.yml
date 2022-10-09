@@ -70,17 +70,17 @@ jobs:
 
         - name: "Windows: Install dependencies"
           if: ${{ startsWith(runner.os, 'windows') }}
-          shell: pwsh
+          shell: powershell
           run: |
             C:\msys64\usr\bin\wget.exe -nv ${{ env.MKL_URL }} -O mkl.zip
             Expand-Archive -Force mkl.zip ${{ github.workspace }}\mkl
             $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' 
-            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows-static.cmake -Append
-            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows.cmake -Append
-            cat x64-windows-static.cmake
-            cat x64-windows.cmake
-            .\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static
-            .\vcpkg upgrade --no-dry-run 
+            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath C:\vcpkg\triplets\x64-windows-static.cmake -Append
+            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath C:\vcpkg\triplets\x64-windows.cmake -Append
+            cat C:\vcpkg\triplets\x64-windows-static.cmake
+            cat C:\vcpkg\triplets\x64-windows.cmake
+            C:\vcpkg\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static
+            C:\vcpkg\vcpkg upgrade --no-dry-run 
 
         - name: Build wheels
           uses: pypa/cibuildwheel@v2.10.1
