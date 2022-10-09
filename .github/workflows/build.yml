@@ -118,20 +118,18 @@ jobs:
               ccache -z # Zero cache entry
 
             CIBW_BEFORE_BUILD_WINDOWS: |
-              # Wget retries downloading files and is faster than Invoke-WebRequest
               C:\msys64\usr\bin\wget.exe -nv ${{ env.MKL_URL }} -O mkl.zip
               Expand-Archive -Force mkl.zip ${{ github.workspace }}\mkl
-              # Set MKLROOT environment variable so that CMake can find MKL
               echo "MKLROOT=${{ github.workspace }}\mkl" | Out-File -FilePath $env:GITHUB_ENV  -Encoding utf8 -Append
-              $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' # Powershell murders me.
+              $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' 
               echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows-static.cmake -Append
               echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows.cmake -Append
               cat x64-windows-static.cmake
               cat x64-windows.cmake
               $Env:VCPKG_BUILD_TYPE = 'release'
-              $Env:VCPKG_DEFAULT_TRIPLET = 'x64-windows-static' # QT6 version, linguist tools not working yet: qtbase:x64-windows-static qttools:x64-windows-static qtsvg:x64-windows-static
+              $Env:VCPKG_DEFAULT_TRIPLET = 'x64-windows-static' 
               .\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static
-              .\vcpkg upgrade --no-dry-run # In case there are new builds available after cache restoration
+              .\vcpkg upgrade --no-dry-run 
 
 
             CIBW_BUILD: "cp{36,37,38,39,310}-*manylinux_x86_64 cp{36,37,38,39,310}-macosx_x86_64 cp38-win_amd64"
