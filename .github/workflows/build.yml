@@ -68,6 +68,20 @@ jobs:
           run: |
             patch -p1 < patches/01-marian-fstream-for-macos.patch
 
+        - name: "Windows: Install dependencies"
+          if: ${{ startsWith(runner.os, 'windows') }}
+          shell: pwsh
+          run: |
+            C:\msys64\usr\bin\wget.exe -nv ${{ env.MKL_URL }} -O mkl.zip
+            Expand-Archive -Force mkl.zip ${{ github.workspace }}\mkl
+            $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' 
+            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows-static.cmake -Append
+            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows.cmake -Append
+            cat x64-windows-static.cmake
+            cat x64-windows.cmake
+            .\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static
+            .\vcpkg upgrade --no-dry-run 
+
         - name: Build wheels
           uses: pypa/cibuildwheel@v2.10.1
           # to supply options, put them in 'env', like:
@@ -96,7 +110,10 @@ jobs:
               MACOSX_DEPLOYMENT_TARGET=10.9
 
             CIBW_ENVIRONMENT_WINDOWS:
-              CMAKE_ARGS="-DSSPLIT_USE_INTERNAL_PCRE2=ON -DCMAKE_STATIC_LIBRARY_SUFFIX=-static.lib"
+              CMAKE_ARGS="-DSSPLIT_USE_INTERNAL_PCRE2=ON"
+              MKLROOT="${{ github.workspace }}\mkl"
+              VCPKG_BUILD_TYPE='release'
+              VCPKG_DEFAULT_TRIPLET='x64-windows-static' 
 
 
             CIBW_BEFORE_BUILD_LINUX: |
@@ -116,20 +133,6 @@ jobs:
               chmod -R a+rwx ${{ env.ccache_dir }}
               ccache -s # Print current cache stats
               ccache -z # Zero cache entry
-
-            CIBW_BEFORE_BUILD_WINDOWS: |
-              C:\msys64\usr\bin\wget.exe -nv ${{ env.MKL_URL }} -O mkl.zip
-              Expand-Archive -Force mkl.zip ${{ github.workspace }}\mkl
-              echo "MKLROOT=${{ github.workspace }}\mkl" | Out-File -FilePath $env:GITHUB_ENV  -Encoding utf8 -Append
-              $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' 
-              echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows-static.cmake -Append
-              echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath x64-windows.cmake -Append
-              cat x64-windows-static.cmake
-              cat x64-windows.cmake
-              $Env:VCPKG_BUILD_TYPE = 'release'
-              $Env:VCPKG_DEFAULT_TRIPLET = 'x64-windows-static' 
-              .\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static
-              .\vcpkg upgrade --no-dry-run 
 
 
             CIBW_BUILD: "cp{36,37,38,39,310}-*manylinux_x86_64 cp{36,37,38,39,310}-macosx_x86_64 cp38-win_amd64"
