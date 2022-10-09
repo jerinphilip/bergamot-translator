@@ -114,7 +114,7 @@ jobs:
               MKLROOT="${{ github.workspace }}\mkl"
               VCPKG_BUILD_TYPE='release'
               VCPKG_DEFAULT_TRIPLET='x64-windows-static' 
-              CMAKE_ARGS='-DSSPLIT_USE_INTERNAL_PCRE2=ON -DVCPKG_TARGET_TRIPLET="x64-windows-static" -DCMAKE_TOOLCHAIN_FILE="C:\vcpkg\scripts\buildsystems\vcpkg.cmake"'
+              CMAKE_ARGS='-DSSPLIT_USE_INTERNAL_PCRE2=ON -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=\C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
 
 
             CIBW_BEFORE_BUILD_LINUX: |
