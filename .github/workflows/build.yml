@@ -94,6 +94,10 @@ jobs:
               CCACHE_BASEDIR=${{ env.ccache_basedir }}
               MACOSX_DEPLOYMENT_TARGET=10.9
 
+            CIBW_ENVIRONMENT_WINDOWS:
+              CMAKE_ARGS=-DSSPLIT_USE_INTERNAL_PCRE2=ON
+
+
             CIBW_BEFORE_BUILD_LINUX: |
               yum install -y ccache
 
