@@ -1,5 +1,6 @@
 import io
 import os
+import platform
 import re
 import subprocess
 import sys
@@ -41,6 +42,8 @@ class CMakeBuild(build_ext):
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
         build_arch = os.environ.get("BUILD_ARCH", "native")
 
+        internal_pcre2 = "OFF" if platform.system() == "Windows" else "ON"
+
         # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
@@ -49,8 +52,8 @@ class CMakeBuild(build_ext):
             f"-DPYTHON_EXECUTABLE={sys.executable}",
             f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
             f"-DCOMPILE_PYTHON=ON",
-            f"-DSSPLIT_USE_INTERNAL_PCRE2=ON",
             f"-DBUILD_ARCH={build_arch}",
+            f"-DSSPLIT_USE_INTERNAL_PCRE2={internal_pcre2}",
         ]
 
         build_args = ["-t", "_bergamot"]

@@ -20,12 +20,14 @@ env:
   ccache_compresslevel: 9
   ccache_maxsize: 200M
   ccache_cmake: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+  ccache_version: '4.5'
+  MKL_URL: "https://romang.blob.core.windows.net/mariandev/ci/mkl-2020.1-windows-static.zip"
 
 jobs:
     build-wheels:
       strategy:
         matrix:
-          os: [ubuntu-20.04, macos-10.15]
+          os: [ubuntu-20.04, macos-10.15, windows-2019]
         fail-fast: false
 
       name: "cibuildwheel / ${{ matrix.os }}"
@@ -54,6 +56,7 @@ jobs:
               ccache-cibuildwheel-${{ matrix.os }}
 
         - name: ccache environment setup
+          shell: bash
           run: |-
             mkdir -p ${{ env.ccache_dir }}
 
@@ -67,8 +70,36 @@ jobs:
           run: |
             patch -p1 < patches/01-marian-fstream-for-macos.patch
 
+        - name: "Windows: Install dependencies"
+          if: ${{ startsWith(runner.os, 'windows') }}
+          shell: powershell
+          run: |
+            C:\msys64\usr\bin\wget.exe -nv ${{ env.MKL_URL }} -O mkl.zip
+            Expand-Archive -Force mkl.zip ${{ github.workspace }}\mkl
+            $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' 
+            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath C:\vcpkg\triplets\x64-windows-static.cmake -Append
+            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath C:\vcpkg\triplets\x64-windows.cmake -Append
+            # Commenting out, but useful in checks via CI
+            # cat C:\vcpkg\triplets\x64-windows-static.cmake
+            # cat C:\vcpkg\triplets\x64-windows.cmake
+            # cat C:\vcpkg\scripts\buildsystems\vcpkg.cmake
+            C:\vcpkg\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static
+            C:\vcpkg\vcpkg upgrade --no-dry-run 
+
+        - name: Download ccache
+          if: ${{ startsWith(runner.os, 'windows') }}
+          shell: cmake -P {0}
+          run: |
+            set(ccache_url "https://github.com/cristianadam/ccache/releases/download/v${{ env.ccache_version }}/${{ runner.os }}.tar.xz")
+            file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
+            if(ret AND NOT ret EQUAL 0)
+              message( FATAL_ERROR "Bad exit status")
+            endif()
+
+
         - name: Build wheels
-          uses: pypa/cibuildwheel@v2.6.1
+          uses: pypa/cibuildwheel@v2.10.1
           # to supply options, put them in 'env', like:
           env:
             CIBW_ENVIRONMENT_LINUX:
@@ -94,6 +125,13 @@ jobs:
               CCACHE_BASEDIR=${{ env.ccache_basedir }}
               MACOSX_DEPLOYMENT_TARGET=10.9
 
+            CIBW_ENVIRONMENT_WINDOWS:
+              MKLROOT="${{ github.workspace }}\mkl"
+              VCPKG_BUILD_TYPE='release'
+              VCPKG_DEFAULT_TRIPLET='x64-windows-static' 
+              CMAKE_ARGS='-DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_CXX_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe  -DCMAKE_C_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe'
+
+
             CIBW_BEFORE_BUILD_LINUX: |
               yum install -y ccache
 
@@ -112,12 +150,25 @@ jobs:
               ccache -s # Print current cache stats
               ccache -z # Zero cache entry
 
-            CIBW_BUILD: "cp{36,37,38,39,310}-*manylinux_x86_64 cp{36,37,38,39,310}-macosx_x86_64"
+            CIBW_BEFORE_BUILD_WINDOWS: |
+              ${{github.workspace}}\ccache.exe -sv # Print current cache stats
+              ${{github.workspace}}\ccache.exe -z # Print current cache stats
 
-            CIBW_BEFORE_TEST: |
+
+
+            CIBW_BUILD: "cp{36,37,38,39,310}-*manylinux_x86_64 cp{36,37,38,39,310}-macosx_x86_64 cp3{8,9,10}-win_amd64"
+
+            CIBW_BEFORE_TEST_LINUX: |
               ccache -s # Print current ccache stats
 
-            CIBW_TEST_COMMAND: |
+            CIBW_BEFORE_TEST_MACOS: |
+              ccache -s # Print current ccache stats
+
+            CIBW_BEFORE_TEST_WINDOWS: |
+              ${{github.workspace}}\\ccache.exe -sv # Print current cache stats
+
+
+            CIBW_TEST_COMMAND_LINUX: |
               # The wheels are installed automatically and available.
 
               # Fetch models from translateLocally repository.
