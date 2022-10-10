@@ -98,6 +98,7 @@ jobs:
               PYTHON_LOCAL_VERSION_IDENTIFIER=${{ env.PYTHON_LOCAL_VERSION_IDENTIFIER }}
               CCACHE_DIR=/host/${{ env.ccache_dir }}
               CCACHE_BASEDIR=/host/${{ env.ccache_basedir }}
+              CMAKE_ARGS="-DSSPLIT_USE_INTERNAL_PCRE2=ON"
 
             CIBW_ENVIRONMENT_MACOS:
               BUILD_ARCH=core-avx-i
@@ -110,6 +111,7 @@ jobs:
               CCACHE_DIR=${{ env.ccache_dir }}
               CCACHE_BASEDIR=${{ env.ccache_basedir }}
               MACOSX_DEPLOYMENT_TARGET=10.9
+              CMAKE_ARGS="-DSSPLIT_USE_INTERNAL_PCRE2=ON"
 
             CIBW_ENVIRONMENT_WINDOWS:
               MKLROOT="${{ github.workspace }}\mkl"
