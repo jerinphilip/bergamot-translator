@@ -20,6 +20,7 @@ env:
   ccache_compresslevel: 9
   ccache_maxsize: 200M
   ccache_cmake: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+  ccache_version: '4.5'
   MKL_URL: "https://romang.blob.core.windows.net/mariandev/ci/mkl-2020.1-windows-static.zip"
 
 jobs:
