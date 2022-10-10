@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import sys
+import platform
 
 from setuptools import Command, Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
