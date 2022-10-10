@@ -180,9 +180,9 @@ jobs:
               python3 -m bergamot ls -r opus
 
               # Run the sample python script shipped with module
-              # python3 -m bergamot translate --model en-de-tiny <<< "Hello World"
-              # python3 -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
-              # python3 -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
+              python3 -m bergamot translate --model en-de-tiny <<< "Hello World"
+              python3 -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
+              python3 -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
 
 
         - uses: actions/upload-artifact@v2
