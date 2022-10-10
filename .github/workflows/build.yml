@@ -84,6 +84,18 @@ jobs:
             C:\vcpkg\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static
             C:\vcpkg\vcpkg upgrade --no-dry-run 
 
+        - name: Download ccache
+          if: ${{ startsWith(runner.os, 'windows') }}
+          shell: cmake -P {0}
+          run: |
+            set(ccache_url "https://github.com/cristianadam/ccache/releases/download/v${{ env.ccache_version }}/${{ runner.os }}.tar.xz")
+            file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
+            if(ret AND NOT ret EQUAL 0)
+              message( FATAL_ERROR "Bad exit status")
+            endif()
+
+
         - name: Build wheels
           uses: pypa/cibuildwheel@v2.10.1
           # to supply options, put them in 'env', like:
@@ -98,7 +110,6 @@ jobs:
               PYTHON_LOCAL_VERSION_IDENTIFIER=${{ env.PYTHON_LOCAL_VERSION_IDENTIFIER }}
               CCACHE_DIR=/host/${{ env.ccache_dir }}
               CCACHE_BASEDIR=/host/${{ env.ccache_basedir }}
-              CMAKE_ARGS="-DSSPLIT_USE_INTERNAL_PCRE2=ON"
 
             CIBW_ENVIRONMENT_MACOS:
               BUILD_ARCH=core-avx-i
@@ -111,13 +122,12 @@ jobs:
               CCACHE_DIR=${{ env.ccache_dir }}
               CCACHE_BASEDIR=${{ env.ccache_basedir }}
               MACOSX_DEPLOYMENT_TARGET=10.9
-              CMAKE_ARGS="-DSSPLIT_USE_INTERNAL_PCRE2=ON"
 
             CIBW_ENVIRONMENT_WINDOWS:
               MKLROOT="${{ github.workspace }}\mkl"
               VCPKG_BUILD_TYPE='release'
               VCPKG_DEFAULT_TRIPLET='x64-windows-static' 
-              CMAKE_ARGS='-DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
+              CMAKE_ARGS='-DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_CXX_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe  -DCMAKE_C_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe'
 
 
             CIBW_BEFORE_BUILD_LINUX: |
@@ -138,13 +148,25 @@ jobs:
               ccache -s # Print current cache stats
               ccache -z # Zero cache entry
 
+            CIBW_BEFORE_BUILD_WINDOWS: |
+              ${{github.workspace}}\ccache.exe -sv # Print current cache stats
+              ${{github.workspace}}\ccache.exe -z # Print current cache stats
 
-            CIBW_BUILD: "cp{36,37,38,39,310}-*manylinux_x86_64 cp{36,37,38,39,310}-macosx_x86_64 cp38-win_amd64"
 
-            CIBW_BEFORE_TEST: |
+
+            CIBW_BUILD: "cp{36,37,38,39,310}-*manylinux_x86_64 cp{36,37,38,39,310}-macosx_x86_64 cp3{6,7,8,9,10}-win_amd64"
+
+            CIBW_BEFORE_TEST_LINUX: |
               ccache -s # Print current ccache stats
 
-            CIBW_TEST_COMMAND: |
+            CIBW_BEFORE_TEST_MACOS: |
+              ccache -s # Print current ccache stats
+
+            CIBW_BEFORE_TEST_WINDOWS: |
+              ${{github.workspace}}\\ccache.exe -sv # Print current cache stats
+
+
+            CIBW_TEST_COMMAND_LINUX: |
               # The wheels are installed automatically and available.
 
               # Fetch models from translateLocally repository.
@@ -157,9 +179,9 @@ jobs:
               python3 -m bergamot ls -r opus
 
               # Run the sample python script shipped with module
-              python3 -m bergamot translate --model en-de-tiny <<< "Hello World"
-              python3 -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
-              python3 -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
+              # python3 -m bergamot translate --model en-de-tiny <<< "Hello World"
+              # python3 -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
+              # python3 -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
 
 
         - uses: actions/upload-artifact@v2
