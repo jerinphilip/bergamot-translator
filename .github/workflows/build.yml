@@ -153,12 +153,14 @@ jobs:
               ccache -z # Zero cache entry
 
             CIBW_BEFORE_BUILD_WINDOWS: |
+              python -m pip install delvewheel
               ${{github.workspace}}\ccache.exe -sv # Print current cache stats
               ${{github.workspace}}\ccache.exe -z # Print current cache stats
 
-
-
             CIBW_BUILD: "cp{36,37,38,39,310}-*manylinux_x86_64 cp{36,37,38,39,310}-macosx_x86_64 cp3{8,9,10}-win_amd64"
+
+            CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: |
+              delvewheel repair -w {dest_dir} {wheel}
 
             CIBW_BEFORE_TEST_LINUX: |
               ccache -s # Print current ccache stats
