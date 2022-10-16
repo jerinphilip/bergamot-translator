@@ -205,18 +205,13 @@ jobs:
               python3 -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
 
             CIBW_TEST_COMMAND_WINDOWS: |
-              # The wheels are installed automatically and available.
-
-              # Fetch models from translateLocally repository.
               python3 -m bergamot download -m en-de-tiny
               python3 -m bergamot download -m de-en-tiny
               python3 -m bergamot ls
 
-              # Fetch models from opus repository.
               python3 -m bergamot download -m eng-fin-tiny -r opus
               python3 -m bergamot ls -r opus
 
-              # Run the sample python script shipped with module
               python3 -m bergamot translate --model en-de-tiny <<< "Hello World"
               python3 -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
               python3 -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
