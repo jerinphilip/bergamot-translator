@@ -70,6 +70,8 @@ jobs:
           uses: pypa/cibuildwheel@v2.6.1
           # to supply options, put them in 'env', like:
           env:
+            CIBW_BUILD_VERBOSITY: 3
+
             CIBW_ENVIRONMENT_LINUX:
               BUILD_ARCH=core-avx-i
               USE_CCACHE=1
