@@ -5,7 +5,7 @@ import re
 import subprocess
 import sys
 
-from setuptools import Command, Extension, find_packages, setup, Distribution
+from setuptools import Command, Distribution, Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
 from setuptools.command.build_py import build_py as _build_py
 
