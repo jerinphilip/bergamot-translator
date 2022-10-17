@@ -42,7 +42,7 @@ class CMakeBuild(build_ext):
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
         build_arch = os.environ.get("BUILD_ARCH", "native")
 
-        internal_pcre2 = "OFF" if platform.system() == "Windows" else "ON"
+        internal_pcre2 = "OFF"
 
         # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
