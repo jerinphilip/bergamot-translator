@@ -5,7 +5,7 @@ import re
 import subprocess
 import sys
 
-from setuptools import Command, Distribution, Extension, find_packages, setup
+from setuptools import Command, Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
 from setuptools.command.build_py import build_py as _build_py
 
@@ -16,12 +16,6 @@ PLAT_TO_CMAKE = {
     "win-arm32": "ARM",
     "win-arm64": "ARM64",
 }
-
-
-class BinaryDistribution(Distribution):
-    def has_ext_modules(foo):
-        return True
-
 
 # A CMakeExtension needs a sourcedir instead of a file list.
 # The name must be the _single_ output extension from the CMake build.
@@ -226,7 +220,6 @@ setup(
             "bergamot = bergamot.__main__:main",
         ],
     },
-    distclass=BinaryDistribution,
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
