@@ -54,6 +54,7 @@ class CMakeBuild(build_ext):
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
         cmake_lib_output_dir_arg = f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}"
+        cmake_runtime_output_dir_arg = f"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY={extdir}"
         cmake_args = [
             f"-DPYTHON_EXECUTABLE={sys.executable}",
             f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
@@ -111,6 +112,9 @@ class CMakeBuild(build_ext):
                 cmake_lib_output_dir_arg = (
                     f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
                 )
+                cmake_runtime_output_dir_arg = (
+                    f"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
+                )
                 build_args += ["--config", cfg]
 
         if sys.platform.startswith("darwin"):
@@ -131,7 +135,7 @@ class CMakeBuild(build_ext):
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
 
-        cmake_args += [cmake_lib_output_dir_arg]
+        cmake_args += [cmake_lib_output_dir_arg, cmake_runtime_output_dir_arg]
 
         print("cmake", ext.sourcedir, " ".join(cmake_args))
 
