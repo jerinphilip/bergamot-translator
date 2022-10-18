@@ -129,9 +129,9 @@ jobs:
 
             CIBW_ENVIRONMENT_WINDOWS:
               PYTHON_LOCAL_VERSION_IDENTIFIER=${{ env.PYTHON_LOCAL_VERSION_IDENTIFIER }}
-              MKLROOT="${{ github.workspace }}\mkl"
-              VCPKG_BUILD_TYPE='release'
-              VCPKG_DEFAULT_TRIPLET='x64-windows-static' 
+              MKLROOT=${{ github.workspace }}\mkl
+              VCPKG_BUILD_TYPE=release
+              VCPKG_DEFAULT_TRIPLET=x64-windows-static'
               CMAKE_ARGS='-DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_CXX_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe  -DCMAKE_C_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe'
 
 
