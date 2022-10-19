@@ -63,6 +63,7 @@ jobs:
 
         - name: Inject local version identifier for non tag builds
           if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+          shell: bash
           run: |-
             echo "PYTHON_LOCAL_VERSION_IDENTIFIER=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
