@@ -77,6 +77,9 @@ jobs:
           run: |
             C:\msys64\usr\bin\wget.exe -nv ${{ env.NUGET_MKL_URL }} -O mkl.zip
             Expand-Archive -Force mkl.zip ${{ github.workspace }}\nuget-mkl
+
+            New-Item -Path ${{ github.workspace }} -Name "mkl" -ItemType "directory"
+
             Move-Item -Path ${{ github.workspace }}\nuget-mkl\lib\native\win-x64 -Destination ${{ github.workspace }}\mkl\lib
             Move-Item -Path ${{ github.workspace }}\nuget-mkl\lib\native\include -Destination ${{ github.workspace }}\mkl\include
 
