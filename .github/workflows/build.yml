@@ -22,6 +22,7 @@ env:
   ccache_cmake: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
   ccache_version: '4.5'
   MKL_URL: "https://romang.blob.core.windows.net/mariandev/ci/mkl-2020.1-windows-static.zip"
+  NUGET_MKL_URL: "https://www.nuget.org/api/v2/package/intelmkl.static.win-x64/2022.2.0.9563"
 
 jobs:
     build-wheels:
@@ -74,8 +75,14 @@ jobs:
           if: ${{ startsWith(runner.os, 'windows') }}
           shell: powershell
           run: |
-            C:\msys64\usr\bin\wget.exe -nv ${{ env.MKL_URL }} -O mkl.zip
-            Expand-Archive -Force mkl.zip ${{ github.workspace }}\mkl
+            C:\msys64\usr\bin\wget.exe -nv ${{ env.NUGET_MKL_URL }} -O mkl.zip
+            Expand-Archive -Force mkl.zip ${{ github.workspace }}\nuget-mkl
+
+            New-Item -Path ${{ github.workspace }} -Name "mkl" -ItemType "directory"
+
+            Move-Item -Path ${{ github.workspace }}\nuget-mkl\lib\native\win-x64 -Destination ${{ github.workspace }}\mkl\lib
+            Move-Item -Path ${{ github.workspace }}\nuget-mkl\lib\native\include -Destination ${{ github.workspace }}\mkl\include
+
             $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' 
             echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath C:\vcpkg\triplets\x64-windows-static.cmake -Append
             echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath C:\vcpkg\triplets\x64-windows.cmake -Append
@@ -99,9 +106,11 @@ jobs:
 
 
         - name: Build wheels
-          uses: pypa/cibuildwheel@v2.10.1
+          uses: pypa/cibuildwheel@v2.11.1
           # to supply options, put them in 'env', like:
           env:
+            CIBW_BUILD_VERBOSITY: 3
+
             CIBW_ENVIRONMENT_LINUX:
               BUILD_ARCH=core-avx-i
               USE_CCACHE=1
@@ -126,9 +135,10 @@ jobs:
               MACOSX_DEPLOYMENT_TARGET=10.9
 
             CIBW_ENVIRONMENT_WINDOWS:
-              MKLROOT="${{ github.workspace }}\mkl"
-              VCPKG_BUILD_TYPE='release'
-              VCPKG_DEFAULT_TRIPLET='x64-windows-static' 
+              PYTHON_LOCAL_VERSION_IDENTIFIER=${{ env.PYTHON_LOCAL_VERSION_IDENTIFIER }}
+              MKLROOT=${{ github.workspace }}\mkl
+              VCPKG_BUILD_TYPE=release
+              VCPKG_DEFAULT_TRIPLET=x64-windows-static
               CMAKE_ARGS='-DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_CXX_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe  -DCMAKE_C_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe'
 
 
@@ -172,18 +182,48 @@ jobs:
               # The wheels are installed automatically and available.
 
               # Fetch models from translateLocally repository.
-              python3 -m bergamot download -m en-de-tiny
-              python3 -m bergamot download -m de-en-tiny
-              python3 -m bergamot ls
+              python -m bergamot download -m en-de-tiny
+              python -m bergamot download -m de-en-tiny
+              python -m bergamot ls
 
               # Fetch models from opus repository.
-              python3 -m bergamot download -m eng-fin-tiny -r opus
-              python3 -m bergamot ls -r opus
+              python -m bergamot download -m eng-fin-tiny -r opus
+              python -m bergamot ls -r opus
 
               # Run the sample python script shipped with module
-              python3 -m bergamot translate --model en-de-tiny <<< "Hello World"
-              python3 -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
-              python3 -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
+              python -m bergamot translate --model en-de-tiny <<< "Hello World"
+              python -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
+              python -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
+
+            CIBW_TEST_COMMAND_MACOS: |
+              # The wheels are installed automatically and available.
+
+              # Fetch models from translateLocally repository.
+              python -m bergamot download -m en-de-tiny
+              python -m bergamot download -m de-en-tiny
+              python -m bergamot ls
+
+              # Fetch models from opus repository.
+              python -m bergamot download -m eng-fin-tiny -r opus
+              python -m bergamot ls -r opus
+
+              # Run the sample python script shipped with module
+              python -m bergamot translate --model en-de-tiny <<< "Hello World"
+              python -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
+              python -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
+
+            CIBW_TEST_COMMAND_WINDOWS: |
+              python -m bergamot download -m en-de-tiny
+              python -m bergamot download -m de-en-tiny
+              python -m bergamot ls
+
+              python -m bergamot download -m eng-fin-tiny -r opus
+              python -m bergamot ls -r opus
+
+              python -m bergamot translate --model en-de-tiny <<< "Hello World"
+              python -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
+              python -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
+
 
 
         - uses: actions/upload-artifact@v2
