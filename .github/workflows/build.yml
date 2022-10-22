@@ -182,52 +182,9 @@ jobs:
               ${{github.workspace}}\\ccache.exe -sv # Print current cache stats
 
 
-            CIBW_TEST_COMMAND_LINUX: |
-              # The wheels are installed automatically and available.
-
-              # Fetch models from translateLocally repository.
-              python -m bergamot download -m en-de-tiny
-              python -m bergamot download -m de-en-tiny
-              python -m bergamot ls
-
-              # Fetch models from opus repository.
-              python -m bergamot download -m eng-fin-tiny -r opus
-              python -m bergamot ls -r opus
-
-              # Run the sample python script shipped with module
-              python -m bergamot translate --model en-de-tiny <<< "Hello World"
-              python -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
-              python -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
-
-            CIBW_TEST_COMMAND_MACOS: |
-              # The wheels are installed automatically and available.
-
-              # Fetch models from translateLocally repository.
-              python -m bergamot download -m en-de-tiny
-              python -m bergamot download -m de-en-tiny
-              python -m bergamot ls
-
-              # Fetch models from opus repository.
-              python -m bergamot download -m eng-fin-tiny -r opus
-              python -m bergamot ls -r opus
-
-              # Run the sample python script shipped with module
-              python -m bergamot translate --model en-de-tiny <<< "Hello World"
-              python -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
-              python -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
-
-            CIBW_TEST_COMMAND_WINDOWS: |
-              python -m bergamot download -m en-de-tiny
-              python -m bergamot download -m de-en-tiny
-              python -m bergamot ls
-
-              python -m bergamot download -m eng-fin-tiny -r opus
-              python -m bergamot ls -r opus
-
-              python -m bergamot translate --model en-de-tiny <<< "Hello World"
-              python -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
-              python -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
-
+            CIBW_TEST_EXTRAS: test
+            CIBW_TEST_COMMAND: |
+              python -m pytest --pyargs bergamot -s
 
 
         - uses: actions/upload-artifact@v2
