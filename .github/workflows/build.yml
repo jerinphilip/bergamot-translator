@@ -30,7 +30,15 @@ jobs:
     build-wheels:
       strategy:
         matrix:
-          os: [ubuntu-20.04, macos-11.0, windows-2019]
+          os: [ubuntu-20.04, windows-2019]
+          include:
+            - os: macos-12
+              BUILD_ARCH_MACOS: x86_64
+              BUILD_ARCH_CMAKE: core-avx-i
+            - os: macos-12
+              BUILD_ARCH_MACOS: arm64
+              BUILD_ARCH_CMAKE: armv8-a
+
         fail-fast: false
 
       name: "cibuildwheel / ${{ matrix.os }}"
@@ -115,6 +123,7 @@ jobs:
           # to supply options, put them in 'env', like:
           env:
             CIBW_BUILD_VERBOSITY: 3
+            CIBW_ARCHS_MACOS: ${{ matrix.BUILD_ARCH_MACOS }}
 
             CIBW_ENVIRONMENT_LINUX:
               BUILD_ARCH=core-avx-i
@@ -128,7 +137,7 @@ jobs:
               CCACHE_BASEDIR=/host/${{ env.ccache_basedir }}
 
             CIBW_ENVIRONMENT_MACOS:
-              BUILD_ARCH=core-avx-i
+              BUILD_ARCH=${{ matrix.BUILD_ARCH_CMAKE }}
               USE_CCACHE=1
               CCACHE_COMPILER_CHECK=${{ env.ccache_compilercheck }}
               CCACHE_COMPRESS=${{ env.ccache_compress }}
@@ -170,7 +179,7 @@ jobs:
               ${{github.workspace}}\ccache.exe -z # Print current cache stats
 
 
-            CIBW_BUILD: "cp{37,38,39,310}-*manylinux_x86_64 cp{37,38,39,310}-macosx_x86_64 cp3{8,9,10}-win_amd64"
+            CIBW_BUILD: "cp{37,38,39,310}-*manylinux_x86_64 cp{37,38,39,310}-macosx_x86_64 cp3{8,9,10}-win_amd64 cp*macosx_arm64"
 
             CIBW_BEFORE_TEST_LINUX: |
               ccache -s # Print current ccache stats
