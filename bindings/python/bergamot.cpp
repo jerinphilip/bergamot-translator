@@ -115,7 +115,7 @@ class ServicePyAdapter {
     return responses;
   }
 
- private /*functions*/:
+  private /*functions*/:
   static Service make_service(const Service::Config &config) {
     py::scoped_ostream_redirect outstream(std::cout,                                 // std::ostream&
                                           py::module_::import("sys").attr("stdout")  // Python output
@@ -129,7 +129,7 @@ class ServicePyAdapter {
     return Service(config);
   }
 
- private /*data*/:
+  private /*data*/:
   Service service_;
 };
 
