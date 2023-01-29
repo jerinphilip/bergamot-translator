@@ -22,7 +22,8 @@ bergamot-translator wraps marian to add sentence splitting, on-the-fly
 batching, HTML markup translation, and a more suitable API to develop
 applications. Development continuously tests the functionality on Windows,
 MacOS and Linux operating systems on `x86_64`, and WebAssembly cross-platform
-target. `aarch64` native support is under development.
+target. `aarch64` native support is available for Android and Mac M1 (early
+stages).
 
 ## Usage
 
