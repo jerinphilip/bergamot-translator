@@ -3,7 +3,7 @@ from collections import Counter
 from string import whitespace
 
 import pytest
-from bergamot import REPOSITORY, ResponseOptions, Service, ServiceConfig, VectorString
+from bergamot import REPOSITORY, Service
 
 
 @pytest.mark.skip(reason="Not required to run now.")
@@ -11,8 +11,7 @@ def test_html():
     from lxml import etree, html
 
     MODEL = "en-de-tiny"
-    config = ServiceConfig(numWorkers=4, logLevel="warn")
-    service = Service(config)
+    service = Service(num_workers=4, log_level="warn")
     config_path = REPOSITORY.modelConfigPath("browsermt", MODEL)
     model = service.modelFromConfigPath(config_path)
 
@@ -27,8 +26,7 @@ def test_html():
 """
 
     def translate(src, HTML=True):
-        options = ResponseOptions(HTML=HTML)
-        responses = service.translate(model, VectorString([src]), options)
+        responses = service.translate(model, [src], html=HTML)
         return responses[0].target.text
 
     def get_surrounding_text(element):

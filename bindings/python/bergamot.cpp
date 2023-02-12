@@ -32,7 +32,8 @@ PYBIND11_MAKE_OPAQUE(Alignments);
 
 class ServicePyAdapter {
  public:
-  ServicePyAdapter(const Service::Config &config) : service_(make_service(config)) {
+  ServicePyAdapter(const size_t numWorkers, const size_t cacheSize, const std::string &logLevel)
+      : service_(make_service(numWorkers, cacheSize, logLevel)) {
     // Set marian to throw exceptions instead of std::abort()
     marian::setThrowExceptionOnAbort(true);
   }
@@ -47,7 +48,7 @@ class ServicePyAdapter {
     return service_.createCompatibleModel(config);
   }
 
-  std::vector<Response> translate(Model model, std::vector<std::string> &inputs, const ResponseOptions &options) {
+  std::vector<Response> translate(Model model, py::list &texts, bool html, bool qualityScores, bool alignment) {
     py::scoped_ostream_redirect outstream(std::cout,                                 // std::ostream&
                                           py::module_::import("sys").attr("stdout")  // Python output
     );
@@ -57,11 +58,21 @@ class ServicePyAdapter {
 
     py::call_guard<py::gil_scoped_release> gil_guard;
 
+    std::vector<std::string> inputs;
+    for (auto handle : texts) {
+      inputs.push_back(py::str(handle));
+    }
+
     // Prepare promises, save respective futures. Have callback's in async set
     // value to the promises.
     std::vector<std::future<Response>> futures;
     std::vector<std::promise<Response>> promises;
     promises.resize(inputs.size());
+
+    ResponseOptions options;
+    options.HTML = html;
+    options.qualityScores = qualityScores;
+    options.alignment = alignment;
 
     for (size_t i = 0; i < inputs.size(); i++) {
       auto callback = [&promises, i](Response &&response) { promises[i].set_value(std::move(response)); };
@@ -81,8 +92,8 @@ class ServicePyAdapter {
     return responses;
   }
 
-  std::vector<Response> pivot(Model first, Model second, std::vector<std::string> &inputs,
-                              const ResponseOptions &options) {
+  std::vector<Response> pivot(Model first, Model second, py::list &texts, bool html, bool qualityScores,
+                              bool alignment) {
     py::scoped_ostream_redirect outstream(std::cout,                                 // std::ostream&
                                           py::module_::import("sys").attr("stdout")  // Python output
     );
@@ -91,6 +102,17 @@ class ServicePyAdapter {
     );
 
     py::call_guard<py::gil_scoped_release> gil_guard;
+
+    std::vector<std::string> inputs;
+    for (auto handle : texts) {
+      inputs.push_back(py::str(handle));
+    }
+
+    ResponseOptions options;
+    options.HTML = html;
+    options.qualityScores = qualityScores;
+    options.alignment = alignment;
+
     // Prepare promises, save respective futures. Have callback's in async set
     // value to the promises.
     std::vector<std::future<Response>> futures;
@@ -116,7 +138,7 @@ class ServicePyAdapter {
   }
 
   private /*functions*/:
-  static Service make_service(const Service::Config &config) {
+  static Service make_service(size_t numWorkers, size_t cacheSize, const std::string &logLevel) {
     py::scoped_ostream_redirect outstream(std::cout,                                 // std::ostream&
                                           py::module_::import("sys").attr("stdout")  // Python output
     );
@@ -125,6 +147,11 @@ class ServicePyAdapter {
     );
 
     py::call_guard<py::gil_scoped_release> gil_guard;
+
+    Service::Config config;
+    config.numWorkers = numWorkers;
+    config.cacheSize = cacheSize;
+    config.logger.level = logLevel;
 
     return Service(config);
   }
@@ -175,33 +202,15 @@ PYBIND11_MODULE(_bergamot, m) {
   py::bind_vector<Alignment>(m, "Alignment");
   py::bind_vector<Alignments>(m, "Alignments");
 
-  py::class_<ResponseOptions>(m, "ResponseOptions")
-      .def(py::init<>([](bool qualityScores, bool alignment, bool HTML) {
-             return ResponseOptions{qualityScores, alignment, HTML};
-           }),
-           py::arg("qualityScores") = true, py::arg("alignment") = false, py::arg("HTML") = false)
-      .def_readwrite("qualityScores", &ResponseOptions::qualityScores)
-      .def_readwrite("HTML", &ResponseOptions::HTML)
-      .def_readwrite("alignment", &ResponseOptions::alignment);
-
   py::class_<ServicePyAdapter>(m, "Service")
-      .def(py::init<const Service::Config &>())
+      .def(py::init<size_t, size_t, const std::string &>(), py::arg("num_workers") = 1, py::arg("cache_size") = 0,
+           py::arg("log_level") = "off")
       .def("modelFromConfig", &ServicePyAdapter::modelFromConfig)
       .def("modelFromConfigPath", &ServicePyAdapter::modelFromConfigPath)
-      .def("translate", &ServicePyAdapter::translate)
-      .def("pivot", &ServicePyAdapter::pivot);
-
-  py::class_<Service::Config>(m, "ServiceConfig")
-      .def(py::init<>([](size_t numWorkers, size_t cacheSize, std::string logging) {
-             Service::Config config;
-             config.numWorkers = numWorkers;
-             config.cacheSize = cacheSize;
-             config.logger.level = logging;
-             return config;
-           }),
-           py::arg("numWorkers") = 1, py::arg("cacheSize") = 0, py::arg("logLevel") = "off")
-      .def_readwrite("numWorkers", &Service::Config::numWorkers)
-      .def_readwrite("cacheSize", &Service::Config::cacheSize);
+      .def("translate", &ServicePyAdapter::translate, py::arg("model"), py::arg("texts"), py::arg("html") = false,
+           py::arg("quality_scores") = false, py::arg("alignment") = false)
+      .def("pivot", &ServicePyAdapter::pivot, py::arg("first"), py::arg("second"), py::arg("texts"),
+           py::arg("html") = false, py::arg("quality_scores") = false, py::arg("alignment") = false);
 
   py::class_<_Model, std::shared_ptr<_Model>>(m, "TranslationModel");
 }
