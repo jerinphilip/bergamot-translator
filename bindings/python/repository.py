@@ -15,7 +15,7 @@ from .utils import download_resource, patch_marian_for_bergamot
 APP = "bergamot"
 
 
-class Repository(ABC):
+class Repository(ABC):  # pragma: no cover
     """
     An interface for several repositories. Intended to enable interchangable
     use of translateLocally and Mozilla repositories for usage through python.
@@ -32,7 +32,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def models(self) -> t.List[str]:
+    def models(self, filter_downloaded: bool) -> t.List[str]:
         """returns identifiers for available models"""
         pass
 
@@ -137,7 +137,24 @@ class TranslateLocallyLike(Repository):
         download_resource(model["url"], save_location)
 
         with tarfile.open(save_location) as model_archive:
-            model_archive.extractall(self.dirs["models"])
+
+            def is_within_directory(directory, target):
+                abs_directory = os.path.abspath(directory)
+                abs_target = os.path.abspath(target)
+
+                prefix = os.path.commonprefix([abs_directory, abs_target])
+
+                return prefix == abs_directory
+
+            def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+                for member in tar.getmembers():
+                    member_path = os.path.join(path, member.name)
+                    if not is_within_directory(path, member_path):
+                        raise Exception("Attempted Path Traversal in Tar File")
+
+                tar.extractall(path, members, numeric_owner=numeric_owner)
+
+            safe_extract(model_archive, self.dirs["models"])
             fprefix = self._archive_name_without_extension(model["url"])
             model_dir = os.path.join(self.dirs["models"], fprefix)
             symlink = os.path.join(self.dirs["models"], model["code"])
@@ -187,7 +204,9 @@ class Aggregator:
         )
 
     def models(self, name: str, filter_downloaded: bool = True) -> t.List[str]:
-        return self.repositories.get(name, self.default_repository).models()
+        return self.repositories.get(name, self.default_repository).models(
+            filter_downloaded
+        )
 
     def model(self, name: str, model_identifier: str) -> t.Any:
         return self.repositories.get(name, self.default_repository).model(

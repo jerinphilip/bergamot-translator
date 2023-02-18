@@ -20,12 +20,25 @@ env:
   ccache_compresslevel: 9
   ccache_maxsize: 200M
   ccache_cmake: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
+  ccache_version: '4.5'
+  MKL_URL: "https://romang.blob.core.windows.net/mariandev/ci/mkl-2020.1-windows-static.zip"
+  NUGET_MKL_URL: "https://www.nuget.org/api/v2/package/intelmkl.static.win-x64/2022.2.0.9563"
+  WIN_MKL_ROOT: '${{ github.workspace }}\mkl'
+  WIN_NUGET_DIR: '${{ github.workspace }}\nuget-mkl'
 
 jobs:
     build-wheels:
       strategy:
         matrix:
-          os: [ubuntu-20.04, macos-10.15]
+          os: [ubuntu-20.04, windows-2019]
+          include:
+            - os: macos-12
+              BUILD_ARCH_MACOS: x86_64
+              BUILD_ARCH_CMAKE: core-avx-i
+            - os: macos-12
+              BUILD_ARCH_MACOS: arm64
+              BUILD_ARCH_CMAKE: armv8-a
+
         fail-fast: false
 
       name: "cibuildwheel / ${{ matrix.os }}"
@@ -54,11 +67,13 @@ jobs:
               ccache-cibuildwheel-${{ matrix.os }}
 
         - name: ccache environment setup
+          shell: bash
           run: |-
             mkdir -p ${{ env.ccache_dir }}
 
         - name: Inject local version identifier for non tag builds
           if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+          shell: bash
           run: |-
             echo "PYTHON_LOCAL_VERSION_IDENTIFIER=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
@@ -67,10 +82,49 @@ jobs:
           run: |
             patch -p1 < patches/01-marian-fstream-for-macos.patch
 
+        - name: "Windows: Install dependencies"
+          if: ${{ startsWith(runner.os, 'windows') }}
+          shell: powershell
+          run: |
+            C:\msys64\usr\bin\wget.exe -nv ${{ env.NUGET_MKL_URL }} -O mkl.zip
+            Expand-Archive -Force mkl.zip ${{ env.WIN_NUGET_DIR}}
+
+            New-Item -Path ${{ github.workspace }} -Name "mkl" -ItemType "directory"
+
+            Move-Item -Path ${{ env.WIN_NUGET_DIR }}\lib\native\win-x64 -Destination ${{ env.WIN_MKL_ROOT }}\lib
+            Move-Item -Path ${{ env.WIN_NUGET_DIR }}\lib\native\include -Destination ${{ env.WIN_MKL_ROOT }}\include
+
+            Get-ChildItem -Recurse -Path ${{ env.WIN_MKL_ROOT }}
+
+            $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' 
+            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath C:\vcpkg\triplets\x64-windows-static.cmake -Append
+            echo "set(VCPKG_BUILD_TYPE release)" | Tee-Object -FilePath C:\vcpkg\triplets\x64-windows.cmake -Append
+            # Commenting out, but useful in checks via CI
+            # cat C:\vcpkg\triplets\x64-windows-static.cmake
+            # cat C:\vcpkg\triplets\x64-windows.cmake
+            # cat C:\vcpkg\scripts\buildsystems\vcpkg.cmake
+            C:\vcpkg\vcpkg install protobuf:x64-windows-static pcre2:x64-windows-static
+            C:\vcpkg\vcpkg upgrade --no-dry-run 
+
+        - name: Download ccache
+          if: ${{ startsWith(runner.os, 'windows') }}
+          shell: cmake -P {0}
+          run: |
+            set(ccache_url "https://github.com/cristianadam/ccache/releases/download/v${{ env.ccache_version }}/${{ runner.os }}.tar.xz")
+            file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
+            execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
+            if(ret AND NOT ret EQUAL 0)
+              message( FATAL_ERROR "Bad exit status")
+            endif()
+
+
         - name: Build wheels
-          uses: pypa/cibuildwheel@v2.6.1
+          uses: pypa/cibuildwheel@v2.11.1
           # to supply options, put them in 'env', like:
           env:
+            CIBW_BUILD_VERBOSITY: 3
+            CIBW_ARCHS_MACOS: ${{ matrix.BUILD_ARCH_MACOS }}
+
             CIBW_ENVIRONMENT_LINUX:
               BUILD_ARCH=core-avx-i
               USE_CCACHE=1
@@ -83,7 +137,7 @@ jobs:
               CCACHE_BASEDIR=/host/${{ env.ccache_basedir }}
 
             CIBW_ENVIRONMENT_MACOS:
-              BUILD_ARCH=core-avx-i
+              BUILD_ARCH=${{ matrix.BUILD_ARCH_CMAKE }}
               USE_CCACHE=1
               CCACHE_COMPILER_CHECK=${{ env.ccache_compilercheck }}
               CCACHE_COMPRESS=${{ env.ccache_compress }}
@@ -93,6 +147,14 @@ jobs:
               CCACHE_DIR=${{ env.ccache_dir }}
               CCACHE_BASEDIR=${{ env.ccache_basedir }}
               MACOSX_DEPLOYMENT_TARGET=10.9
+
+            CIBW_ENVIRONMENT_WINDOWS:
+              PYTHON_LOCAL_VERSION_IDENTIFIER=${{ env.PYTHON_LOCAL_VERSION_IDENTIFIER }}
+              MKLROOT='${{ env.WIN_MKL_ROOT }}'
+              VCPKG_BUILD_TYPE=release
+              VCPKG_DEFAULT_TRIPLET=x64-windows-static
+              CMAKE_ARGS='-DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_CXX_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe  -DCMAKE_C_COMPILER_LAUNCHER=${{github.workspace}}\ccache.exe -DUSE_STATIC_LIBS=ON'
+
 
             CIBW_BEFORE_BUILD_LINUX: |
               yum install -y ccache
@@ -112,27 +174,26 @@ jobs:
               ccache -s # Print current cache stats
               ccache -z # Zero cache entry
 
-            CIBW_BUILD: "cp{36,37,38,39,310}-*manylinux_x86_64 cp{36,37,38,39,310}-macosx_x86_64"
+            CIBW_BEFORE_BUILD_WINDOWS: |
+              ${{github.workspace}}\ccache.exe -sv # Print current cache stats
+              ${{github.workspace}}\ccache.exe -z # Print current cache stats
 
-            CIBW_BEFORE_TEST: |
+
+            CIBW_BUILD: "cp{37,38,39,310}-*manylinux_x86_64 cp{37,38,39,310}-macosx_x86_64 cp3{8,9,10}-win_amd64 cp*macosx_arm64"
+
+            CIBW_BEFORE_TEST_LINUX: |
               ccache -s # Print current ccache stats
 
+            CIBW_BEFORE_TEST_MACOS: |
+              ccache -s # Print current ccache stats
+
+            CIBW_BEFORE_TEST_WINDOWS: |
+              ${{github.workspace}}\\ccache.exe -sv # Print current cache stats
+
+
+            CIBW_TEST_EXTRAS: test
             CIBW_TEST_COMMAND: |
-              # The wheels are installed automatically and available.
-
-              # Fetch models from translateLocally repository.
-              python3 -m bergamot download -m en-de-tiny
-              python3 -m bergamot download -m de-en-tiny
-              python3 -m bergamot ls
-
-              # Fetch models from opus repository.
-              python3 -m bergamot download -m eng-fin-tiny -r opus
-              python3 -m bergamot ls -r opus
-
-              # Run the sample python script shipped with module
-              python3 -m bergamot translate --model en-de-tiny <<< "Hello World"
-              python3 -m bergamot translate --model en-de-tiny de-en-tiny <<< "Hello World"
-              python3 -m bergamot translate --model eng-fin-tiny --repository opus <<< "Hello World"
+              python -m pytest --pyargs bergamot -s
 
 
         - uses: actions/upload-artifact@v2
@@ -253,11 +314,12 @@ jobs:
           working-directory: build-wasm
           run: bash ../wasm/patch-artifacts-import-gemm-module.sh
 
-        # Setup nodejs-16, as nodejs-14 provided by emsdk fails when running.
+        # Setup nodejs-18, as nodejs-14 provided by emsdk fails when running
+        # and newer version of node allows us to use fetch().
         - name: Setup nodejs
           uses: actions/setup-node@v3
           with:
-            node-version: 16
+            node-version: 18
 
         - name: Test run
           working-directory: wasm
@@ -281,13 +343,36 @@ jobs:
                 ${{github.workspace}}/build-wasm/bergamot-translator-worker.wasm
                 ${{github.workspace}}/build-wasm/bergamot-translator-worker.js.bak
 
+    
+    upload-wasm:
+      name: "Upload node package to NPM"
+      runs-on: ubuntu-latest
+      if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      needs: [build-wasm]
+      steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: wasm-artefacts
+          path: wasm/module/worker
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
 
   # Try to upload a release using https://github.com/marvinpinto/actions/issues/177#issuecomment-917605585 as a model
     release-latest:
       name: Release Latest Build
       runs-on: ubuntu-latest
       needs: [build-wheels, build-wasm]
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/dev'
       steps:
        - name: Download artifacts
          uses: actions/download-artifact@v2
@@ -353,7 +438,7 @@ jobs:
             python3 -m pip install black isort pytype
       - name: "Formatting checks: black, isort"
         run: |
-            python3 -m black --check bindings/python/ setup.py doc/conf.py
+            python3 -m black --diff --check bindings/python/ setup.py doc/conf.py
             python3 -m isort --profile black --diff --check bindings/python setup.py doc/conf.py
       - name: "Static typing checks: pytype"
         run: |-

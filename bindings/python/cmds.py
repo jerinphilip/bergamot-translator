@@ -2,7 +2,7 @@ import argparse
 import sys
 from collections import Counter, defaultdict
 
-from . import REPOSITORY, ResponseOptions, Service, ServiceConfig, VectorString
+from . import REPOSITORY, Service
 
 CMDS = {}
 
@@ -71,8 +71,7 @@ class Translate:
     def execute(args: argparse.Namespace):
         # Build service
 
-        config = ServiceConfig(numWorkers=args.num_workers, logLevel=args.log_level)
-        service = Service(config)
+        service = Service(num_workers=args.num_workers, log_level=args.log_level)
 
         models = [
             service.modelFromConfigPath(
@@ -82,18 +81,20 @@ class Translate:
         ]
 
         # Configure a few options which require how a Response is constructed
-        options = ResponseOptions(
-            alignment=args.alignment, qualityScores=args.quality_scores, HTML=args.html
-        )
+        options = {
+            "alignment": args.alignment,
+            "html": args.html,
+            "quality_scores": args.quality_scores,
+        }
 
         source = sys.stdin.read()
         responses = None
         if len(models) == 1:
             [model] = models
-            responses = service.translate(model, VectorString([source]), options)
+            responses = service.translate(model, [source], **options)
         else:
             [first, second] = models
-            responses = service.pivot(first, second, VectorString([source]), options)
+            responses = service.pivot(first, second, [source], **options)
 
         for response in responses:
             print(response.target.text, end="")

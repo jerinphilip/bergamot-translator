@@ -1,5 +1,6 @@
 import io
 import os
+import platform
 import re
 import subprocess
 import sys
@@ -15,6 +16,7 @@ PLAT_TO_CMAKE = {
     "win-arm32": "ARM",
     "win-arm64": "ARM64",
 }
+
 
 # A CMakeExtension needs a sourcedir instead of a file list.
 # The name must be the _single_ output extension from the CMake build.
@@ -41,16 +43,19 @@ class CMakeBuild(build_ext):
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
         build_arch = os.environ.get("BUILD_ARCH", "native")
 
+        internal_pcre2 = "OFF" if platform.system() == "Windows" else "ON"
+
         # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
         cmake_args = [
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
+            f"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY={extdir}",
             f"-DPYTHON_EXECUTABLE={sys.executable}",
             f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
             f"-DCOMPILE_PYTHON=ON",
-            f"-DSSPLIT_USE_INTERNAL_PCRE2=ON",
             f"-DBUILD_ARCH={build_arch}",
+            f"-DSSPLIT_USE_INTERNAL_PCRE2={internal_pcre2}",
         ]
 
         build_args = ["-t", "_bergamot"]
@@ -84,7 +89,6 @@ class CMakeBuild(build_ext):
                     pass
 
         else:
-
             # Single config generators are handled "normally"
             single_config = any(x in cmake_generator for x in {"NMake", "Ninja"})
 
@@ -100,7 +104,8 @@ class CMakeBuild(build_ext):
             # Multi-config generators have a different way to specify configs
             if not single_config:
                 cmake_args += [
-                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
+                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}",
+                    f"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}",
                 ]
                 build_args += ["--config", cfg]
 
@@ -207,7 +212,7 @@ setup(
     extras_require={"test": ["pytest>=6.0"]},
     license_files=("LICENSE",),
     python_requires=">=3.6",
-    packages=["bergamot"],
+    packages=["bergamot", "bergamot.tests"],
     package_dir={"bergamot": "bindings/python"},
     install_requires=["requests", "pyyaml>=5.1", "appdirs"],
     entry_points={
