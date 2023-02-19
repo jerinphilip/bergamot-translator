@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
   // Construct a model.
   auto options = parseOptionsFromFilePath(config.modelConfigPaths.front());
 
-  auto model = New<TranslationModel>(options);
+  auto model = marian::New<TranslationModel>(options);
 
   ResponseOptions responseOptions;
   std::string input = readFromStdin();
