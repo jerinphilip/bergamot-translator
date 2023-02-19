@@ -1,6 +1,6 @@
 # type: ignore
 import pytest
-from bergamot import REPOSITORY, Service, Model
+from bergamot import REPOSITORY, Model, Service
 from bergamot.utils import toJSON
 
 
