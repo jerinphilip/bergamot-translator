@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 
   for (auto &modelConfigPath : config.modelConfigPaths) {
     TranslationModel::Config modelConfig = parseOptionsFromFilePath(modelConfigPath);
-    auto model = New<TranslationModel>(modelConfig);
+    auto model = marian::New<TranslationModel>(modelConfig);
     models.push_back(std::move(model));
   }
 
