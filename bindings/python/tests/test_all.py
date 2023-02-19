@@ -1,6 +1,6 @@
 # type: ignore
 import pytest
-from bergamot import REPOSITORY, Service
+from bergamot import REPOSITORY, Service, Model
 from bergamot.utils import toJSON
 
 
@@ -14,8 +14,8 @@ def test_basic():
             REPOSITORY.download(repository, model)
 
         for modelId in models:
-            configPath = REPOSITORY.modelConfigPath(repository, modelId)
-            model = service.modelFromConfigPath(configPath)
+            config_path = REPOSITORY.modelConfigPath(repository, modelId)
+            model = Model.from_config_path(config_path)
             print(repository, modelId)
             source = "1 2 3 4 5 6 7 8 9"
             responses = service.translate(
