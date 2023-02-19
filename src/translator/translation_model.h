@@ -61,8 +61,7 @@ class TranslationModel {
   /// ShortlistGenerator, Vocabs and SentenceSplitter.
   TranslationModel(const Config& options, MemoryBundle&& memory);
 
-  TranslationModel(const Config& options)
-      : TranslationModel(options, getMemoryBundleFromConfig(options)) {}
+  TranslationModel(const Config& options) : TranslationModel(options, getMemoryBundleFromConfig(options)) {}
 
   /// Make a Request to be translated by this TranslationModel instance.
   /// @param [in] requestId: Unique identifier associated with this request, available from Service.

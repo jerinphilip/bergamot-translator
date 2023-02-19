@@ -47,9 +47,7 @@ class Workspace {
   marian::DeviceId device() const { return device_; }
   marian::Type precision() const { return precision_; }
 
-  void clear() {
-    tensors_->clear();
-  }
+  void clear() { tensors_->clear(); }
 
  private:
   Ptr<TensorAllocator> tensors_{nullptr};
