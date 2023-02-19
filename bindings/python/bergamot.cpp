@@ -205,14 +205,14 @@ PYBIND11_MODULE(_bergamot, m) {
           "from_config",
           [](const std::string &config) {
             auto options = marian::bergamot::parseOptionsFromString(config);
-            return New<_Model>(options);
+            return marian::New<_Model>(options);
           },
           py::arg("config"))
       .def_static(
           "from_config_path",
           [](const std::string &configPath) {
             auto options = marian::bergamot::parseOptionsFromFilePath(configPath);
-            return New<_Model>(options);
+            return marian::New<_Model>(options);
           },
           py::arg("config_path"));
 }
