@@ -34,16 +34,14 @@ class Workspace {
     // This however does not affect memory allocations.
     graph->getBackend()->configureDevice(horribleOptionsHack());
 
-    Ptr<Backend> backend = graph->getBackend();
+    backend_ = graph->getBackend();
 
-    tensors_ = New<TensorAllocator>(backend);
+    tensors_ = New<TensorAllocator>(backend_);
     tensors_->reserve(workspaceSizeInMB);
-
-    cache_ = New<TensorAllocator>(backend);
   }
 
   Ptr<TensorAllocator> tensors() { return tensors_; }
-  Ptr<TensorAllocator> cache() { return cache_; }
+  Ptr<TensorAllocator> cache() { return New<TensorAllocator>(backend_); }
 
   size_t id() const { return device_.no; }
   marian::DeviceId device() const { return device_; }
@@ -51,14 +49,13 @@ class Workspace {
 
   void clear() {
     tensors_->clear();
-    cache_->clear();
   }
 
  private:
   Ptr<TensorAllocator> tensors_{nullptr};
-  Ptr<TensorAllocator> cache_{nullptr};
   const marian::DeviceId device_;
   const marian::Type precision_;
+  Ptr<Backend> backend_;
 
   Ptr<Options> horribleOptionsHack() {
     Ptr<Options> options = std::make_shared<Options>();
@@ -181,13 +178,6 @@ class AsyncService {
   /// Construct an AsyncService with configuration loaded from Options. Expects positive integer value for
   /// `cpu-threads`. Additionally requires options which configure AggregateBatchingPool.
   AsyncService(const AsyncService::Config &config);
-
-  /// Create a TranslationModel compatible with this instance of Service. Internally assigns how many replicas of
-  /// backend needed based on worker threads set. See TranslationModel for documentation on other params.
-  Ptr<TranslationModel> createCompatibleModel(const TranslationModel::Config &config) {
-    // @TODO: Remove this remove this dependency/coupling.
-    return New<TranslationModel>(config, /*replicas=*/config_.numWorkers);
-  }
 
   /// With the supplied TranslationModel, translate an input. A Response is constructed with optional items set/unset
   /// indicated via ResponseOptions. Upon completion translation of the input, the client supplied callback is

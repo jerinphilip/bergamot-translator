@@ -49,8 +49,8 @@ class TranslationModel {
   /// operandi.
   ///
   /// TODO(@jerinphilip): Clean this up.
-  TranslationModel(const std::string& config, MemoryBundle&& memory, size_t replicas = 1)
-      : TranslationModel(parseOptionsFromString(config, /*validate=*/false), std::move(memory), replicas){};
+  TranslationModel(const std::string& config, MemoryBundle&& memory)
+      : TranslationModel(parseOptionsFromString(config, /*validate=*/false), std::move(memory)){};
 
   /// Construct TranslationModel from marian-options. If memory is empty, TranslationModel is initialized from
   /// paths available in the options object, backed by filesystem. Otherwise, TranslationModel is initialized from the
@@ -59,10 +59,10 @@ class TranslationModel {
   /// @param [in] options: Marian options object.
   /// @param [in] memory: MemoryBundle object holding memory buffers containing parameters to build MarianBackend,
   /// ShortlistGenerator, Vocabs and SentenceSplitter.
-  TranslationModel(const Config& options, MemoryBundle&& memory, size_t replicas = 1);
+  TranslationModel(const Config& options, MemoryBundle&& memory);
 
-  TranslationModel(const Config& options, size_t replicas = 1)
-      : TranslationModel(options, getMemoryBundleFromConfig(options), replicas) {}
+  TranslationModel(const Config& options)
+      : TranslationModel(options, getMemoryBundleFromConfig(options)) {}
 
   /// Make a Request to be translated by this TranslationModel instance.
   /// @param [in] requestId: Unique identifier associated with this request, available from Service.

@@ -16,8 +16,7 @@ namespace bergamot {
 
 std::atomic<size_t> TranslationModel::modelCounter_ = 0;
 
-TranslationModel::TranslationModel(const Config &options, MemoryBundle &&memory /*=MemoryBundle{}*/,
-                                   size_t replicas /*=1*/)
+TranslationModel::TranslationModel(const Config &options, MemoryBundle &&memory /*=MemoryBundle{}*/)
     : modelId_(modelCounter_++),
       options_(options),
       memory_(std::move(memory)),

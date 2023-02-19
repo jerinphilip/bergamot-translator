@@ -130,8 +130,8 @@ int main(int argc, char *argv[]) {
 
   for (auto &modelConfigPath : config.modelConfigPaths) {
     TranslationModel::Config modelConfig = parseOptionsFromFilePath(modelConfigPath);
-    std::shared_ptr<TranslationModel> model = service.createCompatibleModel(modelConfig);
-    models.push_back(model);
+    auto model = New<TranslationModel>(modelConfig);
+    models.push_back(std::move(model));
   }
 
   if (config.opMode == "test-multimodels-intensive") {
