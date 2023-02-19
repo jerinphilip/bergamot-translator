@@ -200,7 +200,7 @@ PYBIND11_MODULE(_bergamot, m) {
       .def("pivot", &ServicePyAdapter::pivot, py::arg("first"), py::arg("second"), py::arg("texts"),
            py::arg("html") = false, py::arg("quality_scores") = false, py::arg("alignment") = false);
 
-  py::class_<_Model, std::shared_ptr<_Model>>(m, "TranslationModel")
+  py::class_<_Model, std::shared_ptr<_Model>>(m, "Model")
       .def_static(
           "from_config",
           [](const std::string &config) {
