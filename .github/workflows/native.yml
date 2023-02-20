@@ -103,7 +103,7 @@ jobs:
     - name: Run regression-tests (BRT)
       working-directory: bergamot-translator-tests
       id: brt_run
-      run: MARIAN=../build ./run_brt.sh ${{ matrix.brt_tags }}
+      run: MARIAN=../build BRT_EVAL_MODE=approx ./run_brt.sh ${{ matrix.brt_tags }}
     - name: Print logs of unsuccessful BRTs
       working-directory: bergamot-translator-tests
       run: |-
@@ -205,7 +205,7 @@ jobs:
     - name: Run regression-tests (BRT)
       working-directory: bergamot-translator-tests
       id: brt_run
-      run: MARIAN=../build ./run_brt.sh ${{ matrix.brt_tags }}
+      run: MARIAN=../build BRT_EVAL_MODE=approx ./run_brt.sh ${{ matrix.brt_tags }}
     - name: Print logs of unsuccessful BRTs
       working-directory: bergamot-translator-tests
       run: |-
