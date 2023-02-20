@@ -123,7 +123,7 @@ class TranslationModel {
 
   /// Hold replicas of the backend (graph, scorers, shortlist) for use in each thread.
   /// Controlled and consistent external access via graph(id), scorerEnsemble(id),
-  // std::vector<MarianBackend> backend_;
+  std::mutex backendMutex_;
   std::unordered_map<size_t, MarianBackend> backend_;
   std::shared_ptr<QualityEstimator> qualityEstimator_;
 

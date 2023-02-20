@@ -171,10 +171,13 @@ void TranslationModel::translateBatch(Workspace &workspace, Batch &batch) {
 
   // Create backend if not exists, for device. Dynamically.
   size_t deviceId = workspace.id();
-  auto p = backend_.find(deviceId);
-  if (p == backend_.end()) {
-    backend_[deviceId] = MarianBackend{};
-    loadBackend(backend_[deviceId], workspace);
+  {
+    std::lock_guard<std::mutex> guard(backendMutex_);
+    auto p = backend_.find(deviceId);
+    if (p == backend_.end()) {
+      backend_[deviceId] = MarianBackend{};
+      loadBackend(backend_[deviceId], workspace);
+    }
   }
 
   auto &backend = backend_[deviceId];
