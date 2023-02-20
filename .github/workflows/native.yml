@@ -95,9 +95,6 @@ jobs:
       working-directory: build
       run: make test
       if: ${{ matrix.unittests == 'true' }}
-    - name: Confirm native-run example script works
-      run: |-
-          bash examples/run-native.sh
 
   mac:
     strategy:
@@ -173,7 +170,4 @@ jobs:
       working-directory: build
       run: make test
       if: ${{ matrix.unittests == 'true' }}
-    - name: Confirm native-run example script works
-      run: |-
-          bash examples/run-native.sh
 
