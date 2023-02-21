@@ -97,6 +97,32 @@ jobs:
       working-directory: build
       run: make test
       if: ${{ matrix.unittests == 'true' }}
+    - name: Install regression-test framework (BRT)
+      working-directory: bergamot-translator-tests
+      run: make install
+    - name: Run regression-tests (BRT)
+      working-directory: bergamot-translator-tests
+      id: brt_run
+      run: MARIAN=../build ./run_brt.sh ${{ matrix.brt_tags }}
+    - name: Print logs of unsuccessful BRTs
+      working-directory: bergamot-translator-tests
+      run: |-
+        grep "tests.*.sh" previous.log \
+          | sed 's/^\s*-\s*//' \
+          | xargs -I% bash -c 'echo %; tail -n20 %.log'
+      if: ${{ always() && steps.brt_run.outcome == 'failure' }}
+    - name: Upload regression-tests artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ always() && steps.brt_run.outcome != 'skipped' }}
+      with:
+        name: brt-${{ matrix.identifier }}
+        path: |-
+          bergamot-translator-tests/**/*.expected
+          bergamot-translator-tests/**/*.log
+          bergamot-translator-tests/**/*.out
+    - name: Confirm native-run example script works
+      run: |-
+          bash examples/run-native.sh
 
   mac:
     strategy:
@@ -173,3 +199,30 @@ jobs:
       working-directory: build
       run: make test
       if: ${{ matrix.unittests == 'true' }}
+    - name: Install regression-test framework (BRT)
+      working-directory: bergamot-translator-tests
+      run: make install
+    - name: Run regression-tests (BRT)
+      working-directory: bergamot-translator-tests
+      id: brt_run
+      run: MARIAN=../build ./run_brt.sh ${{ matrix.brt_tags }}
+    - name: Print logs of unsuccessful BRTs
+      working-directory: bergamot-translator-tests
+      run: |-
+        grep "tests.*.sh" previous.log \
+          | sed 's/^\s*-\s*//' \
+          | xargs -I% bash -c 'echo %; tail -n20 %.log'
+      if: ${{ always() && steps.brt_run.outcome == 'failure' }}
+    - name: Upload regression-tests artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ always() && steps.brt_run.outcome != 'skipped' }}
+      with:
+        name: brt-${{ matrix.identifier }}
+        path: |-
+          bergamot-translator-tests/**/*.expected
+          bergamot-translator-tests/**/*.log
+          bergamot-translator-tests/**/*.out
+    - name: Confirm native-run example script works
+      run: |-
+          bash examples/run-native.sh
+
