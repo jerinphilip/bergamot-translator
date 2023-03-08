@@ -21,6 +21,8 @@
 namespace marian {
 namespace bergamot {
 
+class Workspace;
+
 /// A TranslationModel is associated with the translation of a single language direction. Holds the graph and other
 /// structures required to run the forward pass of the neural network, along with preprocessing logic (TextProcessor)
 /// and a BatchingPool to create batches that are to be used in conjuction with an instance.
@@ -47,8 +49,8 @@ class TranslationModel {
   /// operandi.
   ///
   /// TODO(@jerinphilip): Clean this up.
-  TranslationModel(const std::string& config, MemoryBundle&& memory, size_t replicas = 1)
-      : TranslationModel(parseOptionsFromString(config, /*validate=*/false), std::move(memory), replicas){};
+  TranslationModel(const std::string& config, MemoryBundle&& memory)
+      : TranslationModel(parseOptionsFromString(config, /*validate=*/false), std::move(memory)){};
 
   /// Construct TranslationModel from marian-options. If memory is empty, TranslationModel is initialized from
   /// paths available in the options object, backed by filesystem. Otherwise, TranslationModel is initialized from the
@@ -57,10 +59,9 @@ class TranslationModel {
   /// @param [in] options: Marian options object.
   /// @param [in] memory: MemoryBundle object holding memory buffers containing parameters to build MarianBackend,
   /// ShortlistGenerator, Vocabs and SentenceSplitter.
-  TranslationModel(const Config& options, MemoryBundle&& memory, size_t replicas = 1);
+  TranslationModel(const Config& options, MemoryBundle&& memory);
 
-  TranslationModel(const Config& options, size_t replicas = 1)
-      : TranslationModel(options, getMemoryBundleFromConfig(options), replicas) {}
+  TranslationModel(const Config& options) : TranslationModel(options, getMemoryBundleFromConfig(options)) {}
 
   /// Make a Request to be translated by this TranslationModel instance.
   /// @param [in] requestId: Unique identifier associated with this request, available from Service.
@@ -92,7 +93,7 @@ class TranslationModel {
   /// @param [in] deviceId: There are replicas of backend created for use in each worker thread. deviceId indicates
   /// which replica to use.
   /// @param [in] batch: A batch generated from generateBatch from the same TranslationModel instance.
-  void translateBatch(size_t deviceId, Batch& batch);
+  void translateBatch(Workspace& workspace, Batch& batch);
 
   /// Returns a unique-identifier for the model.
   size_t modelId() const { return modelId_; }
@@ -112,7 +113,7 @@ class TranslationModel {
     using Graph = Ptr<ExpressionGraph>;
     using ScorerEnsemble = std::vector<Ptr<Scorer>>;
 
-    Graph graph;
+    Graph graph{nullptr};
     ScorerEnsemble scorerEnsemble;
     bool initialized{false};
   };
@@ -122,10 +123,11 @@ class TranslationModel {
 
   /// Hold replicas of the backend (graph, scorers, shortlist) for use in each thread.
   /// Controlled and consistent external access via graph(id), scorerEnsemble(id),
-  std::vector<MarianBackend> backend_;
+  std::mutex backendMutex_;
+  std::unordered_map<size_t, MarianBackend> backend_;
   std::shared_ptr<QualityEstimator> qualityEstimator_;
 
-  void loadBackend(size_t idx);
+  void loadBackend(MarianBackend& backend, Workspace& workspace);
   Ptr<marian::data::CorpusBatch> convertToMarianBatch(Batch& batch);
 
   static std::atomic<size_t> modelCounter_;

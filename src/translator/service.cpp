@@ -41,7 +41,8 @@ BlockingService::BlockingService(const BlockingService::Config &config)
       requestId_(0),
       batchingPool_(),
       cache_(makeOptionalCache(config.cacheSize, /*mutexBuckets = */ 1)),
-      logger_(config.logger) {}
+      logger_(config.logger),
+      workspace_(/*deviceId=*/0, config.workspaceSizeInMB) {}
 
 std::vector<Response> BlockingService::translateMultiple(std::shared_ptr<TranslationModel> translationModel,
                                                          std::vector<std::string> &&sources,
@@ -74,7 +75,7 @@ std::vector<Response> BlockingService::translateMultipleRaw(std::shared_ptr<Tran
   Batch batch;
   Ptr<TranslationModel> model{nullptr};
   while (batchingPool_.generateBatch(model, batch)) {
-    model->translateBatch(/*deviceId=*/0, batch);
+    model->translateBatch(workspace_, batch);
   }
 
   return responses;
@@ -112,7 +113,7 @@ std::vector<Response> BlockingService::pivotMultiple(std::shared_ptr<Translation
   Batch batch;
   Ptr<TranslationModel> model{nullptr};
   while (batchingPool_.generateBatch(model, batch)) {
-    model->translateBatch(/*deviceId=*/0, batch);
+    model->translateBatch(workspace_, batch);
   }
 
   // Combine both sides. They're associated by indices.
@@ -138,13 +139,14 @@ AsyncService::AsyncService(const AsyncService::Config &config)
   ABORT_IF(config_.numWorkers == 0, "Number of workers should be at least 1 in a threaded workflow");
   workers_.reserve(config_.numWorkers);
   for (size_t cpuId = 0; cpuId < config_.numWorkers; cpuId++) {
+    workspaces_.emplace_back(cpuId, config.workspaceSizeInMB);
     workers_.emplace_back([cpuId, this] {
       // Consumer thread main-loop. Note that this is an infinite-loop unless the monitor is explicitly told to
       // shutdown, which happens in the destructor for this class.
       Batch batch;
       Ptr<TranslationModel> translationModel{nullptr};
       while (safeBatchingPool_.generateBatch(translationModel, batch)) {
-        translationModel->translateBatch(cpuId, batch);
+        translationModel->translateBatch(workspaces_[cpuId], batch);
       }
     });
   }

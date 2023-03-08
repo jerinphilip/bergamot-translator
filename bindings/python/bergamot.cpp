@@ -38,16 +38,6 @@ class ServicePyAdapter {
     marian::setThrowExceptionOnAbort(true);
   }
 
-  std::shared_ptr<_Model> modelFromConfig(const std::string &config) {
-    auto parsedConfig = marian::bergamot::parseOptionsFromString(config);
-    return service_.createCompatibleModel(parsedConfig);
-  }
-
-  std::shared_ptr<_Model> modelFromConfigPath(const std::string &configPath) {
-    auto config = marian::bergamot::parseOptionsFromFilePath(configPath);
-    return service_.createCompatibleModel(config);
-  }
-
   std::vector<Response> translate(Model model, py::list &texts, bool html, bool qualityScores, bool alignment) {
     py::scoped_ostream_redirect outstream(std::cout,                                 // std::ostream&
                                           py::module_::import("sys").attr("stdout")  // Python output
@@ -205,12 +195,24 @@ PYBIND11_MODULE(_bergamot, m) {
   py::class_<ServicePyAdapter>(m, "Service")
       .def(py::init<size_t, size_t, const std::string &>(), py::arg("num_workers") = 1, py::arg("cache_size") = 0,
            py::arg("log_level") = "off")
-      .def("modelFromConfig", &ServicePyAdapter::modelFromConfig)
-      .def("modelFromConfigPath", &ServicePyAdapter::modelFromConfigPath)
       .def("translate", &ServicePyAdapter::translate, py::arg("model"), py::arg("texts"), py::arg("html") = false,
            py::arg("quality_scores") = false, py::arg("alignment") = false)
       .def("pivot", &ServicePyAdapter::pivot, py::arg("first"), py::arg("second"), py::arg("texts"),
            py::arg("html") = false, py::arg("quality_scores") = false, py::arg("alignment") = false);
 
-  py::class_<_Model, std::shared_ptr<_Model>>(m, "TranslationModel");
+  py::class_<_Model, std::shared_ptr<_Model>>(m, "Model")
+      .def_static(
+          "from_config",
+          [](const std::string &config) {
+            auto options = marian::bergamot::parseOptionsFromString(config);
+            return marian::New<_Model>(options);
+          },
+          py::arg("config"))
+      .def_static(
+          "from_config_path",
+          [](const std::string &configPath) {
+            auto options = marian::bergamot::parseOptionsFromFilePath(configPath);
+            return marian::New<_Model>(options);
+          },
+          py::arg("config_path"));
 }
