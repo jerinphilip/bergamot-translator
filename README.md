@@ -135,5 +135,7 @@ research and innovation programme under grant agreement No 825303.  </td>
 </tr>
 </table>
 
+The builds generate library that can be integrated to any project. All the public header files are specified in `src` folder.
+A short example of how to use the APIs is provided in `app/bergamot.cpp` file.
 
 
