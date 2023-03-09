@@ -3,7 +3,7 @@ from collections import Counter
 from string import whitespace
 
 import pytest
-from bergamot import REPOSITORY, Service
+from bergamot import REPOSITORY, Model, Service
 
 
 @pytest.mark.skip(reason="Not required to run now.")
@@ -13,7 +13,7 @@ def test_html():
     MODEL = "en-de-tiny"
     service = Service(num_workers=4, log_level="warn")
     config_path = REPOSITORY.modelConfigPath("browsermt", MODEL)
-    model = service.modelFromConfigPath(config_path)
+    model = Model.from_config_path(config_path)
 
     example = """
 <div class="wrap">

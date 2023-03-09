@@ -2,7 +2,7 @@ import argparse
 import sys
 from collections import Counter, defaultdict
 
-from . import REPOSITORY, Service
+from . import REPOSITORY, Model, Service
 
 CMDS = {}
 
@@ -74,9 +74,7 @@ class Translate:
         service = Service(num_workers=args.num_workers, log_level=args.log_level)
 
         models = [
-            service.modelFromConfigPath(
-                REPOSITORY.modelConfigPath(args.repository, model)
-            )
+            Model.from_config_path(REPOSITORY.modelConfigPath(args.repository, model))
             for model in args.model
         ]
 
