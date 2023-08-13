@@ -23,7 +23,29 @@ TranslationModel::TranslationModel(const Config &options, MemoryBundle &&memory 
       vocabs_(options, std::move(memory_.vocabs)),
       textProcessor_(options, vocabs_, std::move(memory_.ssplitPrefixFile)),
       batchingPool_(options),
-      qualityEstimator_(createQualityEstimator(getQualityEstimatorModel(memory, options))) {}
+      qualityEstimator_(createQualityEstimator(getQualityEstimatorModel(memory, options))) {
+
+  // Try to load shortlist from memory-bundle. If not available, try to load from options_;
+
+  int srcIdx = 0, trgIdx = 1;
+  // vocabs_->sources().front() is invoked as we currently only support one source vocab
+  bool shared_vcb = (vocabs_.sources().front() == vocabs_.target());
+
+  if (memory_.shortlist.size() > 0 && memory_.shortlist.begin() != nullptr) {
+    bool check = options_->get<bool>("check-bytearray", false);
+    shortlistGenerator_ = New<data::BinaryShortlistGenerator>(memory_.shortlist.begin(), memory_.shortlist.size(),
+                                                              vocabs_.sources().front(), vocabs_.target(), srcIdx,
+                                                              trgIdx, shared_vcb, check);
+  } else if (options_->hasAndNotEmpty("shortlist")) {
+    // Changed to BinaryShortlistGenerator to enable loading binary shortlist file
+    // This class also supports text shortlist file
+    shortlistGenerator_ = New<data::BinaryShortlistGenerator>(options_, vocabs_.sources().front(), vocabs_.target(),
+                                                              srcIdx, trgIdx, shared_vcb);
+  } else {
+    // In this case, the loadpath does not load shortlist.
+    shortlistGenerator_ = nullptr;
+  }
+}
 
 void TranslationModel::loadBackend(MarianBackend &backend, Workspace &workspace) {
   auto &graph = backend.graph;
